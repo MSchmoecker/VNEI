@@ -1,6 +1,12 @@
 ﻿using System;
+using System.Reflection;
 using BepInEx;
 using HarmonyLib;
+using Jotunn.Utils;
+using Jotunn.Managers;
+using UnityEngine;
+using VNEI.Logic;
+using VNEI.UI;
 
 namespace VNEI {
     [BepInPlugin(ModGuid, ModName, ModVersion)]
@@ -10,6 +16,7 @@ namespace VNEI {
         public const string ModGuid = "com.maxsch.valheim.vnei";
         public const string ModVersion = "0.0.0";
         public static Plugin Instance { get; private set; }
+        public static AssetBundle AssetBundle { get; private set; }
 
         private Harmony harmony;
 
@@ -19,6 +26,11 @@ namespace VNEI {
 
             harmony = new Harmony(ModGuid);
             harmony.PatchAll();
+
+            AssetBundle = AssetUtils.LoadAssetBundleFromResources("VNEI_AssetBundle", Assembly.GetExecutingAssembly());
+
+            PrefabManager.OnPrefabsRegistered += Indexing.IndexAll;
+            GUIManager.OnCustomGUIAvailable += BaseUI.Create;
         }
 
         private void OnDestroy() {

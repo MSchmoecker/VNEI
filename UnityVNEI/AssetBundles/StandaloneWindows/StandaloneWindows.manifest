@@ -1,0 +1,7 @@
+ManifestFileVersion: 0
+CRC: 98850242
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: vnei_assetbundle
+      Dependencies: {}
