@@ -26,18 +26,20 @@ namespace VNEI.UI {
         private void Awake() {
             Instance = this;
             ShowSearch();
-            root.gameObject.SetActive(false);
 
             Styling.ApplyAllComponents(root);
             Styling.ApplyWoodpanel(root.GetComponent<Image>());
             Styling.ApplyLocalization(root);
+
+            if ((bool)InventoryGui.instance) {
+                transform.SetParent(InventoryGui.instance.m_player);
+                ((RectTransform)transform).anchoredPosition = new Vector2(658, -45);
+            } else {
+                root.gameObject.SetActive(false);
+            }
         }
 
         private void Update() {
-            if (Input.GetKeyDown(KeyCode.F3)) {
-                root.gameObject.SetActive(!root.gameObject.activeSelf);
-            }
-
             if (Input.GetKeyDown(KeyCode.F4)) {
                 ShowSearch();
             }
