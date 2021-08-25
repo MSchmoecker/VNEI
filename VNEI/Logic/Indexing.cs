@@ -145,10 +145,31 @@ namespace VNEI.Logic {
                 }
 
                 // TODO Source Station listing
-                // TODO Hammer crafting
+                // TODO Search
+            }
+
+            foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
+                if (prefab.TryGetComponent(out Piece piece)) {
+                    Item item = Items[prefab.name.GetStableHashCode()];
+                    RecipeInfo recipeInfo = new RecipeInfo(prefab, piece.m_resources);
+                    item.result.Add(recipeInfo);
+
+                    foreach (Piece.Requirement resource in piece.m_resources) {
+                        int key = GetRequirementName(resource).GetStableHashCode();
+                        if (Items.ContainsKey(key)) {
+                            Items[key].ingredient.Add(recipeInfo);
+                        } else {
+                            Log.LogInfo($"Piece ingredient not indexed: {resource.m_resItem.name}");
+                        }
+                    }
+                }
             }
 
             IndexFinished?.Invoke();
+        }
+
+        public static string GetRequirementName(Piece.Requirement requirement) {
+            return requirement.m_resItem.name.Replace("JVLmock_", "");
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace VNEI.Logic {
     public class RecipeInfo {
@@ -16,7 +17,12 @@ namespace VNEI.Logic {
 
             foreach (Piece.Requirement resource in recipe.m_resources) {
                 if ((bool)resource.m_resItem) {
-                    ingredient.Add(Indexing.Items[resource.m_resItem.name.GetStableHashCode()]);
+                    int key = Indexing.GetRequirementName(resource).GetStableHashCode();
+                    if (Indexing.Items.ContainsKey(key)) {
+                        ingredient.Add(Indexing.Items[key]);
+                    } else {
+                        Log.LogInfo($"Recipe Piece.Requirement ingredient not indexed: {resource.m_resItem.name}");
+                    }
                 } else {
                     Log.LogInfo("ItemDrop ingredient is null: recipe " + recipe.name);
                 }
@@ -58,6 +64,23 @@ namespace VNEI.Logic {
 
             foreach (CharacterDrop.Drop drop in characterDrops) {
                 result.Add(Indexing.Items[drop.m_prefab.name.GetStableHashCode()]);
+            }
+        }
+
+        public RecipeInfo(GameObject prefab, Piece.Requirement[] requirements) {
+            result.Add(Indexing.Items[prefab.name.GetStableHashCode()]);
+
+            foreach (Piece.Requirement requirement in requirements) {
+                if ((bool)requirement.m_resItem) {
+                    int key = Indexing.GetRequirementName(requirement).GetStableHashCode();
+                    if (Indexing.Items.ContainsKey(key)) {
+                        ingredient.Add(Indexing.Items[key]);
+                    } else {
+                        Log.LogInfo($"Piece ingredient not indexed: {requirement.m_resItem.name}");
+                    }
+                } else {
+                    Log.LogInfo($"Piece ingredient is null: {prefab.name}");
+                }
             }
         }
     }
