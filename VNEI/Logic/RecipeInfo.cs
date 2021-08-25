@@ -25,7 +25,27 @@ namespace VNEI.Logic {
 
         public RecipeInfo(Smelter.ItemConversion conversion) {
             if ((bool)conversion.m_from) {
-                result.Add(Indexing.Items[conversion.m_from.name.GetStableHashCode()]);
+                ingredient.Add(Indexing.Items[conversion.m_from.name.GetStableHashCode()]);
+            }
+
+            if ((bool)conversion.m_to) {
+                result.Add(Indexing.Items[conversion.m_to.name.GetStableHashCode()]);
+            }
+        }
+
+        public RecipeInfo(Fermenter.ItemConversion conversion) {
+            if ((bool)conversion.m_from) {
+                ingredient.Add(Indexing.Items[conversion.m_from.name.GetStableHashCode()]);
+            }
+
+            if ((bool)conversion.m_to) {
+                result.Add(Indexing.Items[conversion.m_to.name.GetStableHashCode()]);
+            }
+        }
+
+        public RecipeInfo(CookingStation.ItemConversion conversion) {
+            if ((bool)conversion.m_from) {
+                ingredient.Add(Indexing.Items[conversion.m_from.name.GetStableHashCode()]);
             }
 
             if ((bool)conversion.m_to) {

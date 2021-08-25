@@ -50,7 +50,7 @@ namespace VNEI.Logic {
                 }
             }
 
-            Log.LogInfo("Index Smelter");
+            Log.LogInfo("Index Smelter, Fermenter, CookingStation");
             foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
                 if (prefab.TryGetComponent(out Smelter smelter)) {
                     foreach (Smelter.ItemConversion conversion in smelter.m_conversion) {
@@ -75,6 +75,57 @@ namespace VNEI.Logic {
                         }
                     }
                 }
+
+                if (prefab.TryGetComponent(out Fermenter fermenter)) {
+                    foreach (Fermenter.ItemConversion conversion in fermenter.m_conversion) {
+                        if ((bool)conversion.m_from) {
+                            if (Items.ContainsKey(conversion.m_from.name.GetStableHashCode())) {
+                                Items[conversion.m_from.name.GetStableHashCode()].result.Add(new RecipeInfo(conversion));
+                            } else {
+                                Log.LogInfo($"item not in index! {conversion.m_from.name}");
+                            }
+                        } else {
+                            Log.LogInfo($"conversion from is null: {fermenter.name}");
+                        }
+
+                        if ((bool)conversion.m_to) {
+                            if (Items.ContainsKey(conversion.m_to.name.GetStableHashCode())) {
+                                Items[conversion.m_to.name.GetStableHashCode()].result.Add(new RecipeInfo(conversion));
+                            } else {
+                                Log.LogInfo($"item not in index! {conversion.m_to.name}");
+                            }
+                        } else {
+                            Log.LogInfo($"conversion to is null: {fermenter.name}");
+                        }
+                    }
+                }
+
+                if (prefab.TryGetComponent(out CookingStation cookingStation)) {
+                    foreach (CookingStation.ItemConversion conversion in cookingStation.m_conversion) {
+                        if ((bool)conversion.m_from) {
+                            if (Items.ContainsKey(conversion.m_from.name.GetStableHashCode())) {
+                                Items[conversion.m_from.name.GetStableHashCode()].result.Add(new RecipeInfo(conversion));
+                            } else {
+                                Log.LogInfo($"item not in index! {conversion.m_from.name}");
+                            }
+                        } else {
+                            Log.LogInfo($"conversion from is null: {cookingStation.name}");
+                        }
+
+                        if ((bool)conversion.m_to) {
+                            if (Items.ContainsKey(conversion.m_to.name.GetStableHashCode())) {
+                                Items[conversion.m_to.name.GetStableHashCode()].result.Add(new RecipeInfo(conversion));
+                            } else {
+                                Log.LogInfo($"item not in index! {conversion.m_to.name}");
+                            }
+                        } else {
+                            Log.LogInfo($"conversion to is null: {cookingStation.name}");
+                        }
+                    }
+                }
+
+                // TODO Monster Drops
+                // TODO Source Station listing
             }
 
             IndexFinished?.Invoke();
