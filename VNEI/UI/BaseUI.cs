@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Jotunn.Managers;
@@ -7,24 +8,46 @@ using VNEI.Logic;
 
 namespace VNEI.UI {
     public class BaseUI : MonoBehaviour {
+        public static BaseUI Instance { get; private set; }
+
         [SerializeField] private RectTransform panel;
-        [SerializeField] private GameObject prefab;
+        [SerializeField] private RectTransform root;
+        [SerializeField] public GameObject itemPrefab;
+        [SerializeField] public GameObject rowPrefab;
 
         public static void Create() {
             GameObject prefab = Plugin.AssetBundle.LoadAsset<GameObject>("VNEI");
-            GameObject root = Instantiate(prefab, GUIManager.CustomGUIFront.transform);
+            Instantiate(prefab, GUIManager.CustomGUIFront.transform);
         }
 
         private void Awake() {
-            BuildUI();
+            Instance = this;
+            root.gameObject.SetActive(false);
         }
 
-        private void BuildUI() {
-            foreach (Item item in Indexing.Items) {
-                GameObject sprite = Instantiate(prefab, panel);
-                sprite.GetComponent<Image>().sprite = item.icons.FirstOrDefault();
-                sprite.GetComponentInChildren<MouseHover>().SetText(item.localizedName);
+        private void Update() {
+            if (Input.GetKeyDown(KeyCode.F3)) {
+                root.gameObject.SetActive(!root.gameObject.activeSelf);
             }
+
+            if (Input.GetKeyDown(KeyCode.F4)) {
+                ShowSearch();
+            }
+        }
+
+        private void HideAll() {
+            SearchUI.Instance.gameObject.SetActive(false);
+            RecipeUI.Instance.gameObject.SetActive(false);
+        }
+
+        public void ShowSearch() {
+            HideAll();
+            SearchUI.Instance.gameObject.SetActive(true);
+        }
+
+        public void ShowRecipe() {
+            HideAll();
+            RecipeUI.Instance.gameObject.SetActive(true);
         }
     }
 }
