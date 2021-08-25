@@ -79,6 +79,9 @@
         <Reference Include="UnityEngine.UIElementsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
             <HintPath>$(VALHEIM_INSTALL)\unstripped_corlib\UnityEngine.UIElementsModule.dll</HintPath>
         </Reference>
+        <Reference Include="UnityEngine.TextRenderingModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+            <HintPath>$(VALHEIM_INSTALL)\unstripped_corlib\UnityEngine.TextRenderingModule.dll</HintPath>
+        </Reference>
         <Reference Include="System" />
         <Reference Include="System.Core" />
         <Reference Include="System.Data" />
@@ -95,6 +98,7 @@
         <Compile Include="UI\MouseHover.cs" />
         <Compile Include="UI\RecipeUI.cs" />
         <Compile Include="UI\SearchUI.cs" />
+        <Compile Include="UI\Styling.cs" />
     </ItemGroup>
     <ItemGroup>
       <Folder Include="Patches" />

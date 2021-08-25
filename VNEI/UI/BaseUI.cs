@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using VNEI.Logic;
 
 namespace VNEI.UI {
+    [DefaultExecutionOrder(5)]
     public class BaseUI : MonoBehaviour {
         public static BaseUI Instance { get; private set; }
 
@@ -23,7 +24,12 @@ namespace VNEI.UI {
 
         private void Awake() {
             Instance = this;
+            ShowSearch();
             root.gameObject.SetActive(false);
+
+            Styling.ApplyAllComponents(root);
+            Styling.ApplyWoodpanel(root.GetComponent<Image>());
+            Styling.ApplyLocalization(root);
         }
 
         private void Update() {
