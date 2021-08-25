@@ -31,6 +31,7 @@ namespace VNEI.UI {
 
         public static void ApplyWoodpanel(Image image) {
             image.sprite = GUIManager.Instance.GetSprite("woodpanel_trophys");
+            image.color = new Color(.6f, .6f, .6f);
         }
 
         public static void ApplyText(Text text, Font font, Color color) {
@@ -45,7 +46,7 @@ namespace VNEI.UI {
         }
 
         public static void ApplyAllDarken(Transform root) {
-            foreach (Image image in root.GetComponentsInChildren<Image>()) {
+            foreach (Image image in root.GetComponentsInChildren<Image>(true)) {
                 if (image.gameObject.name == "Darken") {
                     image.sprite = GUIManager.Instance.GetSprite("darken_blob");
                     image.color = Color.white;
@@ -54,7 +55,7 @@ namespace VNEI.UI {
         }
 
         public static void ApplyAllSunken(Transform root) {
-            foreach (Image image in root.GetComponentsInChildren<Image>()) {
+            foreach (Image image in root.GetComponentsInChildren<Image>(true)) {
                 if (image.gameObject.name == "Sunken") {
                     image.sprite = GUIManager.Instance.GetSprite("sunken");
                     image.color = Color.white;
