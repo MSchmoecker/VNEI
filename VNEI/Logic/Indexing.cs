@@ -37,15 +37,42 @@ namespace VNEI.Logic {
                 }
             }
 
-            Log.LogInfo("Recipes: " + ObjectDB.instance.m_recipes.Count);
+            Log.LogInfo("Index Recipes: " + ObjectDB.instance.m_recipes.Count);
             foreach (Recipe recipe in ObjectDB.instance.m_recipes) {
                 if (recipe.m_item && Items.ContainsKey(recipe.m_item.name.GetStableHashCode())) {
-                    Items[recipe.m_item.name.GetStableHashCode()].result.Add(recipe);
+                    Items[recipe.m_item.name.GetStableHashCode()].result.Add(new RecipeInfo(recipe));
                 }
 
                 foreach (Piece.Requirement resource in recipe.m_resources) {
                     if (resource.m_resItem && Items.ContainsKey(resource.m_resItem.name.GetStableHashCode())) {
-                        Items[resource.m_resItem.name.GetStableHashCode()].ingredient.Add(recipe);
+                        Items[resource.m_resItem.name.GetStableHashCode()].ingredient.Add(new RecipeInfo(recipe));
+                    }
+                }
+            }
+
+            Log.LogInfo("Index Smelter");
+            foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
+                if (prefab.TryGetComponent(out Smelter smelter)) {
+                    foreach (Smelter.ItemConversion conversion in smelter.m_conversion) {
+                        if ((bool)conversion.m_from) {
+                            if (Items.ContainsKey(conversion.m_from.name.GetStableHashCode())) {
+                                Items[conversion.m_from.name.GetStableHashCode()].result.Add(new RecipeInfo(conversion));
+                            } else {
+                                Log.LogInfo($"item not in index! {conversion.m_from.name}");
+                            }
+                        } else {
+                            Log.LogInfo($"conversion from is null: {smelter.name}");
+                        }
+
+                        if ((bool)conversion.m_to) {
+                            if (Items.ContainsKey(conversion.m_to.name.GetStableHashCode())) {
+                                Items[conversion.m_to.name.GetStableHashCode()].result.Add(new RecipeInfo(conversion));
+                            } else {
+                                Log.LogInfo($"item not in index! {conversion.m_to.name}");
+                            }
+                        } else {
+                            Log.LogInfo($"conversion to is null: {smelter.name}");
+                        }
                     }
                 }
             }

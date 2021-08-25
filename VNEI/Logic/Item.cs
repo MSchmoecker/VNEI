@@ -9,7 +9,7 @@ namespace VNEI.Logic {
         public Sprite[] icons;
         public GameObject gameObject;
 
-        public List<Recipe> result = new List<Recipe>();
-        public List<Recipe> ingredient = new List<Recipe>();
+        public List<RecipeInfo> result = new List<RecipeInfo>();
+        public List<RecipeInfo> ingredient = new List<RecipeInfo>();
     }
 }
