@@ -17,7 +17,7 @@ namespace VNEI.Logic {
                 return itemDrop.m_itemData.GetTooltip();
             }
 
-            return "";
+            return description;
         }
     }
 }

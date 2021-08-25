@@ -10,6 +10,9 @@ namespace VNEI.UI {
 
         [SerializeField] public RectTransform results;
         [SerializeField] public RectTransform ingredients;
+        [SerializeField] public Image infoIcon;
+        [SerializeField] public Text infoName;
+        [SerializeField] public Text infoDescription;
 
         private Item currentItem;
 
@@ -35,6 +38,10 @@ namespace VNEI.UI {
             foreach (RecipeInfo recipe in item.ingredient) {
                 SpawnRecipe(recipe, ingredients);
             }
+
+            infoIcon.sprite = currentItem.icons.FirstOrDefault();
+            infoName.text = currentItem.localizedName;
+            infoDescription.text = Localization.instance.Localize(currentItem.GetTooltip());
         }
 
         public void SpawnRecipe(RecipeInfo recipe, RectTransform root) {
