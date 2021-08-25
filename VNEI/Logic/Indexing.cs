@@ -35,6 +35,18 @@ namespace VNEI.Logic {
 
                     Items.Add(item.internalName.GetStableHashCode(), item);
                 }
+
+                if (prefab.TryGetComponent(out Character character)) {
+                    Item item = new Item() {
+                        internalName = prefab.name,
+                        localizedName = Localization.instance.Localize(character.m_name),
+                        description = "",
+                        icons = Array.Empty<Sprite>(),
+                        gameObject = prefab
+                    };
+
+                    Items.Add(item.internalName.GetStableHashCode(), item);
+                }
             }
 
             Log.LogInfo("Index Recipes: " + ObjectDB.instance.m_recipes.Count);
@@ -124,7 +136,14 @@ namespace VNEI.Logic {
                     }
                 }
 
-                // TODO Monster Drops
+                if (prefab.TryGetComponent(out CharacterDrop characterDrop) && prefab.TryGetComponent(out Character character)) {
+                    Items[prefab.name.GetStableHashCode()].ingredient.Add(new RecipeInfo(character, characterDrop.m_drops));
+
+                    foreach (CharacterDrop.Drop drop in characterDrop.m_drops) {
+                        Items[drop.m_prefab.name.GetStableHashCode()].result.Add(new RecipeInfo(character, characterDrop.m_drops));
+                    }
+                }
+
                 // TODO Source Station listing
                 // TODO Hammer crafting
             }

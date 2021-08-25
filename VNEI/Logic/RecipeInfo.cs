@@ -52,5 +52,13 @@ namespace VNEI.Logic {
                 result.Add(Indexing.Items[conversion.m_to.name.GetStableHashCode()]);
             }
         }
+
+        public RecipeInfo(Character character, List<CharacterDrop.Drop> characterDrops) {
+            ingredient.Add(Indexing.Items[character.name.GetStableHashCode()]);
+
+            foreach (CharacterDrop.Drop drop in characterDrops) {
+                result.Add(Indexing.Items[drop.m_prefab.name.GetStableHashCode()]);
+            }
+        }
     }
 }
