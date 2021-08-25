@@ -14,6 +14,7 @@ namespace VNEI.UI {
         [SerializeField] private RectTransform root;
         [SerializeField] public GameObject itemPrefab;
         [SerializeField] public GameObject rowPrefab;
+        [SerializeField] public GameObject arrowPrefab;
 
         public static void Create() {
             GameObject prefab = Plugin.AssetBundle.LoadAsset<GameObject>("VNEI");

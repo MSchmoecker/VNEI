@@ -126,6 +126,7 @@ namespace VNEI.Logic {
 
                 // TODO Monster Drops
                 // TODO Source Station listing
+                // TODO Hammer crafting
             }
 
             IndexFinished?.Invoke();

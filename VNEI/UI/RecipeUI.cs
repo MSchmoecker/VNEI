@@ -40,12 +40,14 @@ namespace VNEI.UI {
         public void SpawnRecipe(RecipeInfo recipe, RectTransform root) {
             GameObject row = Instantiate(BaseUI.Instance.rowPrefab, root);
 
-            foreach (Item result in recipe.result) {
-                SpawnItem(result, row.GetComponent<RectTransform>());
-            }
-
             foreach (Item ingredient in recipe.ingredient) {
                 SpawnItem(ingredient, row.GetComponent<RectTransform>());
+            }
+
+            Instantiate(BaseUI.Instance.arrowPrefab, row.GetComponent<RectTransform>());
+
+            foreach (Item result in recipe.result) {
+                SpawnItem(result, row.GetComponent<RectTransform>());
             }
         }
 
