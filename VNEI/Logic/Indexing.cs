@@ -68,7 +68,7 @@ namespace VNEI.Logic {
                     foreach (Smelter.ItemConversion conversion in smelter.m_conversion) {
                         if ((bool)conversion.m_from) {
                             if (Items.ContainsKey(conversion.m_from.name.GetStableHashCode())) {
-                                Items[conversion.m_from.name.GetStableHashCode()].result.Add(new RecipeInfo(conversion));
+                                Items[conversion.m_from.name.GetStableHashCode()].ingredient.Add(new RecipeInfo(conversion));
                             } else {
                                 Log.LogInfo($"item not in index! {conversion.m_from.name}");
                             }
@@ -92,7 +92,7 @@ namespace VNEI.Logic {
                     foreach (Fermenter.ItemConversion conversion in fermenter.m_conversion) {
                         if ((bool)conversion.m_from) {
                             if (Items.ContainsKey(conversion.m_from.name.GetStableHashCode())) {
-                                Items[conversion.m_from.name.GetStableHashCode()].result.Add(new RecipeInfo(conversion));
+                                Items[conversion.m_from.name.GetStableHashCode()].ingredient.Add(new RecipeInfo(conversion));
                             } else {
                                 Log.LogInfo($"item not in index! {conversion.m_from.name}");
                             }
@@ -116,7 +116,7 @@ namespace VNEI.Logic {
                     foreach (CookingStation.ItemConversion conversion in cookingStation.m_conversion) {
                         if ((bool)conversion.m_from) {
                             if (Items.ContainsKey(conversion.m_from.name.GetStableHashCode())) {
-                                Items[conversion.m_from.name.GetStableHashCode()].result.Add(new RecipeInfo(conversion));
+                                Items[conversion.m_from.name.GetStableHashCode()].ingredient.Add(new RecipeInfo(conversion));
                             } else {
                                 Log.LogInfo($"item not in index! {conversion.m_from.name}");
                             }
