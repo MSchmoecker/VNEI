@@ -16,6 +16,7 @@ namespace VNEI.UI {
         [SerializeField] public GameObject itemPrefab;
         [SerializeField] public GameObject rowPrefab;
         [SerializeField] public GameObject arrowPrefab;
+        private bool blockInput;
 
         public static void Create() {
             GameObject prefab = Plugin.AssetBundle.LoadAsset<GameObject>("VNEI");
@@ -39,6 +40,14 @@ namespace VNEI.UI {
 
             if (Input.GetKeyDown(KeyCode.F4)) {
                 ShowSearch();
+            }
+
+            if (SearchUI.Instance.searchField.isFocused && !blockInput) {
+                GUIManager.BlockInput(true);
+                blockInput = true;
+            } else if (!SearchUI.Instance.searchField.isFocused && blockInput) {
+                GUIManager.BlockInput(false);
+                blockInput = false;
             }
         }
 

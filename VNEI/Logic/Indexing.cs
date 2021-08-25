@@ -145,7 +145,6 @@ namespace VNEI.Logic {
                 }
 
                 // TODO Source Station listing
-                // TODO Search
             }
 
             foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
