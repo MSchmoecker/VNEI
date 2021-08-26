@@ -1,10 +1,12 @@
 ﻿using Jotunn.Managers;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 using VNEI.Logic;
 
 namespace VNEI.UI {
     public class MouseHover : MonoBehaviour, IPointerClickHandler {
+        public Image image;
         public Item item;
 
         private void Awake() {

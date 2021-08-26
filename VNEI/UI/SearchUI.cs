@@ -23,6 +23,9 @@ namespace VNEI.UI {
                 sprite.GetComponentInChildren<MouseHover>().SetItem(item.Value);
                 sprites.Add(sprite.GetComponent<MouseHover>());
             }
+
+            scrollRect.onValueChanged.AddListener(UpdateInvisible);
+            UpdateInvisible(Vector2.zero);
         }
 
         public void UpdateSearch() {
@@ -32,6 +35,19 @@ namespace VNEI.UI {
                 bool isSearched = mouseHover.item.localizedName.IndexOf(searchField.text, StringComparison.OrdinalIgnoreCase) >= 0;
                 isSearched = isSearched || mouseHover.item.internalName.IndexOf(searchField.text, StringComparison.OrdinalIgnoreCase) >= 0;
                 mouseHover.gameObject.SetActive(isSearched);
+            }
+
+            UpdateInvisible(Vector2.zero);
+        }
+
+        public void UpdateInvisible(Vector2 slider) {
+            Rect rect = ((RectTransform)scrollRect.transform).rect;
+            Vector2 scrollPos = scrollRect.content.anchoredPosition;
+
+            foreach (MouseHover sprite in sprites) {
+                float posY = ((RectTransform)sprite.transform).anchoredPosition.y;
+                bool invisible = posY > -scrollPos.y + 40 || posY < -scrollPos.y - rect.height - 40;
+                sprite.image.enabled = !invisible;
             }
         }
     }
