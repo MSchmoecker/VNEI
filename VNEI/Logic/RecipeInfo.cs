@@ -17,7 +17,7 @@ namespace VNEI.Logic {
 
             foreach (Piece.Requirement resource in recipe.m_resources) {
                 if ((bool)resource.m_resItem) {
-                    int key = Indexing.GetRequirementName(resource).GetStableHashCode();
+                    int key = Indexing.CleanupName(resource.m_resItem.name).GetStableHashCode();
                     if (Indexing.Items.ContainsKey(key)) {
                         ingredient.Add(Indexing.Items[key]);
                     } else {
@@ -72,7 +72,7 @@ namespace VNEI.Logic {
 
             foreach (Piece.Requirement requirement in requirements) {
                 if ((bool)requirement.m_resItem) {
-                    int key = Indexing.GetRequirementName(requirement).GetStableHashCode();
+                    int key = Indexing.CleanupName(requirement.m_resItem.name).GetStableHashCode();
                     if (Indexing.Items.ContainsKey(key)) {
                         ingredient.Add(Indexing.Items[key]);
                     } else {
