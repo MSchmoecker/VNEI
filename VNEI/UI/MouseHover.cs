@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using VNEI.Logic;
 
 namespace VNEI.UI {
+    // TODO rename class
     public class MouseHover : MonoBehaviour, IPointerClickHandler {
         public Image image;
         public Item item;

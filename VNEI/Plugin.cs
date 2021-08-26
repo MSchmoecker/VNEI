@@ -37,7 +37,6 @@ namespace VNEI {
 
             AssetBundle = AssetUtils.LoadAssetBundleFromResources("VNEI_AssetBundle", Assembly.GetExecutingAssembly());
 
-            PrefabManager.OnPrefabsRegistered += Indexing.IndexAll;
             GUIManager.OnCustomGUIAvailable += BaseUI.Create;
         }
 

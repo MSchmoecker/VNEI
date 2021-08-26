@@ -9,7 +9,9 @@ namespace VNEI.Logic {
         public static event Action IndexFinished;
 
         public static void IndexAll() {
-            PrefabManager.OnPrefabsRegistered -= IndexAll;
+            if (Items.Count > 0) {
+                return;
+            }
 
             Log.LogInfo("Index prefabs");
             foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
@@ -88,7 +90,7 @@ namespace VNEI.Logic {
                     foreach (GameObject grownPrefab in plant.m_grownPrefabs) {
                         if (grownPrefab.TryGetComponent(out Pickable pickable)) {
                             RecipeInfo recipeInfo = new RecipeInfo(piece, pickable);
-                            if(!recipeInfo.IngredientsAndResultSame()) {
+                            if (!recipeInfo.IngredientsAndResultSame()) {
                                 AddIngredientToItem(prefab.name, recipeInfo);
                                 AddResultToItem(pickable.m_itemPrefab.name, recipeInfo);
                             }
@@ -96,6 +98,8 @@ namespace VNEI.Logic {
                     }
                 }
             }
+
+            Log.LogInfo($"Loaded {Items.Count} items");
 
             IndexFinished?.Invoke();
         }

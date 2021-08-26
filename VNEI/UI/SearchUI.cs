@@ -16,7 +16,10 @@ namespace VNEI.UI {
 
         public void Awake() {
             Instance = this;
+            Indexing.IndexFinished += Init;
+        }
 
+        public void Init() {
             foreach (KeyValuePair<int, Item> item in Indexing.Items) {
                 GameObject sprite = Instantiate(BaseUI.Instance.itemPrefab, scrollRect.content);
                 sprite.GetComponent<Image>().sprite = item.Value.icons.FirstOrDefault();
@@ -49,6 +52,10 @@ namespace VNEI.UI {
                 bool invisible = posY > -scrollPos.y + 40 || posY < -scrollPos.y - rect.height - 40;
                 sprite.image.enabled = !invisible;
             }
+        }
+
+        private void OnDestroy() {
+            Indexing.IndexFinished -= Init;
         }
     }
 }
