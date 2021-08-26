@@ -56,7 +56,8 @@ namespace VNEI.Logic {
 
                 if (prefab.TryGetComponent(out CookingStation cookingStation)) {
                     foreach (CookingStation.ItemConversion conversion in cookingStation.m_conversion) {
-                        AddConversionRecipe(conversion.m_from, conversion.m_to, new RecipeInfo(conversion, cookingStation.name), cookingStation.name);
+                        AddConversionRecipe(conversion.m_from, conversion.m_to, new RecipeInfo(conversion, cookingStation.name),
+                                            cookingStation.name);
                     }
                 }
 
@@ -82,17 +83,36 @@ namespace VNEI.Logic {
                         AddIngredientToItem(resource.m_resItem.name, recipeInfo);
                     }
                 }
+
+                if ((bool)piece && prefab.TryGetComponent(out Plant plant)) {
+                    foreach (GameObject grownPrefab in plant.m_grownPrefabs) {
+                        if (grownPrefab.TryGetComponent(out Pickable pickable)) {
+                            RecipeInfo recipeInfo = new RecipeInfo(piece, pickable);
+                            if(!recipeInfo.IngredientsAndResultSame()) {
+                                AddIngredientToItem(prefab.name, recipeInfo);
+                                AddResultToItem(pickable.m_itemPrefab.name, recipeInfo);
+                            }
+                        }
+                    }
+                }
             }
 
             IndexFinished?.Invoke();
         }
 
         private static void AddItem(string name, string localizeName, string description, Sprite[] icons, GameObject prefab) {
+            if (Plugin.fixPlants.Value) {
+                if (name.ToLower().Contains("sapling_") && !name.ToLower().Contains("seed")) {
+                    return;
+                }
+            }
+
             int key = CleanupName(name).GetStableHashCode();
             Item item;
 
             if (Items.ContainsKey(key)) {
                 item = Items[key];
+                Log.LogInfo($"Items contains key already: {CleanupName(name)}");
             } else {
                 item = new Item();
                 Items.Add(key, item);
@@ -111,7 +131,7 @@ namespace VNEI.Logic {
             if (Items.ContainsKey(key)) {
                 Items[key].result.Add(recipeInfo);
             } else {
-                Log.LogInfo($"cannot add recipeInfo {recipeInfo.name} to result, {name} is not indexed");
+                Log.LogInfo($"cannot add recipeInfo {recipeInfo.name} to result, {CleanupName(name)} is not indexed");
             }
         }
 
@@ -140,7 +160,13 @@ namespace VNEI.Logic {
         }
 
         public static string CleanupName(string name) {
-            return name.Replace("JVLmock_", "");
+            name = name.Replace("JVLmock_", "");
+
+            if (Plugin.fixPlants.Value) {
+                name = name.Replace("sapling_", "");
+            }
+
+            return name.ToLower();
         }
     }
 }

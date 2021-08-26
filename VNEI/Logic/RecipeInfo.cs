@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace VNEI.Logic {
@@ -71,6 +72,15 @@ namespace VNEI.Logic {
             foreach (Piece.Requirement requirement in requirements) {
                 AddIngredient(requirement.m_resItem, i => i.name, prefab.name);
             }
+        }
+
+        public RecipeInfo(Piece piece, Pickable pickable) {
+            AddIngredient(piece, i => i.name, piece.name);
+            AddResult(pickable.m_itemPrefab, i => i.name, pickable.name);
+        }
+
+        public bool IngredientsAndResultSame() {
+            return ingredient.SequenceEqual(result);
         }
     }
 }
