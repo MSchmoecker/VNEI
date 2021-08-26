@@ -13,6 +13,14 @@ namespace VNEI.Logic {
         public List<RecipeInfo> result = new List<RecipeInfo>();
         public List<RecipeInfo> ingredient = new List<RecipeInfo>();
 
+        public string GetName() {
+            return localizedName + Environment.NewLine + $"({internalName})";
+        }
+
+        public string GetDescription() {
+            return description;
+        }
+
         public string GetTooltip() {
             if ((bool)gameObject && gameObject.TryGetComponent(out ItemDrop itemDrop)) {
                 return itemDrop.m_itemData.GetTooltip();

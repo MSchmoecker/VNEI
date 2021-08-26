@@ -40,8 +40,8 @@ namespace VNEI.UI {
             }
 
             infoIcon.sprite = currentItem.icons.FirstOrDefault();
-            infoName.text = currentItem.localizedName;
-            infoDescription.text = Localization.instance.Localize(currentItem.GetTooltip());
+            infoName.text = currentItem.GetName();
+            infoDescription.text = Localization.instance.Localize(currentItem.GetDescription());
         }
 
         public void SpawnRecipe(RecipeInfo recipe, RectTransform root) {
