@@ -13,39 +13,16 @@ namespace VNEI.Logic {
 
             foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
                 if (prefab.TryGetComponent(out Piece piece)) {
-                    Item item = new Item() {
-                        internalName = prefab.name,
-                        localizedName = Localization.instance.Localize(piece.m_name),
-                        description = piece.m_description,
-                        icons = new[] { piece.m_icon },
-                        gameObject = prefab
-                    };
-
-                    Items.Add(item.internalName.GetStableHashCode(), item);
+                    AddItem(prefab.name, piece.m_name, piece.m_description, new[] { piece.m_icon }, prefab);
                 }
 
                 if (prefab.TryGetComponent(out ItemDrop itemDrop)) {
-                    Item item = new Item() {
-                        internalName = prefab.name,
-                        localizedName = Localization.instance.Localize(itemDrop.m_itemData.m_shared.m_name),
-                        description = itemDrop.m_itemData.m_shared.m_description,
-                        icons = itemDrop.m_itemData.m_shared.m_icons,
-                        gameObject = prefab
-                    };
-
-                    Items.Add(item.internalName.GetStableHashCode(), item);
+                    AddItem(prefab.name, itemDrop.m_itemData.m_shared.m_name, itemDrop.m_itemData.m_shared.m_description,
+                            itemDrop.m_itemData.m_shared.m_icons, prefab);
                 }
 
                 if (prefab.TryGetComponent(out Character character)) {
-                    Item item = new Item() {
-                        internalName = prefab.name,
-                        localizedName = Localization.instance.Localize(character.m_name),
-                        description = "",
-                        icons = Array.Empty<Sprite>(),
-                        gameObject = prefab
-                    };
-
-                    Items.Add(item.internalName.GetStableHashCode(), item);
+                    AddItem(prefab.name, character.m_name, string.Empty, Array.Empty<Sprite>(), prefab);
                 }
             }
 
@@ -165,6 +142,24 @@ namespace VNEI.Logic {
             }
 
             IndexFinished?.Invoke();
+        }
+
+        private static void AddItem(string name, string localizeName, string description, Sprite[] icons, GameObject prefab) {
+            int key = name.GetStableHashCode();
+            Item item;
+
+            if (Items.ContainsKey(key)) {
+                item = Items[key];
+            } else {
+                item = new Item();
+                Items.Add(key, item);
+            }
+
+            item.internalName = prefab.name;
+            item.localizedName = localizeName.Length > 0 ? Localization.instance.Localize(localizeName) : item.localizedName;
+            item.description = description.Length > 0 ? description : item.description;
+            item.icons = icons != null && icons.Length > 0 ? icons : item.icons;
+            item.gameObject = prefab;
         }
 
         public static string GetRequirementName(Piece.Requirement requirement) {

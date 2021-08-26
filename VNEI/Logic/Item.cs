@@ -1,12 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace VNEI.Logic {
     public class Item {
-        public string internalName;
-        public string localizedName;
-        public string description;
-        public Sprite[] icons;
+        public string internalName = string.Empty;
+        public string localizedName = string.Empty;
+        public string description = string.Empty;
+        public Sprite[] icons = Array.Empty<Sprite>();
         public GameObject gameObject;
 
         public List<RecipeInfo> result = new List<RecipeInfo>();
