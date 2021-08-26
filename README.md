@@ -38,3 +38,8 @@ Now you can run `deploy.sh`, this will copy the plugin to your plugin folder as 
 
 If you want to rebuild the asset bundle, open Unity with the project loaded and having `deploy.sh` runned.
 This copies the current plugin and all assemblies to Unity. Now you can run `Assets/Build AssetBundles` at the toolbar, this also copies the asset bundle back to the C# project.
+
+
+## Changelog
+0.0.1
+- Release
