@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Jotunn.Managers;
 using UnityEngine;
 using UnityEngine.UI;
 using VNEI.Logic;
@@ -47,22 +49,26 @@ namespace VNEI.UI {
         public void SpawnRecipe(RecipeInfo recipe, RectTransform root) {
             GameObject row = Instantiate(BaseUI.Instance.rowPrefab, root);
 
-            foreach (Item ingredient in recipe.ingredient) {
+            foreach (KeyValuePair<Item, RecipeInfo.Amount> ingredient in recipe.ingredient) {
                 SpawnItem(ingredient, row.GetComponent<RectTransform>());
             }
 
             Instantiate(BaseUI.Instance.arrowPrefab, row.GetComponent<RectTransform>());
 
-            foreach (Item result in recipe.result) {
+            foreach (KeyValuePair<Item, RecipeInfo.Amount> result in recipe.result) {
                 SpawnItem(result, row.GetComponent<RectTransform>());
             }
         }
 
-        void SpawnItem(Item item, RectTransform root) {
+        void SpawnItem(KeyValuePair<Item, RecipeInfo.Amount> item, RectTransform root) {
             GameObject spawnedItem = Instantiate(BaseUI.Instance.itemPrefab, root);
 
-            spawnedItem.GetComponent<MouseHover>().SetItem(item);
-            spawnedItem.GetComponent<Image>().sprite = item.icons.FirstOrDefault();
+            spawnedItem.GetComponent<MouseHover>().SetItem(item.Key);
+            spawnedItem.GetComponent<Image>().sprite = item.Key.icons.FirstOrDefault();
+            Text count = spawnedItem.transform.Find("Count").GetComponent<Text>();
+            count.text = item.Value.ToString();
+            count.gameObject.SetActive(true);
+            Styling.ApplyText(count, GUIManager.Instance.AveriaSerif, Color.white);
         }
     }
 }

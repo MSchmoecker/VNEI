@@ -6,7 +6,7 @@ namespace VNEI.UI {
     public class Styling {
         public static void ApplyAllComponents(Transform root) {
             foreach (Text text in root.GetComponentsInChildren<Text>(true)) {
-                ApplyText(text, GUIManager.Instance.AveriaSerif, new Color(219f / 255f, 219f / 255f, 219f / 255f));
+                ApplyText(text, GUIManager.Instance.AveriaSerif, Color.white);
             }
 
             foreach (InputField inputField in root.GetComponentsInChildren<InputField>(true)) {
