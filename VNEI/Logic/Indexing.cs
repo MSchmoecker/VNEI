@@ -11,6 +11,7 @@ namespace VNEI.Logic {
         public static void IndexAll() {
             PrefabManager.OnPrefabsRegistered -= IndexAll;
 
+            Log.LogInfo("Index prefabs");
             foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
                 if (prefab.TryGetComponent(out Piece piece)) {
                     AddItem(prefab.name, piece.m_name, piece.m_description, new[] { piece.m_icon }, prefab);
@@ -39,53 +40,23 @@ namespace VNEI.Logic {
                 }
             }
 
-            Log.LogInfo("Index Smelter, Fermenter, CookingStation");
+            Log.LogInfo("Index Smelter, Fermenter, CookingStation, CharacterDrop");
             foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
                 if (prefab.TryGetComponent(out Smelter smelter)) {
                     foreach (Smelter.ItemConversion conversion in smelter.m_conversion) {
-                        if ((bool)conversion.m_from) {
-                            AddIngredientToItem(conversion.m_from.name, new RecipeInfo(conversion));
-                        } else {
-                            Log.LogInfo($"conversion from is null: {smelter.name}");
-                        }
-
-                        if ((bool)conversion.m_to) {
-                            AddResultToItem(conversion.m_to.name, new RecipeInfo(conversion));
-                        } else {
-                            Log.LogInfo($"conversion to is null: {smelter.name}");
-                        }
+                        AddConversionRecipe(conversion.m_from, conversion.m_to, new RecipeInfo(conversion), smelter.name);
                     }
                 }
 
                 if (prefab.TryGetComponent(out Fermenter fermenter)) {
                     foreach (Fermenter.ItemConversion conversion in fermenter.m_conversion) {
-                        if ((bool)conversion.m_from) {
-                            AddIngredientToItem(conversion.m_from.name, new RecipeInfo(conversion));
-                        } else {
-                            Log.LogInfo($"conversion from is null: {fermenter.name}");
-                        }
-
-                        if ((bool)conversion.m_to) {
-                            AddResultToItem(conversion.m_to.name, new RecipeInfo(conversion));
-                        } else {
-                            Log.LogInfo($"conversion to is null: {fermenter.name}");
-                        }
+                        AddConversionRecipe(conversion.m_from, conversion.m_to, new RecipeInfo(conversion), fermenter.name);
                     }
                 }
 
                 if (prefab.TryGetComponent(out CookingStation cookingStation)) {
                     foreach (CookingStation.ItemConversion conversion in cookingStation.m_conversion) {
-                        if ((bool)conversion.m_from) {
-                            AddIngredientToItem(conversion.m_from.name, new RecipeInfo(conversion));
-                        } else {
-                            Log.LogInfo($"conversion from is null: {cookingStation.name}");
-                        }
-
-                        if ((bool)conversion.m_to) {
-                            AddResultToItem(conversion.m_to.name, new RecipeInfo(conversion));
-                        } else {
-                            Log.LogInfo($"conversion to is null: {cookingStation.name}");
-                        }
+                        AddConversionRecipe(conversion.m_from, conversion.m_to, new RecipeInfo(conversion), cookingStation.name);
                     }
                 }
 
@@ -101,6 +72,7 @@ namespace VNEI.Logic {
                 // TODO Source Station listing
             }
 
+            Log.LogInfo("Index prefabs Recipes");
             foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
                 if (prefab.TryGetComponent(out Piece piece)) {
                     RecipeInfo recipeInfo = new RecipeInfo(prefab, piece.m_resources);
@@ -150,6 +122,20 @@ namespace VNEI.Logic {
                 Items[key].ingredient.Add(recipeInfo);
             } else {
                 Log.LogInfo($"cannot add recipeInfo {recipeInfo.name} to ingredient, {name} is not indexed");
+            }
+        }
+
+        private static void AddConversionRecipe(ItemDrop from, ItemDrop to, RecipeInfo recipeInfo, string name) {
+            if ((bool)from) {
+                AddIngredientToItem(from.name, recipeInfo);
+            } else {
+                Log.LogInfo($"conversion from is null: {name}");
+            }
+
+            if ((bool)to) {
+                AddResultToItem(to.name, recipeInfo);
+            } else {
+                Log.LogInfo($"conversion to is null: {name}");
             }
         }
 
