@@ -40,10 +40,6 @@ namespace VNEI.UI {
         }
 
         private void Update() {
-            if (Input.GetKeyDown(KeyCode.F4)) {
-                ShowSearch();
-            }
-
             if (SearchUI.Instance.searchField.isFocused && !blockInput) {
                 GUIManager.BlockInput(true);
                 blockInput = true;
