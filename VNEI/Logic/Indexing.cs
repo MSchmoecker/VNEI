@@ -44,19 +44,19 @@ namespace VNEI.Logic {
             foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
                 if (prefab.TryGetComponent(out Smelter smelter)) {
                     foreach (Smelter.ItemConversion conversion in smelter.m_conversion) {
-                        AddConversionRecipe(conversion.m_from, conversion.m_to, new RecipeInfo(conversion), smelter.name);
+                        AddConversionRecipe(conversion.m_from, conversion.m_to, new RecipeInfo(conversion, smelter.name), smelter.name);
                     }
                 }
 
                 if (prefab.TryGetComponent(out Fermenter fermenter)) {
                     foreach (Fermenter.ItemConversion conversion in fermenter.m_conversion) {
-                        AddConversionRecipe(conversion.m_from, conversion.m_to, new RecipeInfo(conversion), fermenter.name);
+                        AddConversionRecipe(conversion.m_from, conversion.m_to, new RecipeInfo(conversion, fermenter.name), fermenter.name);
                     }
                 }
 
                 if (prefab.TryGetComponent(out CookingStation cookingStation)) {
                     foreach (CookingStation.ItemConversion conversion in cookingStation.m_conversion) {
-                        AddConversionRecipe(conversion.m_from, conversion.m_to, new RecipeInfo(conversion), cookingStation.name);
+                        AddConversionRecipe(conversion.m_from, conversion.m_to, new RecipeInfo(conversion, cookingStation.name), cookingStation.name);
                     }
                 }
 
@@ -105,7 +105,7 @@ namespace VNEI.Logic {
             item.gameObject = prefab;
         }
 
-        private static void AddResultToItem(string name, RecipeInfo recipeInfo) {
+        public static void AddResultToItem(string name, RecipeInfo recipeInfo) {
             int key = CleanupName(name).GetStableHashCode();
 
             if (Items.ContainsKey(key)) {
@@ -115,7 +115,7 @@ namespace VNEI.Logic {
             }
         }
 
-        private static void AddIngredientToItem(string name, RecipeInfo recipeInfo) {
+        public static void AddIngredientToItem(string name, RecipeInfo recipeInfo) {
             int key = CleanupName(name).GetStableHashCode();
 
             if (Items.ContainsKey(key)) {
@@ -125,7 +125,7 @@ namespace VNEI.Logic {
             }
         }
 
-        private static void AddConversionRecipe(ItemDrop from, ItemDrop to, RecipeInfo recipeInfo, string name) {
+        public static void AddConversionRecipe(ItemDrop from, ItemDrop to, RecipeInfo recipeInfo, string name) {
             if ((bool)from) {
                 AddIngredientToItem(from.name, recipeInfo);
             } else {

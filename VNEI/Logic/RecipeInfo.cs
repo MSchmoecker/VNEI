@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace VNEI.Logic {
@@ -7,80 +8,68 @@ namespace VNEI.Logic {
         public List<Item> ingredient = new List<Item>();
         public List<Item> result = new List<Item>();
 
-        public RecipeInfo(Recipe recipe) {
-            name = recipe.name;
-            if ((bool)recipe.m_item) {
-                result.Add(Indexing.Items[recipe.m_item.name.GetStableHashCode()]);
+        public void AddIngredient<T>(T item, Func<T, string> getName, string context) {
+            if (item != null) {
+                int key = Indexing.CleanupName(getName(item)).GetStableHashCode();
+                if (Indexing.Items.ContainsKey(key)) {
+                    ingredient.Add(Indexing.Items[key]);
+                } else {
+                    Log.LogInfo($"cannot add item {getName(item)} to ingredient, {name} is not indexed");
+                }
             } else {
-                Log.LogInfo("ItemDrop result is null: recipe " + recipe.name);
+                Log.LogInfo("cannot add ingredient, item is null " + context);
             }
+        }
+
+        public void AddResult<T>(T item, Func<T, string> getName, string context) {
+            if (item != null) {
+                int key = Indexing.CleanupName(getName(item)).GetStableHashCode();
+                if (Indexing.Items.ContainsKey(key)) {
+                    result.Add(Indexing.Items[key]);
+                } else {
+                    Log.LogInfo($"cannot add item {getName(item)} to result, {name} is not indexed");
+                }
+            } else {
+                Log.LogInfo("cannot add result, item is null " + context);
+            }
+        }
+
+        public RecipeInfo(Recipe recipe) {
+            AddResult(recipe.m_item, i => i.name, recipe.name);
 
             foreach (Piece.Requirement resource in recipe.m_resources) {
-                if ((bool)resource.m_resItem) {
-                    int key = Indexing.CleanupName(resource.m_resItem.name).GetStableHashCode();
-                    if (Indexing.Items.ContainsKey(key)) {
-                        ingredient.Add(Indexing.Items[key]);
-                    } else {
-                        Log.LogInfo($"Recipe Piece.Requirement ingredient not indexed: {resource.m_resItem.name}");
-                    }
-                } else {
-                    Log.LogInfo("ItemDrop ingredient is null: recipe " + recipe.name);
-                }
+                AddIngredient(resource.m_resItem, i => i.name, recipe.name);
             }
         }
 
-        public RecipeInfo(Smelter.ItemConversion conversion) {
-            if ((bool)conversion.m_from) {
-                ingredient.Add(Indexing.Items[conversion.m_from.name.GetStableHashCode()]);
-            }
-
-            if ((bool)conversion.m_to) {
-                result.Add(Indexing.Items[conversion.m_to.name.GetStableHashCode()]);
-            }
+        public RecipeInfo(Smelter.ItemConversion conversion, string context) {
+            AddIngredient(conversion.m_from, i => i.name, context);
+            AddResult(conversion.m_to, i => i.name, context);
         }
 
-        public RecipeInfo(Fermenter.ItemConversion conversion) {
-            if ((bool)conversion.m_from) {
-                ingredient.Add(Indexing.Items[conversion.m_from.name.GetStableHashCode()]);
-            }
-
-            if ((bool)conversion.m_to) {
-                result.Add(Indexing.Items[conversion.m_to.name.GetStableHashCode()]);
-            }
+        public RecipeInfo(Fermenter.ItemConversion conversion, string context) {
+            AddIngredient(conversion.m_from, i => i.name, context);
+            AddResult(conversion.m_to, i => i.name, context);
         }
 
-        public RecipeInfo(CookingStation.ItemConversion conversion) {
-            if ((bool)conversion.m_from) {
-                ingredient.Add(Indexing.Items[conversion.m_from.name.GetStableHashCode()]);
-            }
-
-            if ((bool)conversion.m_to) {
-                result.Add(Indexing.Items[conversion.m_to.name.GetStableHashCode()]);
-            }
+        public RecipeInfo(CookingStation.ItemConversion conversion, string context) {
+            AddIngredient(conversion.m_from, i => i.name, context);
+            AddResult(conversion.m_to, i => i.name, context);
         }
 
         public RecipeInfo(Character character, List<CharacterDrop.Drop> characterDrops) {
-            ingredient.Add(Indexing.Items[character.name.GetStableHashCode()]);
+            AddIngredient(character, i => i.name, character.name);
 
             foreach (CharacterDrop.Drop drop in characterDrops) {
-                result.Add(Indexing.Items[drop.m_prefab.name.GetStableHashCode()]);
+                AddResult(drop.m_prefab, i => i.name, character.name);
             }
         }
 
         public RecipeInfo(GameObject prefab, Piece.Requirement[] requirements) {
-            result.Add(Indexing.Items[prefab.name.GetStableHashCode()]);
+            AddResult(prefab, i => i.name, prefab.name);
 
             foreach (Piece.Requirement requirement in requirements) {
-                if ((bool)requirement.m_resItem) {
-                    int key = Indexing.CleanupName(requirement.m_resItem.name).GetStableHashCode();
-                    if (Indexing.Items.ContainsKey(key)) {
-                        ingredient.Add(Indexing.Items[key]);
-                    } else {
-                        Log.LogInfo($"Piece ingredient not indexed: {requirement.m_resItem.name}");
-                    }
-                } else {
-                    Log.LogInfo($"Piece ingredient is null: {prefab.name}");
-                }
+                AddIngredient(requirement.m_resItem, i => i.name, prefab.name);
             }
         }
     }
