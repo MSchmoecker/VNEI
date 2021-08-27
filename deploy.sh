@@ -31,6 +31,8 @@ ModDir="$PluginFolder/$ModName"
 
 # copy to unity
 mkdir -p "$ModNameUnity/Assets/Assemblies"
+mkdir -p "$ModNameUnity/AssetBundles/StandaloneWindows"
+
 cp "$ModName/obj/Debug/$ModName.dll" "$ModNameUnity/Assets/Assemblies"
 
 cp "$VALHEIM_INSTALL/BepInEx/core/BepInEx.dll" "$ModNameUnity/Assets/Assemblies"
