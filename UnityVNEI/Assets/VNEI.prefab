@@ -814,7 +814,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Show Search
+  m_Text: $vnei_back_to_search
 --- !u!1 &2134641866653050872
 GameObject:
   m_ObjectHideFlags: 0
@@ -1723,7 +1723,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Getting
+  m_Text: $vnei_obtaining
 --- !u!1 &3988130072452020838
 GameObject:
   m_ObjectHideFlags: 0
@@ -1808,6 +1808,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5194711720149809838}
   - component: {fileID: 1812281494192956357}
+  - component: {fileID: 6550552329974087239}
   m_Layer: 5
   m_Name: VNEI
   m_TagString: Untagged
@@ -1855,6 +1856,18 @@ MonoBehaviour:
     type: 3}
   arrowPrefab: {fileID: 2636329705550010785, guid: d26ccce4c714a5b44a57e5ba20aa42ee,
     type: 3}
+--- !u!114 &6550552329974087239
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4237383375240376443}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 182242463, guid: 25db3022f3f3483429aa5b06737eb22a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4340893735040122304
 GameObject:
   m_ObjectHideFlags: 0
@@ -2501,7 +2514,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Search...
+  m_Text: $vnei_search
 --- !u!1 &5346483475590864215
 GameObject:
   m_ObjectHideFlags: 0
@@ -2615,7 +2628,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Using
+  m_Text: $vnei_using
 --- !u!1 &5522262323070215941
 GameObject:
   m_ObjectHideFlags: 0

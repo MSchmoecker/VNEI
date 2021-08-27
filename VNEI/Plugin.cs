@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
 using System.Reflection;
 using BepInEx;
 using BepInEx.Configuration;
@@ -35,6 +37,8 @@ namespace VNEI {
             harmony = new Harmony(ModGuid);
             harmony.PatchAll();
 
+            LocalizationManager.Instance.AddJson("English", LoadTextFromResources("Localization.English.json"));
+
             AssetBundle = AssetUtils.LoadAssetBundleFromResources("VNEI_AssetBundle", Assembly.GetExecutingAssembly());
 
             GUIManager.OnCustomGUIAvailable += BaseUI.Create;
@@ -42,6 +46,16 @@ namespace VNEI {
 
         private void OnDestroy() {
             harmony?.UnpatchAll(ModGuid);
+        }
+
+        public static string LoadTextFromResources(string fileName) {
+            Assembly execAssembly = Assembly.GetExecutingAssembly();
+            string resourceName = execAssembly.GetManifestResourceNames().Single(str => str.EndsWith(fileName));
+            using (Stream stream = execAssembly.GetManifestResourceStream(resourceName)) {
+                using (StreamReader reader = new StreamReader(stream)) {
+                    return reader.ReadToEnd();
+                }
+            }
         }
     }
 }
