@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Jotunn.GUI;
 using UnityEngine;
 using Jotunn.Managers;
 using UnityEngine.UI;
@@ -13,6 +14,7 @@ namespace VNEI.UI {
 
         [SerializeField] private RectTransform panel;
         [SerializeField] private RectTransform root;
+        [SerializeField] private RectTransform dragHandler;
         [SerializeField] public GameObject itemPrefab;
         [SerializeField] public GameObject rowPrefab;
         [SerializeField] public GameObject arrowPrefab;
@@ -25,10 +27,11 @@ namespace VNEI.UI {
 
         private void Awake() {
             Instance = this;
+            DragWindowCntrl.ApplyDragWindowCntrl(dragHandler.gameObject);
             ShowSearch();
 
             Styling.ApplyAllComponents(root);
-            Styling.ApplyWoodpanel(root.GetComponent<Image>());
+            Styling.ApplyWoodpanel(dragHandler.GetComponent<Image>());
             Styling.ApplyLocalization(root);
 
             if ((bool)InventoryGui.instance) {
@@ -36,6 +39,7 @@ namespace VNEI.UI {
                 ((RectTransform)transform).anchoredPosition = new Vector2(668, -45);
             } else {
                 root.gameObject.SetActive(false);
+                dragHandler.gameObject.SetActive(false);
             }
         }
 
@@ -47,6 +51,10 @@ namespace VNEI.UI {
                 GUIManager.BlockInput(false);
                 blockInput = false;
             }
+        }
+
+        private void LateUpdate() {
+            root.anchoredPosition = dragHandler.anchoredPosition;
         }
 
         private void HideAll() {
