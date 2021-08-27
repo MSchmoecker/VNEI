@@ -116,6 +116,15 @@ namespace VNEI.Logic {
             AddResult(pickable.m_itemPrefab, new Amount(pickable.m_amount), i => i.name, pickable.name);
         }
 
+        public RecipeInfo(MineRock mineRock) {
+            Amount amount = new Amount(mineRock.m_dropItems.m_dropMin, mineRock.m_dropItems.m_dropMax);
+            AddIngredient(mineRock, new Amount(1), i => i.name, mineRock.name);
+
+            foreach (DropTable.DropData drop in mineRock.m_dropItems.m_drops) {
+                AddResult(drop.m_item, amount, i => i.name, mineRock.name);
+            }
+        }
+
         public bool IngredientsAndResultSame() {
             return ingredient.SequenceEqual(result);
         }

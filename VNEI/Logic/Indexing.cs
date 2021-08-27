@@ -15,6 +15,11 @@ namespace VNEI.Logic {
 
             Log.LogInfo("Index prefabs");
             foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
+                if (!(bool)prefab) {
+                    Log.LogInfo("prefab is null!");
+                    continue;
+                }
+
                 if (prefab.TryGetComponent(out Piece piece)) {
                     AddItem(prefab.name, piece.m_name, piece.m_description, new[] { piece.m_icon }, prefab);
                 }
@@ -26,6 +31,10 @@ namespace VNEI.Logic {
 
                 if (prefab.TryGetComponent(out Character character)) {
                     AddItem(prefab.name, character.m_name, string.Empty, Array.Empty<Sprite>(), prefab);
+                }
+
+                if (prefab.TryGetComponent(out MineRock mineRock)) {
+                    AddItem(prefab.name, mineRock.m_name, string.Empty, Array.Empty<Sprite>(), prefab);
                 }
             }
 
@@ -69,6 +78,15 @@ namespace VNEI.Logic {
 
                     foreach (CharacterDrop.Drop drop in characterDrop.m_drops) {
                         AddResultToItem(drop.m_prefab.name, recipeInfo);
+                    }
+                }
+
+                if (prefab.TryGetComponent(out MineRock mineRock)) {
+                    RecipeInfo recipeInfo = new RecipeInfo(mineRock);
+
+                    AddIngredientToItem(prefab.name, recipeInfo);
+                    foreach (DropTable.DropData drop in mineRock.m_dropItems.m_drops) {
+                        AddResultToItem(drop.m_item.name, recipeInfo);
                     }
                 }
 
