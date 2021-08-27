@@ -31,6 +31,8 @@ namespace VNEI.UI {
             }
 
             scrollRect.onValueChanged.AddListener(UpdateInvisible);
+
+            LayoutRebuilder.ForceRebuildLayoutImmediate(scrollRect.content);
             UpdateInvisible(Vector2.zero);
         }
 
@@ -43,6 +45,7 @@ namespace VNEI.UI {
                 mouseHover.gameObject.SetActive(isSearched);
             }
 
+            LayoutRebuilder.ForceRebuildLayoutImmediate(scrollRect.content);
             UpdateInvisible(Vector2.zero);
         }
 
