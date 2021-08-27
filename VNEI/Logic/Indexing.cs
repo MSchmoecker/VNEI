@@ -135,7 +135,7 @@ namespace VNEI.Logic {
             if (Items.ContainsKey(key)) {
                 Items[key].result.Add(recipeInfo);
             } else {
-                Log.LogInfo($"cannot add recipeInfo {recipeInfo.name} to result, {CleanupName(name)} is not indexed");
+                Log.LogInfo($"cannot add recipe to result, '{CleanupName(name)}' is not indexed");
             }
         }
 
@@ -145,7 +145,7 @@ namespace VNEI.Logic {
             if (Items.ContainsKey(key)) {
                 Items[key].ingredient.Add(recipeInfo);
             } else {
-                Log.LogInfo($"cannot add recipeInfo {recipeInfo.name} to ingredient, {name} is not indexed");
+                Log.LogInfo($"cannot add recipe to ingredient, '{CleanupName(name)}' is not indexed");
             }
         }
 

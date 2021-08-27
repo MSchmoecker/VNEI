@@ -5,7 +5,6 @@ using UnityEngine;
 
 namespace VNEI.Logic {
     public class RecipeInfo {
-        public string name;
         public Dictionary<Item, Amount> ingredient = new Dictionary<Item, Amount>();
         public Dictionary<Item, Amount> result = new Dictionary<Item, Amount>();
 
@@ -53,10 +52,10 @@ namespace VNEI.Logic {
                 if (Indexing.Items.ContainsKey(key)) {
                     ingredient.Add(Indexing.Items[key], count);
                 } else {
-                    Log.LogInfo($"cannot add item {getName(item)} to ingredient, {name} is not indexed");
+                    Log.LogInfo($"cannot add item '{getName(item)}' to ingredient as is not indexed");
                 }
             } else {
-                Log.LogInfo("cannot add ingredient, item is null " + context);
+                Log.LogInfo($"cannot add ingredient to '{context}', item is null (uses amount {count})");
             }
         }
 
@@ -66,10 +65,10 @@ namespace VNEI.Logic {
                 if (Indexing.Items.ContainsKey(key)) {
                     result.Add(Indexing.Items[key], count);
                 } else {
-                    Log.LogInfo($"cannot add item {getName(item)} to result, {name} is not indexed");
+                    Log.LogInfo($"cannot add item '{getName(item)}' to result as is not indexed");
                 }
             } else {
-                Log.LogInfo("cannot add result, item is null " + context);
+                Log.LogInfo($"cannot add result to '{context}', item is null (uses amount {count})");
             }
         }
 
