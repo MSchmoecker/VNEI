@@ -117,11 +117,22 @@ namespace VNEI.Logic {
         }
 
         public RecipeInfo(MineRock mineRock) {
-            Amount amount = new Amount(mineRock.m_dropItems.m_dropMin, mineRock.m_dropItems.m_dropMax);
+            Amount amount = new Amount(mineRock.m_dropItems.m_dropMin, mineRock.m_dropItems.m_dropMax, mineRock.m_dropItems.m_dropChance);
             AddIngredient(mineRock, new Amount(1), i => i.name, mineRock.name);
 
             foreach (DropTable.DropData drop in mineRock.m_dropItems.m_drops) {
-                AddResult(drop.m_item, amount, i => i.name, mineRock.name);
+                AddResult(drop.m_item, new Amount(amount.min * drop.m_stackMin, amount.max * drop.m_stackMax), i => i.name, mineRock.name);
+            }
+        }
+
+        public RecipeInfo(DropOnDestroyed dropOnDestroyed) {
+            Amount amount = new Amount(dropOnDestroyed.m_dropWhenDestroyed.m_dropMin, dropOnDestroyed.m_dropWhenDestroyed.m_dropMax,
+                                       dropOnDestroyed.m_dropWhenDestroyed.m_dropChance);
+            AddIngredient(dropOnDestroyed, new Amount(1), i => i.name, dropOnDestroyed.name);
+
+            foreach (DropTable.DropData drop in dropOnDestroyed.m_dropWhenDestroyed.m_drops) {
+                AddResult(drop.m_item, new Amount(amount.min * drop.m_stackMin, amount.max * drop.m_stackMax, amount.chance), i => i.name,
+                          dropOnDestroyed.name);
             }
         }
 

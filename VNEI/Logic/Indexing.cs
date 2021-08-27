@@ -20,6 +20,11 @@ namespace VNEI.Logic {
                     continue;
                 }
 
+                string fallbackLocalizedName = string.Empty;
+                if (prefab.TryGetComponent(out HoverText hoverText)) {
+                    fallbackLocalizedName = hoverText.m_text;
+                }
+
                 if (prefab.TryGetComponent(out Piece piece)) {
                     AddItem(prefab.name, piece.m_name, piece.m_description, new[] { piece.m_icon }, prefab);
                 }
@@ -35,6 +40,10 @@ namespace VNEI.Logic {
 
                 if (prefab.TryGetComponent(out MineRock mineRock)) {
                     AddItem(prefab.name, mineRock.m_name, string.Empty, Array.Empty<Sprite>(), prefab);
+                }
+
+                if (prefab.TryGetComponent(out DropOnDestroyed dropOnDestroyed)) {
+                    AddItem(prefab.name, fallbackLocalizedName, string.Empty, Array.Empty<Sprite>(), prefab);
                 }
             }
 
@@ -86,6 +95,15 @@ namespace VNEI.Logic {
 
                     ItemUsedInRecipe(prefab.name, recipeInfo);
                     foreach (DropTable.DropData drop in mineRock.m_dropItems.m_drops) {
+                        ItemObtainedInRecipe(drop.m_item.name, recipeInfo);
+                    }
+                }
+
+                if (prefab.TryGetComponent(out DropOnDestroyed dropOnDestroyed)) {
+                    RecipeInfo recipeInfo = new RecipeInfo(dropOnDestroyed);
+                    ItemUsedInRecipe(prefab.name, recipeInfo);
+
+                    foreach (DropTable.DropData drop in dropOnDestroyed.m_dropWhenDestroyed.m_drops) {
                         ItemObtainedInRecipe(drop.m_item.name, recipeInfo);
                     }
                 }
