@@ -17,7 +17,11 @@ namespace VNEI.UI {
 
         public void SetItem(Item item) {
             this.item = item;
-            GetComponent<UITooltip>().Set(item.localizedName, item.GetTooltip());
+
+            string topic = item.localizedName.Length > 0 ? item.localizedName : item.internalName;
+            string tooltip = item.GetTooltip();
+            tooltip = tooltip.Length > 0 ? tooltip : item.description;
+            GetComponent<UITooltip>().Set(topic, tooltip);
         }
 
         public void OnPointerClick(PointerEventData eventData) {
