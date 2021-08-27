@@ -9,8 +9,12 @@ If items or recipes from other mods are missing, please contact me.
 ![crafting](https://raw.githubusercontent.com/MSchmoecker/VNEI/master/Docs/CarrotCrafting.png)
 
 ## Installation
-This mod requiers BepInEx and Jötunn.\
+This mod requiers BepInEx and Jötunn.
+
 Extract the content of `VNEI` into the `BepInEx/plugins` folder.
+
+This is a client side mod and not everyone has to use it if you are playing in multiplayer.
+
 
 ## Development
 BepInEx must be setup at manual or with r2modman/Thunderstore Mod Manager.
@@ -41,5 +45,11 @@ This copies the current plugin and all assemblies to Unity. Now you can run `Ass
 
 
 ## Changelog
+0.0.2
+- made the window draggable
+- added placeholder sprite when there is no icon
+- fixed the tooltip was rendered under on the right side of the UI
+- improved logging. maybe
+
 0.0.1
 - Release
