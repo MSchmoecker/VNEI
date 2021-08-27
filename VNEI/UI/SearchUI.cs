@@ -22,9 +22,12 @@ namespace VNEI.UI {
         public void Init() {
             foreach (KeyValuePair<int, Item> item in Indexing.Items) {
                 GameObject sprite = Instantiate(BaseUI.Instance.itemPrefab, scrollRect.content);
-                sprite.GetComponent<Image>().sprite = item.Value.icons.FirstOrDefault();
                 sprite.GetComponentInChildren<MouseHover>().SetItem(item.Value);
                 sprites.Add(sprite.GetComponent<MouseHover>());
+
+                if (item.Value.icons.Length > 0) {
+                    sprite.GetComponent<Image>().sprite = item.Value.icons.First();
+                }
             }
 
             scrollRect.onValueChanged.AddListener(UpdateInvisible);

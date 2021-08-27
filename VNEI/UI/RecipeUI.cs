@@ -41,9 +41,12 @@ namespace VNEI.UI {
                 SpawnRecipe(recipe, ingredients);
             }
 
-            infoIcon.sprite = currentItem.icons.FirstOrDefault();
             infoName.text = currentItem.GetName();
             infoDescription.text = Localization.instance.Localize(currentItem.GetDescription());
+
+            if (currentItem.icons.Length > 0) {
+                infoIcon.sprite = currentItem.icons.First();
+            }
         }
 
         public void SpawnRecipe(RecipeInfo recipe, RectTransform root) {
@@ -64,7 +67,11 @@ namespace VNEI.UI {
             GameObject spawnedItem = Instantiate(BaseUI.Instance.itemPrefab, root);
 
             spawnedItem.GetComponent<MouseHover>().SetItem(item.Key);
-            spawnedItem.GetComponent<Image>().sprite = item.Key.icons.FirstOrDefault();
+
+            if (item.Key.icons.Length > 0) {
+                spawnedItem.GetComponent<Image>().sprite = item.Key.icons.First();
+            }
+
             Text count = spawnedItem.transform.Find("Count").GetComponent<Text>();
             count.text = item.Value.ToString();
             count.gameObject.SetActive(true);
