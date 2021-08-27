@@ -15,6 +15,7 @@ namespace VNEI.UI {
         [SerializeField] public Image infoIcon;
         [SerializeField] public Text infoName;
         [SerializeField] public Text infoDescription;
+        [SerializeField] public Sprite noSprite;
 
         private Item currentItem;
 
@@ -46,6 +47,8 @@ namespace VNEI.UI {
 
             if (currentItem.icons.Length > 0) {
                 infoIcon.sprite = currentItem.icons.First();
+            } else {
+                infoIcon.sprite = noSprite;
             }
         }
 
