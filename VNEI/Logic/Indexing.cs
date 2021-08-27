@@ -41,12 +41,12 @@ namespace VNEI.Logic {
             Log.LogInfo("Index Recipes: " + ObjectDB.instance.m_recipes.Count);
             foreach (Recipe recipe in ObjectDB.instance.m_recipes) {
                 if ((bool)recipe.m_item) {
-                    AddResultToItem(recipe.m_item.name, new RecipeInfo(recipe));
+                    ItemObtainedInRecipe(recipe.m_item.name, new RecipeInfo(recipe));
                 }
 
                 foreach (Piece.Requirement resource in recipe.m_resources) {
                     if ((bool)resource.m_resItem) {
-                        AddIngredientToItem(resource.m_resItem.name, new RecipeInfo(recipe));
+                        ItemUsedInRecipe(resource.m_resItem.name, new RecipeInfo(recipe));
                     }
                 }
             }
@@ -74,19 +74,19 @@ namespace VNEI.Logic {
 
                 if (prefab.TryGetComponent(out CharacterDrop characterDrop) && prefab.TryGetComponent(out Character character)) {
                     RecipeInfo recipeInfo = new RecipeInfo(character, characterDrop.m_drops);
-                    AddIngredientToItem(prefab.name, recipeInfo);
+                    ItemUsedInRecipe(prefab.name, recipeInfo);
 
                     foreach (CharacterDrop.Drop drop in characterDrop.m_drops) {
-                        AddResultToItem(drop.m_prefab.name, recipeInfo);
+                        ItemObtainedInRecipe(drop.m_prefab.name, recipeInfo);
                     }
                 }
 
                 if (prefab.TryGetComponent(out MineRock mineRock)) {
                     RecipeInfo recipeInfo = new RecipeInfo(mineRock);
 
-                    AddIngredientToItem(prefab.name, recipeInfo);
+                    ItemUsedInRecipe(prefab.name, recipeInfo);
                     foreach (DropTable.DropData drop in mineRock.m_dropItems.m_drops) {
-                        AddResultToItem(drop.m_item.name, recipeInfo);
+                        ItemObtainedInRecipe(drop.m_item.name, recipeInfo);
                     }
                 }
 
@@ -97,10 +97,10 @@ namespace VNEI.Logic {
             foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
                 if (prefab.TryGetComponent(out Piece piece)) {
                     RecipeInfo recipeInfo = new RecipeInfo(prefab, piece.m_resources);
-                    AddResultToItem(prefab.name, recipeInfo);
+                    ItemObtainedInRecipe(prefab.name, recipeInfo);
 
                     foreach (Piece.Requirement resource in piece.m_resources) {
-                        AddIngredientToItem(resource.m_resItem.name, recipeInfo);
+                        ItemUsedInRecipe(resource.m_resItem.name, recipeInfo);
                     }
                 }
 
@@ -109,8 +109,8 @@ namespace VNEI.Logic {
                         if (grownPrefab.TryGetComponent(out Pickable pickable)) {
                             RecipeInfo recipeInfo = new RecipeInfo(piece, pickable);
                             if (!recipeInfo.IngredientsAndResultSame()) {
-                                AddIngredientToItem(prefab.name, recipeInfo);
-                                AddResultToItem(pickable.m_itemPrefab.name, recipeInfo);
+                                ItemUsedInRecipe(prefab.name, recipeInfo);
+                                ItemObtainedInRecipe(pickable.m_itemPrefab.name, recipeInfo);
                             }
                         }
                     }
@@ -147,35 +147,35 @@ namespace VNEI.Logic {
             item.gameObject = prefab;
         }
 
-        public static void AddResultToItem(string name, RecipeInfo recipeInfo) {
+        public static void ItemObtainedInRecipe(string name, RecipeInfo recipeInfo) {
             int key = CleanupName(name).GetStableHashCode();
 
             if (Items.ContainsKey(key)) {
                 Items[key].result.Add(recipeInfo);
             } else {
-                Log.LogInfo($"cannot add recipe to result, '{CleanupName(name)}' is not indexed");
+                Log.LogInfo($"cannot add recipe to obtaining, '{CleanupName(name)}' is not indexed");
             }
         }
 
-        public static void AddIngredientToItem(string name, RecipeInfo recipeInfo) {
+        public static void ItemUsedInRecipe(string name, RecipeInfo recipeInfo) {
             int key = CleanupName(name).GetStableHashCode();
 
             if (Items.ContainsKey(key)) {
                 Items[key].ingredient.Add(recipeInfo);
             } else {
-                Log.LogInfo($"cannot add recipe to ingredient, '{CleanupName(name)}' is not indexed");
+                Log.LogInfo($"cannot add recipe to using, '{CleanupName(name)}' is not indexed");
             }
         }
 
         public static void AddConversionRecipe(ItemDrop from, ItemDrop to, RecipeInfo recipeInfo, string name) {
             if ((bool)from) {
-                AddIngredientToItem(from.name, recipeInfo);
+                ItemUsedInRecipe(from.name, recipeInfo);
             } else {
                 Log.LogInfo($"conversion from is null: {name}");
             }
 
             if ((bool)to) {
-                AddResultToItem(to.name, recipeInfo);
+                ItemObtainedInRecipe(to.name, recipeInfo);
             } else {
                 Log.LogInfo($"conversion to is null: {name}");
             }
