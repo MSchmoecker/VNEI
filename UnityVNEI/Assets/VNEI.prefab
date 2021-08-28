@@ -714,7 +714,7 @@ MonoBehaviour:
     m_Left: 0
     m_Right: 0
     m_Top: 0
-    m_Bottom: 0
+    m_Bottom: 10
   m_ChildAlignment: 0
   m_Spacing: 5
   m_ChildForceExpandWidth: 1
@@ -1786,6 +1786,8 @@ MonoBehaviour:
     type: 3}
   rowPrefab: {fileID: 4654308030349597509, guid: 8d9e3cd80e124cb439f82eed4296b7f8,
     type: 3}
+  recipeDroppedTextPrefab: {fileID: 3762336839212984245, guid: 8c6a98908760a0741ba10ed456b3465a,
+    type: 3}
   arrowPrefab: {fileID: 2636329705550010785, guid: d26ccce4c714a5b44a57e5ba20aa42ee,
     type: 3}
 --- !u!114 &6550552329974087239
@@ -2211,7 +2213,7 @@ MonoBehaviour:
     m_Left: 0
     m_Right: 0
     m_Top: 0
-    m_Bottom: 0
+    m_Bottom: 10
   m_ChildAlignment: 0
   m_Spacing: 5
   m_ChildForceExpandWidth: 1

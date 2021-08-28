@@ -7,6 +7,7 @@ namespace VNEI.Logic {
     public class RecipeInfo {
         public List<Tuple<Item, Amount>> ingredient = new List<Tuple<Item, Amount>>();
         public List<Tuple<Item, Amount>> result = new List<Tuple<Item, Amount>>();
+        public Amount droppedCount = new Amount(1);
         public bool isOnBlacklist;
 
         public struct Amount {
@@ -32,13 +33,17 @@ namespace VNEI.Logic {
             public override string ToString() {
                 int percent = Mathf.RoundToInt(chance * 100f);
                 string value = "";
+                bool hasPercent = false;
 
                 if (percent != 100) {
                     value += $"{percent}% ";
+                    hasPercent = true;
                 }
 
                 if (fixedCount) {
-                    value += $"{max}x";
+                    if (!(hasPercent && max == 1)) {
+                        value += $"{max}x";
+                    }
                 } else {
                     value += $"{min}-{max}x";
                 }
@@ -139,12 +144,14 @@ namespace VNEI.Logic {
         }
 
         public RecipeInfo(Component from, DropTable dropTable) {
-            Amount amount = new Amount(dropTable.m_dropMin, dropTable.m_dropMax, dropTable.m_dropChance);
+            droppedCount = new Amount(dropTable.m_dropMin, dropTable.m_dropMax, dropTable.m_dropChance);
             AddIngredient(from, new Amount(1), i => i.name, from.name);
 
+            float totalWeight = dropTable.m_drops.Sum(i => i.m_weight);
+
             foreach (DropTable.DropData drop in dropTable.m_drops) {
-                AddResult(drop.m_item, new Amount(amount.min * drop.m_stackMin, amount.max * drop.m_stackMax, amount.chance),
-                          i => i.name, from.name);
+                float chance = totalWeight == 0 ? 1 : drop.m_weight / totalWeight;
+                AddResult(drop.m_item, new Amount(drop.m_stackMin, drop.m_stackMax, chance), i => i.name, from.name);
             }
 
             CalculateIsOnBlacklist();

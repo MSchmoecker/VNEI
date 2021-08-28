@@ -17,6 +17,7 @@ namespace VNEI.UI {
         [SerializeField] private RectTransform dragHandler;
         [SerializeField] public GameObject itemPrefab;
         [SerializeField] public GameObject rowPrefab;
+        [SerializeField] public GameObject recipeDroppedTextPrefab;
         [SerializeField] public GameObject arrowPrefab;
         private bool blockInput;
 
