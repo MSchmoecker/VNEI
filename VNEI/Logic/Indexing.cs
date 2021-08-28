@@ -45,6 +45,16 @@ namespace VNEI.Logic {
                 if (prefab.TryGetComponent(out DropOnDestroyed dropOnDestroyed)) {
                     AddItem(prefab.name, fallbackLocalizedName, string.Empty, Array.Empty<Sprite>(), prefab);
                 }
+
+                if (prefab.TryGetComponent(out Pickable pickable)) {
+                    Sprite[] icons = Array.Empty<Sprite>();
+
+                    if (pickable.m_itemPrefab.TryGetComponent(out ItemDrop itemDropRef)) {
+                        icons = itemDropRef.m_itemData.m_shared.m_icons;
+                    }
+
+                    AddItem(prefab.name, pickable.m_overrideName, string.Empty, icons, prefab);
+                }
             }
 
             Log.LogInfo("Index Recipes: " + ObjectDB.instance.m_recipes.Count);
@@ -91,7 +101,7 @@ namespace VNEI.Logic {
                 }
 
                 if (prefab.TryGetComponent(out MineRock mineRock)) {
-                    RecipeInfo recipeInfo = new RecipeInfo(mineRock, mineRock.m_dropItems);
+                    RecipeInfo recipeInfo = new RecipeInfo(prefab, mineRock.m_dropItems);
 
                     ItemUsedInRecipe(prefab.name, recipeInfo);
                     foreach (DropTable.DropData drop in mineRock.m_dropItems.m_drops) {
@@ -100,7 +110,7 @@ namespace VNEI.Logic {
                 }
 
                 if (prefab.TryGetComponent(out DropOnDestroyed dropOnDestroyed)) {
-                    RecipeInfo recipeInfo = new RecipeInfo(dropOnDestroyed, dropOnDestroyed.m_dropWhenDestroyed);
+                    RecipeInfo recipeInfo = new RecipeInfo(prefab, dropOnDestroyed.m_dropWhenDestroyed);
                     ItemUsedInRecipe(prefab.name, recipeInfo);
 
                     foreach (DropTable.DropData drop in dropOnDestroyed.m_dropWhenDestroyed.m_drops) {
@@ -121,11 +131,11 @@ namespace VNEI.Logic {
 
                 if ((bool)piece && prefab.TryGetComponent(out Plant plant)) {
                     foreach (GameObject grownPrefab in plant.m_grownPrefabs) {
-                        if (grownPrefab.TryGetComponent(out Pickable pickable)) {
-                            RecipeInfo recipeInfo = new RecipeInfo(piece, pickable);
+                        if (grownPrefab.TryGetComponent(out Pickable pickablePlant)) {
+                            RecipeInfo recipeInfo = new RecipeInfo(prefab, pickablePlant);
                             if (!recipeInfo.IngredientsAndResultSame()) {
                                 ItemUsedInRecipe(prefab.name, recipeInfo);
-                                ItemObtainedInRecipe(pickable.m_itemPrefab.name, recipeInfo);
+                                ItemObtainedInRecipe(pickablePlant.m_itemPrefab.name, recipeInfo);
                             }
                         }
                     }
@@ -133,12 +143,21 @@ namespace VNEI.Logic {
 
                 if ((bool)piece && prefab.TryGetComponent(out Container container)) {
                     if (container.m_defaultItems.m_drops.Count > 0) {
-                        RecipeInfo recipeInfo = new RecipeInfo(container, container.m_defaultItems);
+                        RecipeInfo recipeInfo = new RecipeInfo(container.gameObject, container.m_defaultItems);
 
                         ItemUsedInRecipe(prefab.name, recipeInfo);
                         foreach (DropTable.DropData drop in container.m_defaultItems.m_drops) {
                             ItemObtainedInRecipe(drop.m_item.name, recipeInfo);
                         }
+                    }
+                }
+
+                if (prefab.TryGetComponent(out Pickable pickable)) {
+                    RecipeInfo recipeInfo = new RecipeInfo(prefab, pickable);
+                    ItemUsedInRecipe(prefab.name, recipeInfo);
+
+                    foreach (Tuple<Item, RecipeInfo.Amount> result in recipeInfo.result) {
+                        ItemObtainedInRecipe(result.Item1.internalName, recipeInfo);
                     }
                 }
             }

@@ -137,13 +137,32 @@ namespace VNEI.Logic {
             CalculateIsOnBlacklist();
         }
 
-        public RecipeInfo(Piece piece, Pickable pickable) {
+        public RecipeInfo(GameObject piece, Pickable pickable) {
             AddIngredient(piece, new Amount(1), i => i.name, piece.name);
             AddResult(pickable.m_itemPrefab, new Amount(pickable.m_amount), i => i.name, pickable.name);
+
+            if (pickable.m_extraDrops != null && pickable.m_extraDrops.m_drops.Count > 0) {
+                RecipeInfo fromDropTable = new RecipeInfo(piece, pickable.m_extraDrops);
+
+                // TODO extra drops could potentially be wrong in future, extra drops min/max is ignored as not displayable at the moment
+
+                foreach (Tuple<Item, Amount> tuple in fromDropTable.ingredient) {
+                    Amount amount = tuple.Item2;
+                    amount.chance = fromDropTable.droppedCount.chance;
+                    ingredient.Add(new Tuple<Item, Amount>(tuple.Item1, amount));
+                }
+
+                foreach (Tuple<Item, Amount> tuple in fromDropTable.result) {
+                    Amount amount = tuple.Item2;
+                    amount.chance = fromDropTable.droppedCount.chance;
+                    ingredient.Add(new Tuple<Item, Amount>(tuple.Item1, amount));
+                }
+            }
+
             CalculateIsOnBlacklist();
         }
 
-        public RecipeInfo(Component from, DropTable dropTable) {
+        public RecipeInfo(GameObject from, DropTable dropTable) {
             droppedCount = new Amount(dropTable.m_dropMin, dropTable.m_dropMax, dropTable.m_dropChance);
             AddIngredient(from, new Amount(1), i => i.name, from.name);
 
