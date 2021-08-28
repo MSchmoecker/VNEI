@@ -138,25 +138,13 @@ namespace VNEI.Logic {
             CalculateIsOnBlacklist();
         }
 
-        public RecipeInfo(MineRock mineRock) {
-            Amount amount = new Amount(mineRock.m_dropItems.m_dropMin, mineRock.m_dropItems.m_dropMax, mineRock.m_dropItems.m_dropChance);
-            AddIngredient(mineRock, new Amount(1), i => i.name, mineRock.name);
+        public RecipeInfo(Component from, DropTable dropTable) {
+            Amount amount = new Amount(dropTable.m_dropMin, dropTable.m_dropMax, dropTable.m_dropChance);
+            AddIngredient(from, new Amount(1), i => i.name, from.name);
 
-            foreach (DropTable.DropData drop in mineRock.m_dropItems.m_drops) {
-                AddResult(drop.m_item, new Amount(amount.min * drop.m_stackMin, amount.max * drop.m_stackMax), i => i.name, mineRock.name);
-            }
-
-            CalculateIsOnBlacklist();
-        }
-
-        public RecipeInfo(DropOnDestroyed dropOnDestroyed) {
-            Amount amount = new Amount(dropOnDestroyed.m_dropWhenDestroyed.m_dropMin, dropOnDestroyed.m_dropWhenDestroyed.m_dropMax,
-                                       dropOnDestroyed.m_dropWhenDestroyed.m_dropChance);
-            AddIngredient(dropOnDestroyed, new Amount(1), i => i.name, dropOnDestroyed.name);
-
-            foreach (DropTable.DropData drop in dropOnDestroyed.m_dropWhenDestroyed.m_drops) {
-                AddResult(drop.m_item, new Amount(amount.min * drop.m_stackMin, amount.max * drop.m_stackMax, amount.chance), i => i.name,
-                          dropOnDestroyed.name);
+            foreach (DropTable.DropData drop in dropTable.m_drops) {
+                AddResult(drop.m_item, new Amount(amount.min * drop.m_stackMin, amount.max * drop.m_stackMax, amount.chance),
+                          i => i.name, from.name);
             }
 
             CalculateIsOnBlacklist();

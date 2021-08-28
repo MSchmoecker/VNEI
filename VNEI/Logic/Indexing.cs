@@ -60,7 +60,7 @@ namespace VNEI.Logic {
                 }
             }
 
-            Log.LogInfo("Index Smelter, Fermenter, CookingStation, CharacterDrop");
+            Log.LogInfo("Index prefabs Recipes");
             foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
                 if (prefab.TryGetComponent(out Smelter smelter)) {
                     foreach (Smelter.ItemConversion conversion in smelter.m_conversion) {
@@ -91,7 +91,7 @@ namespace VNEI.Logic {
                 }
 
                 if (prefab.TryGetComponent(out MineRock mineRock)) {
-                    RecipeInfo recipeInfo = new RecipeInfo(mineRock);
+                    RecipeInfo recipeInfo = new RecipeInfo(mineRock, mineRock.m_dropItems);
 
                     ItemUsedInRecipe(prefab.name, recipeInfo);
                     foreach (DropTable.DropData drop in mineRock.m_dropItems.m_drops) {
@@ -100,7 +100,7 @@ namespace VNEI.Logic {
                 }
 
                 if (prefab.TryGetComponent(out DropOnDestroyed dropOnDestroyed)) {
-                    RecipeInfo recipeInfo = new RecipeInfo(dropOnDestroyed);
+                    RecipeInfo recipeInfo = new RecipeInfo(dropOnDestroyed, dropOnDestroyed.m_dropWhenDestroyed);
                     ItemUsedInRecipe(prefab.name, recipeInfo);
 
                     foreach (DropTable.DropData drop in dropOnDestroyed.m_dropWhenDestroyed.m_drops) {
@@ -109,10 +109,7 @@ namespace VNEI.Logic {
                 }
 
                 // TODO Source Station listing
-            }
 
-            Log.LogInfo("Index prefabs Recipes");
-            foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
                 if (prefab.TryGetComponent(out Piece piece)) {
                     RecipeInfo recipeInfo = new RecipeInfo(prefab, piece.m_resources);
                     ItemObtainedInRecipe(prefab.name, recipeInfo);
