@@ -45,6 +45,10 @@ This copies the current plugin and all assemblies to Unity. Now you can run `Ass
 
 
 ## Changelog
+0.0.4
+- load search UI after a local player is present. This resolves a conflict with EpicLoot
+- fixed text was wobbling inside recipe UI due to resizing
+
 0.0.3
 - added more items/recipes
   - mineable rocks (copper rock, ...)
