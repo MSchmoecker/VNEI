@@ -68,9 +68,9 @@ namespace VNEI.UI {
             Instantiate(BaseUI.Instance.arrowPrefab, row.GetComponent<RectTransform>());
 
             if (recipe.droppedCount.min != 1 || recipe.droppedCount.max != 1 || Math.Abs(recipe.droppedCount.chance - 1f) > 0.01f) {
-                GameObject recipeDroppedText = Instantiate(BaseUI.Instance.recipeDroppedTextPrefab, row.GetComponent<RectTransform>());
-                recipeDroppedText.GetComponent<Text>().text = $" {recipe.droppedCount.ToString()} ";
-                Styling.ApplyText(recipeDroppedText.GetComponent<Text>(), GUIManager.Instance.AveriaSerif, Color.white);
+                Text recipeDroppedText = Instantiate(BaseUI.Instance.recipeDroppedTextPrefab, row.transform).GetComponent<Text>();
+                recipeDroppedText.text = recipe.droppedCount.ToString();
+                Styling.ApplyText(recipeDroppedText, GUIManager.Instance.AveriaSerif, Color.white);
             }
 
             foreach (Tuple<Item, RecipeInfo.Amount> result in recipe.result) {
