@@ -5,8 +5,8 @@ using UnityEngine;
 
 namespace VNEI.Logic {
     public class RecipeInfo {
-        public Dictionary<Item, Amount> ingredient = new Dictionary<Item, Amount>();
-        public Dictionary<Item, Amount> result = new Dictionary<Item, Amount>();
+        public List<Tuple<Item, Amount>> ingredient = new List<Tuple<Item, Amount>>();
+        public List<Tuple<Item, Amount>> result = new List<Tuple<Item, Amount>>();
         public bool isOnBlacklist;
 
         public struct Amount {
@@ -51,7 +51,7 @@ namespace VNEI.Logic {
             if (item != null) {
                 int key = Indexing.CleanupName(getName(item)).GetStableHashCode();
                 if (Indexing.Items.ContainsKey(key)) {
-                    ingredient.Add(Indexing.Items[key], count);
+                    ingredient.Add(new Tuple<Item, Amount>(Indexing.Items[key], count));
                 } else {
                     Log.LogInfo($"cannot add item '{getName(item)}' to ingredient as is not indexed");
                 }
@@ -64,7 +64,7 @@ namespace VNEI.Logic {
             if (item != null) {
                 int key = Indexing.CleanupName(getName(item)).GetStableHashCode();
                 if (Indexing.Items.ContainsKey(key)) {
-                    result.Add(Indexing.Items[key], count);
+                    result.Add(new Tuple<Item, Amount>(Indexing.Items[key], count));
                 } else {
                     Log.LogInfo($"cannot add item '{getName(item)}' to result as is not indexed");
                 }
@@ -74,12 +74,12 @@ namespace VNEI.Logic {
         }
 
         private void CalculateIsOnBlacklist() {
-            if (ingredient.Any(i => Plugin.ItemBlacklist.Contains(i.Key.internalName))) {
+            if (ingredient.Any(i => Plugin.ItemBlacklist.Contains(i.Item1.internalName))) {
                 isOnBlacklist = true;
                 return;
             }
 
-            if (result.Any(i => Plugin.ItemBlacklist.Contains(i.Key.internalName))) {
+            if (result.Any(i => Plugin.ItemBlacklist.Contains(i.Item1.internalName))) {
                 isOnBlacklist = true;
             }
         }

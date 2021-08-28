@@ -130,6 +130,17 @@ namespace VNEI.Logic {
                         }
                     }
                 }
+
+                if ((bool)piece && prefab.TryGetComponent(out Container container)) {
+                    if (container.m_defaultItems.m_drops.Count > 0) {
+                        RecipeInfo recipeInfo = new RecipeInfo(container, container.m_defaultItems);
+
+                        ItemUsedInRecipe(prefab.name, recipeInfo);
+                        foreach (DropTable.DropData drop in container.m_defaultItems.m_drops) {
+                            ItemObtainedInRecipe(drop.m_item.name, recipeInfo);
+                        }
+                    }
+                }
             }
 
             Log.LogInfo($"Loaded {Items.Count} items");
