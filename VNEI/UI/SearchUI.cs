@@ -32,17 +32,26 @@ namespace VNEI.UI {
 
             scrollRect.onValueChanged.AddListener(UpdateInvisible);
 
+            UpdateSearch();
             LayoutRebuilder.ForceRebuildLayoutImmediate(scrollRect.content);
             UpdateInvisible(Vector2.zero);
         }
 
         public void UpdateSearch() {
             BaseUI.Instance.ShowSearch();
+            bool useBlacklist = Plugin.useBlacklist.Value;
 
             foreach (MouseHover mouseHover in sprites) {
-                bool isSearched = mouseHover.item.localizedName.IndexOf(searchField.text, StringComparison.OrdinalIgnoreCase) >= 0;
-                isSearched = isSearched || mouseHover.item.internalName.IndexOf(searchField.text, StringComparison.OrdinalIgnoreCase) >= 0;
-                mouseHover.gameObject.SetActive(isSearched);
+                Item item = mouseHover.item;
+                bool active = !(useBlacklist && item.isOnBlacklist);
+                bool isSearched = true;
+
+                if (active) {
+                    isSearched = item.localizedName.IndexOf(searchField.text, StringComparison.OrdinalIgnoreCase) >= 0;
+                    isSearched = isSearched || item.internalName.IndexOf(searchField.text, StringComparison.OrdinalIgnoreCase) >= 0;
+                }
+
+                mouseHover.gameObject.SetActive(active && isSearched);
             }
 
             LayoutRebuilder.ForceRebuildLayoutImmediate(scrollRect.content);

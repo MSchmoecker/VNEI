@@ -9,6 +9,7 @@ namespace VNEI.Logic {
         public string description = string.Empty;
         public Sprite[] icons = Array.Empty<Sprite>();
         public GameObject gameObject;
+        public bool isOnBlacklist;
 
         public List<RecipeInfo> result = new List<RecipeInfo>();
         public List<RecipeInfo> ingredient = new List<RecipeInfo>();

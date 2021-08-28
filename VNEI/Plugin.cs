@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -20,8 +21,10 @@ namespace VNEI {
         public const string ModVersion = "0.0.2";
         public static Plugin Instance { get; private set; }
         public static AssetBundle AssetBundle { get; private set; }
+        public static HashSet<string> ItemBlacklist { get; private set; } = new HashSet<string>();
 
         public static ConfigEntry<bool> fixPlants;
+        public static ConfigEntry<bool> useBlacklist;
 
         private Harmony harmony;
 
@@ -34,12 +37,17 @@ namespace VNEI {
                                                 "Turn this off if some other mod has problems with this fix and provide a bug report, please";
             fixPlants = Config.Bind("General", "fix_cultivate_plants", true, new ConfigDescription(fixPlantsDescription));
 
+            const string useBlacklistDescription = "Disables items that are not used currently in the game. This doesn't include " +
+                                                   "placeholder items but testing objects for the devs or not obtainable items/effects. " +
+                                                   "This list is manual, so please contact me if an item is missing/not on the list";
+            useBlacklist = Config.Bind("General", "use_item_blacklist", true, new ConfigDescription(useBlacklistDescription));
             harmony = new Harmony(ModGuid);
             harmony.PatchAll();
 
             LocalizationManager.Instance.AddJson("English", LoadTextFromResources("Localization.English.json"));
 
             AssetBundle = AssetUtils.LoadAssetBundleFromResources("VNEI_AssetBundle", Assembly.GetExecutingAssembly());
+            ItemBlacklist = SimpleJson.SimpleJson.DeserializeObject<List<string>>(LoadTextFromResources("ItemBlacklist.json")).ToHashSet();
 
             GUIManager.OnCustomGUIAvailable += BaseUI.Create;
         }

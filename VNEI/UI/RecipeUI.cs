@@ -34,11 +34,17 @@ namespace VNEI.UI {
                 Destroy(ingredients.GetChild(i).gameObject);
             }
 
+            bool useBlacklist = Plugin.useBlacklist.Value;
+
             foreach (RecipeInfo recipe in item.result) {
+                if (useBlacklist && recipe.isOnBlacklist) continue;
+
                 SpawnRecipe(recipe, results);
             }
 
             foreach (RecipeInfo recipe in item.ingredient) {
+                if (useBlacklist && recipe.isOnBlacklist) continue;
+
                 SpawnRecipe(recipe, ingredients);
             }
 

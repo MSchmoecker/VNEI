@@ -156,6 +156,8 @@ namespace VNEI.Logic {
             } else {
                 item = new Item();
                 Items.Add(key, item);
+
+                item.isOnBlacklist = Plugin.ItemBlacklist.Contains(name);
             }
 
             item.internalName = prefab.name;

@@ -7,6 +7,7 @@ namespace VNEI.Logic {
     public class RecipeInfo {
         public Dictionary<Item, Amount> ingredient = new Dictionary<Item, Amount>();
         public Dictionary<Item, Amount> result = new Dictionary<Item, Amount>();
+        public bool isOnBlacklist;
 
         public struct Amount {
             public int min;
@@ -72,27 +73,43 @@ namespace VNEI.Logic {
             }
         }
 
+        private void CalculateIsOnBlacklist() {
+            if (ingredient.Any(i => Plugin.ItemBlacklist.Contains(i.Key.internalName))) {
+                isOnBlacklist = true;
+                return;
+            }
+
+            if (result.Any(i => Plugin.ItemBlacklist.Contains(i.Key.internalName))) {
+                isOnBlacklist = true;
+            }
+        }
+
         public RecipeInfo(Recipe recipe) {
             AddResult(recipe.m_item, new Amount(recipe.m_amount), i => i.name, recipe.name);
 
             foreach (Piece.Requirement resource in recipe.m_resources) {
                 AddIngredient(resource.m_resItem, new Amount(resource.m_amount), i => i.name, recipe.name);
             }
+
+            CalculateIsOnBlacklist();
         }
 
         public RecipeInfo(Smelter.ItemConversion conversion, string context) {
             AddIngredient(conversion.m_from, new Amount(1), i => i.name, context);
             AddResult(conversion.m_to, new Amount(1), i => i.name, context);
+            CalculateIsOnBlacklist();
         }
 
         public RecipeInfo(Fermenter.ItemConversion conversion, string context) {
             AddIngredient(conversion.m_from, new Amount(1), i => i.name, context);
             AddResult(conversion.m_to, new Amount(conversion.m_producedItems), i => i.name, context);
+            CalculateIsOnBlacklist();
         }
 
         public RecipeInfo(CookingStation.ItemConversion conversion, string context) {
             AddIngredient(conversion.m_from, new Amount(1), i => i.name, context);
             AddResult(conversion.m_to, new Amount(1), i => i.name, context);
+            CalculateIsOnBlacklist();
         }
 
         public RecipeInfo(Character character, List<CharacterDrop.Drop> characterDrops) {
@@ -101,6 +118,8 @@ namespace VNEI.Logic {
             foreach (CharacterDrop.Drop drop in characterDrops) {
                 AddResult(drop.m_prefab, new Amount(drop.m_amountMin, drop.m_amountMax, drop.m_chance), i => i.name, character.name);
             }
+
+            CalculateIsOnBlacklist();
         }
 
         public RecipeInfo(GameObject prefab, Piece.Requirement[] requirements) {
@@ -109,11 +128,14 @@ namespace VNEI.Logic {
             foreach (Piece.Requirement requirement in requirements) {
                 AddIngredient(requirement.m_resItem, new Amount(requirement.m_amount), i => i.name, prefab.name);
             }
+
+            CalculateIsOnBlacklist();
         }
 
         public RecipeInfo(Piece piece, Pickable pickable) {
             AddIngredient(piece, new Amount(1), i => i.name, piece.name);
             AddResult(pickable.m_itemPrefab, new Amount(pickable.m_amount), i => i.name, pickable.name);
+            CalculateIsOnBlacklist();
         }
 
         public RecipeInfo(MineRock mineRock) {
@@ -123,6 +145,8 @@ namespace VNEI.Logic {
             foreach (DropTable.DropData drop in mineRock.m_dropItems.m_drops) {
                 AddResult(drop.m_item, new Amount(amount.min * drop.m_stackMin, amount.max * drop.m_stackMax), i => i.name, mineRock.name);
             }
+
+            CalculateIsOnBlacklist();
         }
 
         public RecipeInfo(DropOnDestroyed dropOnDestroyed) {
@@ -134,6 +158,8 @@ namespace VNEI.Logic {
                 AddResult(drop.m_item, new Amount(amount.min * drop.m_stackMin, amount.max * drop.m_stackMax, amount.chance), i => i.name,
                           dropOnDestroyed.name);
             }
+
+            CalculateIsOnBlacklist();
         }
 
         public bool IngredientsAndResultSame() {
