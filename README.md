@@ -45,6 +45,17 @@ This copies the current plugin and all assemblies to Unity. Now you can run `Ass
 
 
 ## Changelog
+0.0.3
+- added more items/recipes
+  - mineable rocks (copper rock, ...)
+  - DropOnDestroy items (feather from birds, tree stump, ...)
+  - treasure chest drops
+  - pickable items (stone on ground, bushes, ...)
+- added a blacklist for items to not show up. This contains only not obtainable items/effects and the option can be toggled
+- showing percentages when only one of a list of items can spawn
+- fixed tooltip was not showing up if no localized name was present
+- fixed recipe UI has shown last valid icon instead of the placeholder
+
 0.0.2
 - made the window draggable
 - added placeholder sprite when there is no icon
