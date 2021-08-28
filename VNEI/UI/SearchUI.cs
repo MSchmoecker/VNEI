@@ -13,10 +13,19 @@ namespace VNEI.UI {
         [SerializeField] private ScrollRect scrollRect;
         [SerializeField] public InputField searchField;
         private List<MouseHover> sprites = new List<MouseHover>();
+        private bool hasInit;
 
         public void Awake() {
             Instance = this;
-            Indexing.IndexFinished += Init;
+            hasInit = false;
+        }
+
+        private void Update() {
+            if (!hasInit && Player.m_localPlayer != null) {
+                Log.LogInfo("Init Search UI");
+                Init();
+                hasInit = true;
+            }
         }
 
         public void Init() {
@@ -67,10 +76,6 @@ namespace VNEI.UI {
                 bool invisible = posY > -scrollPos.y + 40 || posY < -scrollPos.y - rect.height - 40;
                 sprite.image.enabled = !invisible;
             }
-        }
-
-        private void OnDestroy() {
-            Indexing.IndexFinished -= Init;
         }
     }
 }
