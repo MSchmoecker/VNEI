@@ -33,7 +33,6 @@ namespace VNEI.UI {
 
             Styling.ApplyAllComponents(root);
             Styling.ApplyWoodpanel(dragHandler.GetComponent<Image>());
-            Styling.ApplyLocalization(root);
 
             if ((bool)InventoryGui.instance) {
                 transform.SetParent(InventoryGui.instance.m_player);

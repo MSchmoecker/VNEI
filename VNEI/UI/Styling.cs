@@ -39,12 +39,6 @@ namespace VNEI.UI {
             text.color = color;
         }
 
-        public static void ApplyLocalization(Transform root) {
-            foreach (Text text in root.GetComponentsInChildren<Text>()) {
-                text.text = Localization.instance.Localize(text.text);
-            }
-        }
-
         public static void ApplyAllDarken(Transform root) {
             foreach (Image image in root.GetComponentsInChildren<Image>(true)) {
                 if (image.gameObject.name == "Darken") {
