@@ -92,41 +92,21 @@ namespace VNEI.Logic {
                 }
 
                 if (prefab.TryGetComponent(out CharacterDrop characterDrop) && prefab.TryGetComponent(out Character character)) {
-                    RecipeInfo recipeInfo = new RecipeInfo(character, characterDrop.m_drops);
-                    ItemUsedInRecipe(prefab.name, recipeInfo);
-
-                    foreach (CharacterDrop.Drop drop in characterDrop.m_drops) {
-                        ItemObtainedInRecipe(drop.m_prefab.name, recipeInfo);
-                    }
+                    AddRecipeToItems(new RecipeInfo(character, characterDrop.m_drops));
                 }
 
                 if (prefab.TryGetComponent(out MineRock mineRock)) {
-                    RecipeInfo recipeInfo = new RecipeInfo(prefab, mineRock.m_dropItems);
-
-                    ItemUsedInRecipe(prefab.name, recipeInfo);
-                    foreach (DropTable.DropData drop in mineRock.m_dropItems.m_drops) {
-                        ItemObtainedInRecipe(drop.m_item.name, recipeInfo);
-                    }
+                    AddRecipeToItems(new RecipeInfo(prefab, mineRock.m_dropItems));
                 }
 
                 if (prefab.TryGetComponent(out DropOnDestroyed dropOnDestroyed)) {
-                    RecipeInfo recipeInfo = new RecipeInfo(prefab, dropOnDestroyed.m_dropWhenDestroyed);
-                    ItemUsedInRecipe(prefab.name, recipeInfo);
-
-                    foreach (DropTable.DropData drop in dropOnDestroyed.m_dropWhenDestroyed.m_drops) {
-                        ItemObtainedInRecipe(drop.m_item.name, recipeInfo);
-                    }
+                    AddRecipeToItems(new RecipeInfo(prefab, dropOnDestroyed.m_dropWhenDestroyed));
                 }
 
                 // TODO Source Station listing
 
                 if (prefab.TryGetComponent(out Piece piece)) {
-                    RecipeInfo recipeInfo = new RecipeInfo(prefab, piece.m_resources);
-                    ItemObtainedInRecipe(prefab.name, recipeInfo);
-
-                    foreach (Piece.Requirement resource in piece.m_resources) {
-                        ItemUsedInRecipe(resource.m_resItem.name, recipeInfo);
-                    }
+                    AddRecipeToItems(new RecipeInfo(prefab, piece.m_resources));
                 }
 
                 if ((bool)piece && prefab.TryGetComponent(out Plant plant)) {
@@ -143,22 +123,12 @@ namespace VNEI.Logic {
 
                 if ((bool)piece && prefab.TryGetComponent(out Container container)) {
                     if (container.m_defaultItems.m_drops.Count > 0) {
-                        RecipeInfo recipeInfo = new RecipeInfo(container.gameObject, container.m_defaultItems);
-
-                        ItemUsedInRecipe(prefab.name, recipeInfo);
-                        foreach (DropTable.DropData drop in container.m_defaultItems.m_drops) {
-                            ItemObtainedInRecipe(drop.m_item.name, recipeInfo);
-                        }
+                        AddRecipeToItems(new RecipeInfo(container.gameObject, container.m_defaultItems));
                     }
                 }
 
                 if (prefab.TryGetComponent(out Pickable pickable)) {
-                    RecipeInfo recipeInfo = new RecipeInfo(prefab, pickable);
-                    ItemUsedInRecipe(prefab.name, recipeInfo);
-
-                    foreach (Tuple<Item, RecipeInfo.Amount> result in recipeInfo.result) {
-                        ItemObtainedInRecipe(result.Item1.internalName, recipeInfo);
-                    }
+                    AddRecipeToItems(new RecipeInfo(prefab, pickable));
                 }
             }
 
@@ -211,6 +181,16 @@ namespace VNEI.Logic {
                 Items[key].ingredient.Add(recipeInfo);
             } else {
                 Log.LogInfo($"cannot add recipe to using, '{CleanupName(name)}' is not indexed");
+            }
+        }
+
+        public static void AddRecipeToItems(RecipeInfo recipeInfo) {
+            foreach (Tuple<Item, RecipeInfo.Amount> tuple in recipeInfo.ingredient) {
+                ItemUsedInRecipe(tuple.Item1.internalName, recipeInfo);
+            }
+
+            foreach (Tuple<Item, RecipeInfo.Amount> tuple in recipeInfo.result) {
+                ItemObtainedInRecipe(tuple.Item1.internalName, recipeInfo);
             }
         }
 
