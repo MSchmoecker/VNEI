@@ -38,6 +38,11 @@ namespace VNEI.Logic {
                         icon = itemData.GetIcon();
                     }
 
+                    if (itemData.m_shared.m_damageModifiers == null) {
+                        itemData.m_shared.m_damageModifiers = new List<HitData.DamageModPair>();
+                        Log.LogWarning($"fixed m_damageModifiers is null for '{prefab.name}'");
+                    }
+
                     AddItem(new Item(prefab.name, itemData.m_shared.m_name, itemData.m_shared.m_description, icon, ItemType.Item, prefab));
                 }
 
