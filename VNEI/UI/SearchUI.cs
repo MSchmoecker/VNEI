@@ -11,19 +11,22 @@ namespace VNEI.UI {
         [SerializeField] private ScrollRect scrollRect;
         [SerializeField] public InputField searchField;
 
-        [SerializeField] public Toggle showUndefined;
-        [SerializeField] public Toggle showCreatures;
-        [SerializeField] public Toggle showPieces;
-        [SerializeField] public Toggle showItems;
+        [SerializeField] public TypeToggle showUndefined;
+        [SerializeField] public TypeToggle showCreatures;
+        [SerializeField] public TypeToggle showPieces;
+        [SerializeField] public TypeToggle showItems;
 
         private List<MouseHover> sprites = new List<MouseHover>();
         private bool hasInit;
         private const int ItemsInRow = 11;
         private Vector2 itemSpacing = new Vector2(50f, 50f);
+        private Action typeToggleOnChange;
 
         public void Awake() {
             Instance = this;
             hasInit = false;
+            typeToggleOnChange = () => UpdateSearch(true);
+            TypeToggle.OnChange += typeToggleOnChange;
         }
 
         private void Update() {
@@ -45,20 +48,10 @@ namespace VNEI.UI {
             scrollRect.onValueChanged.AddListener((_) => UpdateSearch(false));
             searchField.onValueChanged.AddListener((_) => UpdateSearch(true));
 
-            showUndefined.onValueChanged.AddListener((_) => UpdateSearch(true));
-            showCreatures.onValueChanged.AddListener((_) => UpdateSearch(true));
-            showPieces.onValueChanged.AddListener((_) => UpdateSearch(true));
-            showItems.onValueChanged.AddListener((_) => UpdateSearch(true));
-
-            ((Image)showUndefined.targetGraphic).pixelsPerUnitMultiplier = 3;
-            ((Image)showCreatures.targetGraphic).pixelsPerUnitMultiplier = 3;
-            ((Image)showPieces.targetGraphic).pixelsPerUnitMultiplier = 3;
-            ((Image)showItems.targetGraphic).pixelsPerUnitMultiplier = 3;
-
-            showUndefined.GetComponent<TypeToggle>().image.sprite = RecipeUI.Instance.noSprite;
-            showCreatures.GetComponent<TypeToggle>().image.sprite = GUIManager.Instance.GetSprite("texts_button");
-            showPieces.GetComponent<TypeToggle>().image.sprite = GUIManager.Instance.GetSprite("mapicon_bed");
-            showItems.GetComponent<TypeToggle>().image.sprite = GUIManager.Instance.GetSprite("mapicon_trader");
+            showUndefined.image.sprite = RecipeUI.Instance.noSprite;
+            showCreatures.image.sprite = GUIManager.Instance.GetSprite("texts_button");
+            showPieces.image.sprite = GUIManager.Instance.GetSprite("mapicon_bed");
+            showItems.image.sprite = GUIManager.Instance.GetSprite("mapicon_trader");
 
             UpdateSearch(true);
         }
@@ -131,6 +124,10 @@ namespace VNEI.UI {
             }
 
             return true;
+        }
+
+        private void OnDestroy() {
+            TypeToggle.OnChange -= typeToggleOnChange;
         }
     }
 }
