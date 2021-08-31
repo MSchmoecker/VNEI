@@ -56,7 +56,7 @@ namespace VNEI.UI {
         public void SpawnRecipe(RecipeInfo recipe, RectTransform root) {
             GameObject row = Instantiate(BaseUI.Instance.rowPrefab, root);
 
-            foreach (Tuple<Item, RecipeInfo.Amount> ingredient in recipe.ingredient) {
+            foreach (Tuple<Item, Amount> ingredient in recipe.ingredient) {
                 SpawnItem(ingredient, row.GetComponent<RectTransform>());
             }
 
@@ -68,12 +68,12 @@ namespace VNEI.UI {
                 Styling.ApplyText(recipeDroppedText, GUIManager.Instance.AveriaSerif, Color.white);
             }
 
-            foreach (Tuple<Item, RecipeInfo.Amount> result in recipe.result) {
+            foreach (Tuple<Item, Amount> result in recipe.result) {
                 SpawnItem(result, row.GetComponent<RectTransform>());
             }
         }
 
-        void SpawnItem(Tuple<Item, RecipeInfo.Amount> item, RectTransform root) {
+        void SpawnItem(Tuple<Item, Amount> item, RectTransform root) {
             GameObject spawnedItem = Instantiate(BaseUI.Instance.itemPrefab, root);
 
             spawnedItem.GetComponent<MouseHover>().SetItem(item.Item1);

@@ -186,11 +186,11 @@ namespace VNEI.Logic {
         }
 
         public static void AddRecipeToItems(RecipeInfo recipeInfo) {
-            foreach (Tuple<Item, RecipeInfo.Amount> tuple in recipeInfo.ingredient) {
+            foreach (Tuple<Item, Amount> tuple in recipeInfo.ingredient) {
                 ItemUsedInRecipe(tuple.Item1.internalName, recipeInfo);
             }
 
-            foreach (Tuple<Item, RecipeInfo.Amount> tuple in recipeInfo.result) {
+            foreach (Tuple<Item, Amount> tuple in recipeInfo.result) {
                 ItemObtainedInRecipe(tuple.Item1.internalName, recipeInfo);
             }
         }
