@@ -9,6 +9,7 @@ namespace VNEI.UI {
     public class MouseHover : MonoBehaviour, IPointerClickHandler {
         public Image image;
         public Item item;
+        public bool isActive;
 
         private void Awake() {
             GetComponent<UITooltip>().m_tooltipPrefab = PrefabManager.Instance.GetPrefab("InventoryTooltip");

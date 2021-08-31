@@ -35,54 +35,63 @@ namespace VNEI.UI {
                 sprite.GetComponent<Image>().sprite = item.Value.GetIcon();
             }
 
-            scrollRect.onValueChanged.AddListener(UpdateInvisible);
-
-            UpdateSearch();
+            scrollRect.onValueChanged.AddListener((_) => UpdateSearch(false));
+            searchField.onValueChanged.AddListener((_) => UpdateSearch(true));
+            UpdateSearch(true);
         }
 
-        public void UpdateSearch() {
+        public void UpdateSearch(bool recalculateLayout) {
             BaseUI.Instance.ShowSearch();
             bool useBlacklist = Plugin.useBlacklist.Value;
+            Rect rect = ((RectTransform)scrollRect.transform).rect;
+            Vector2 scrollPos = scrollRect.content.anchoredPosition;
             int activeItemCount = 0;
 
             foreach (MouseHover mouseHover in sprites) {
-                Item item = mouseHover.item;
-                bool active = !(useBlacklist && item.isOnBlacklist);
-                bool isSearched = true;
+                RectTransform rectTransform = (RectTransform)mouseHover.transform;
 
-                if (active) {
-                    isSearched = item.localizedName.IndexOf(searchField.text, StringComparison.OrdinalIgnoreCase) >= 0;
-                    isSearched = isSearched || item.internalName.IndexOf(searchField.text, StringComparison.OrdinalIgnoreCase) >= 0;
+                if (recalculateLayout) {
+                    mouseHover.isActive = CalculateActive(mouseHover, useBlacklist);
+
+                    if (mouseHover.isActive) {
+                        rectTransform.anchorMin = new Vector2(0f, 1f);
+                        rectTransform.anchorMax = new Vector2(0f, 1f);
+                        int row = activeItemCount % ItemsInRow;
+                        int column = activeItemCount / ItemsInRow;
+                        rectTransform.anchoredPosition = new Vector2(row + 0.5f, -column - 0.5f) * itemSpacing;
+
+                        activeItemCount++;
+                    }
                 }
 
-                mouseHover.gameObject.SetActive(active && isSearched);
+                float posY = rectTransform.anchoredPosition.y;
+                bool invisible = posY > -scrollPos.y + 40 || posY < -scrollPos.y - rect.height - 40;
 
-                RectTransform rectTransform = ((RectTransform)mouseHover.transform);
-                rectTransform.anchorMin = new Vector2(0f, 1f);
-                rectTransform.anchorMax = new Vector2(0f, 1f);
-                int row = activeItemCount % ItemsInRow;
-                int column = activeItemCount / ItemsInRow;
-                rectTransform.anchoredPosition = new Vector2Int(row, -column) * itemSpacing + itemSpacing / 2f;
-
-                if (active && isSearched) {
-                    activeItemCount++;
-                }
+                mouseHover.gameObject.SetActive(mouseHover.isActive && !invisible);
             }
 
-            int rowCount = activeItemCount / ItemsInRow;
-            scrollRect.content.sizeDelta = new Vector2(scrollRect.content.sizeDelta.x, rowCount * itemSpacing.y);
-            UpdateInvisible(Vector2.zero);
+            if (recalculateLayout) {
+                int rowCount = activeItemCount / ItemsInRow;
+                scrollRect.content.sizeDelta = new Vector2(scrollRect.content.sizeDelta.x, rowCount * itemSpacing.y);
+            }
         }
 
-        public void UpdateInvisible(Vector2 slider) {
-            Rect rect = ((RectTransform)scrollRect.transform).rect;
-            Vector2 scrollPos = scrollRect.content.anchoredPosition;
+        private bool CalculateActive(MouseHover mouseHover, bool useBlacklist) {
+            Item item = mouseHover.item;
+            bool onBlackList = useBlacklist && item.isOnBlacklist;
 
-            foreach (MouseHover sprite in sprites) {
-                float posY = ((RectTransform)sprite.transform).anchoredPosition.y;
-                bool invisible = posY > -scrollPos.y + 40 || posY < -scrollPos.y - rect.height - 40;
-                sprite.gameObject.SetActive(!invisible);
+            if (onBlackList) {
+                return false;
             }
+
+            bool isSearched = item.localizedName.IndexOf(searchField.text, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                              item.internalName.IndexOf(searchField.text, StringComparison.OrdinalIgnoreCase) >= 0;
+
+            if (!isSearched) {
+                return false;
+            }
+
+            return true;
         }
     }
 }
