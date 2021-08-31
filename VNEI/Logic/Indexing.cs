@@ -28,7 +28,7 @@ namespace VNEI.Logic {
                 }
 
                 if (prefab.TryGetComponent(out Piece piece)) {
-                    AddItem(new Item(prefab.name, piece.m_name, piece.m_description, piece.m_icon, prefab));
+                    AddItem(new Item(prefab.name, piece.m_name, piece.m_description, piece.m_icon, ItemType.Piece, prefab));
                 }
 
                 if (prefab.TryGetComponent(out ItemDrop itemDrop)) {
@@ -38,23 +38,23 @@ namespace VNEI.Logic {
                         icon = itemData.GetIcon();
                     }
 
-                    AddItem(new Item(prefab.name, itemData.m_shared.m_name, itemData.m_shared.m_description, icon, prefab));
+                    AddItem(new Item(prefab.name, itemData.m_shared.m_name, itemData.m_shared.m_description, icon, ItemType.Item, prefab));
                 }
 
                 if (prefab.TryGetComponent(out Character character)) {
-                    AddItem(new Item(prefab.name, character.m_name, string.Empty, null, prefab));
+                    AddItem(new Item(prefab.name, character.m_name, string.Empty, null, ItemType.Creature, prefab));
                 }
 
                 if (prefab.TryGetComponent(out MineRock mineRock)) {
-                    AddItem(new Item(prefab.name, mineRock.m_name, string.Empty, null, prefab));
+                    AddItem(new Item(prefab.name, mineRock.m_name, string.Empty, null, ItemType.Undefined, prefab));
                 }
 
                 if (prefab.TryGetComponent(out DropOnDestroyed dropOnDestroyed)) {
-                    AddItem(new Item(prefab.name, fallbackLocalizedName, string.Empty, null, prefab));
+                    AddItem(new Item(prefab.name, fallbackLocalizedName, string.Empty, null, ItemType.Undefined, prefab));
                 }
 
                 if (prefab.TryGetComponent(out Pickable pickable)) {
-                    AddItem(new Item(prefab.name, pickable.m_overrideName, string.Empty, icon, prefab));
+                    AddItem(new Item(prefab.name, pickable.m_overrideName, string.Empty, icon, ItemType.Undefined, prefab));
                 }
             }
 

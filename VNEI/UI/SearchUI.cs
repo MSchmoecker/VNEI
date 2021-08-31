@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Jotunn.Managers;
 using UnityEngine;
 using UnityEngine.UI;
 using VNEI.Logic;
@@ -9,6 +10,12 @@ namespace VNEI.UI {
         public static SearchUI Instance { get; private set; }
         [SerializeField] private ScrollRect scrollRect;
         [SerializeField] public InputField searchField;
+
+        [SerializeField] public Toggle showUndefined;
+        [SerializeField] public Toggle showCreatures;
+        [SerializeField] public Toggle showPieces;
+        [SerializeField] public Toggle showItems;
+
         private List<MouseHover> sprites = new List<MouseHover>();
         private bool hasInit;
         private const int ItemsInRow = 11;
@@ -37,6 +44,22 @@ namespace VNEI.UI {
 
             scrollRect.onValueChanged.AddListener((_) => UpdateSearch(false));
             searchField.onValueChanged.AddListener((_) => UpdateSearch(true));
+
+            showUndefined.onValueChanged.AddListener((_) => UpdateSearch(true));
+            showCreatures.onValueChanged.AddListener((_) => UpdateSearch(true));
+            showPieces.onValueChanged.AddListener((_) => UpdateSearch(true));
+            showItems.onValueChanged.AddListener((_) => UpdateSearch(true));
+
+            ((Image)showUndefined.targetGraphic).pixelsPerUnitMultiplier = 3;
+            ((Image)showCreatures.targetGraphic).pixelsPerUnitMultiplier = 3;
+            ((Image)showPieces.targetGraphic).pixelsPerUnitMultiplier = 3;
+            ((Image)showItems.targetGraphic).pixelsPerUnitMultiplier = 3;
+
+            showUndefined.GetComponent<TypeToggle>().image.sprite = RecipeUI.Instance.noSprite;
+            showCreatures.GetComponent<TypeToggle>().image.sprite = GUIManager.Instance.GetSprite("texts_button");
+            showPieces.GetComponent<TypeToggle>().image.sprite = GUIManager.Instance.GetSprite("mapicon_bed");
+            showItems.GetComponent<TypeToggle>().image.sprite = GUIManager.Instance.GetSprite("mapicon_trader");
+
             UpdateSearch(true);
         }
 
@@ -81,6 +104,22 @@ namespace VNEI.UI {
             bool onBlackList = useBlacklist && item.isOnBlacklist;
 
             if (onBlackList) {
+                return false;
+            }
+
+            if (item.itemType == ItemType.Undefined && !showUndefined.isOn) {
+                return false;
+            }
+
+            if (item.itemType == ItemType.Creature && !showCreatures.isOn) {
+                return false;
+            }
+
+            if (item.itemType == ItemType.Piece && !showPieces.isOn) {
+                return false;
+            }
+
+            if (item.itemType == ItemType.Item && !showItems.isOn) {
                 return false;
             }
 

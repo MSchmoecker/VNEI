@@ -10,19 +10,21 @@ namespace VNEI.Logic {
         public readonly string description;
         public readonly GameObject gameObject;
         public readonly bool isOnBlacklist;
+        public readonly ItemType itemType;
 
         public readonly List<RecipeInfo> result = new List<RecipeInfo>();
         public readonly List<RecipeInfo> ingredient = new List<RecipeInfo>();
 
         private Sprite icon;
 
-        public Item(string name, string localizeName, string description, Sprite icon, GameObject prefab) {
+        public Item(string name, string localizeName, string description, Sprite icon, ItemType itemType, GameObject prefab) {
             internalName = name;
             localizedName = Localization.instance.Localize(localizeName);
             this.description = description;
             SetIcon(icon);
             gameObject = prefab;
             isOnBlacklist = Plugin.ItemBlacklist.Contains(name) || Plugin.ItemBlacklist.Contains(Indexing.CleanupName(name));
+            this.itemType = itemType;
         }
 
         public string GetName() {
