@@ -10,6 +10,7 @@ namespace VNEI.UI {
         public static SearchUI Instance { get; private set; }
         [SerializeField] private ScrollRect scrollRect;
         [SerializeField] public InputField searchField;
+        [SerializeField] public Toggle cheat;
 
         [SerializeField] public TypeToggle showUndefined;
         [SerializeField] public TypeToggle showCreatures;
@@ -35,6 +36,8 @@ namespace VNEI.UI {
                 Init();
                 hasInit = true;
             }
+
+            cheat.gameObject.SetActive(Player.m_localPlayer != null && Console.instance.IsCheatsEnabled());
         }
 
         public void Init() {
@@ -124,6 +127,10 @@ namespace VNEI.UI {
             }
 
             return true;
+        }
+
+        public bool IsCheating() {
+            return cheat.gameObject.activeSelf && cheat.isOn;
         }
 
         private void OnDestroy() {

@@ -26,8 +26,20 @@ namespace VNEI.UI {
         }
 
         public void OnPointerClick(PointerEventData eventData) {
-            RecipeUI.Instance.SetItem(item);
-            BaseUI.Instance.ShowRecipe();
+            if (SearchUI.Instance.IsCheating()) {
+                if (item.itemType == ItemType.Item) {
+                    if (item.gameObject.GetComponent<ItemDrop>()) {
+                        Player.m_localPlayer.GetInventory().AddItem(item.gameObject.GetComponent<ItemDrop>().m_itemData);
+                    } else {
+                        Player.m_localPlayer.Message(MessageHud.MessageType.Center, $"item '{item.internalName}' has no ItemDrop");
+                    }
+                } else {
+                    Player.m_localPlayer.Message(MessageHud.MessageType.Center, "only item spawning is possible");
+                }
+            } else {
+                RecipeUI.Instance.SetItem(item);
+                BaseUI.Instance.ShowRecipe();
+            }
         }
     }
 }
