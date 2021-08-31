@@ -42,5 +42,8 @@
   "Wolf_cub",
   "wraith_melee",
   "HealthUpgrade_Bonemass",
-  "HealthUpgrade_GDKing"
+  "HealthUpgrade_GDKing",
+  "IronOre",
+  "MineRock_Iron",
+  "Pickable_BogIronOre"
 ]
