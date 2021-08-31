@@ -29,7 +29,7 @@ namespace VNEI.UI {
             if (SearchUI.Instance.IsCheating()) {
                 if (item.itemType == ItemType.Item) {
                     if (item.gameObject.GetComponent<ItemDrop>()) {
-                        Player.m_localPlayer.GetInventory().AddItem(item.gameObject.GetComponent<ItemDrop>().m_itemData);
+                        Player.m_localPlayer.PickupPrefab(item.gameObject);
                     } else {
                         Player.m_localPlayer.Message(MessageHud.MessageType.Center, $"item '{item.internalName}' has no ItemDrop");
                     }
