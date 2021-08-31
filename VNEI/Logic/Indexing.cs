@@ -28,7 +28,7 @@ namespace VNEI.Logic {
                 }
 
                 if (prefab.TryGetComponent(out Piece piece)) {
-                    AddItem(prefab.name, piece.m_name, piece.m_description, piece.m_icon, prefab);
+                    AddItem(new Item(prefab.name, piece.m_name, piece.m_description, piece.m_icon, prefab));
                 }
 
                 if (prefab.TryGetComponent(out ItemDrop itemDrop)) {
@@ -38,23 +38,23 @@ namespace VNEI.Logic {
                         icon = itemData.GetIcon();
                     }
 
-                    AddItem(prefab.name, itemData.m_shared.m_name, itemData.m_shared.m_description, icon, prefab);
+                    AddItem(new Item(prefab.name, itemData.m_shared.m_name, itemData.m_shared.m_description, icon, prefab));
                 }
 
                 if (prefab.TryGetComponent(out Character character)) {
-                    AddItem(prefab.name, character.m_name, string.Empty, null, prefab);
+                    AddItem(new Item(prefab.name, character.m_name, string.Empty, null, prefab));
                 }
 
                 if (prefab.TryGetComponent(out MineRock mineRock)) {
-                    AddItem(prefab.name, mineRock.m_name, string.Empty, null, prefab);
+                    AddItem(new Item(prefab.name, mineRock.m_name, string.Empty, null, prefab));
                 }
 
                 if (prefab.TryGetComponent(out DropOnDestroyed dropOnDestroyed)) {
-                    AddItem(prefab.name, fallbackLocalizedName, string.Empty, null, prefab);
+                    AddItem(new Item(prefab.name, fallbackLocalizedName, string.Empty, null, prefab));
                 }
 
                 if (prefab.TryGetComponent(out Pickable pickable)) {
-                    AddItem(prefab.name, pickable.m_overrideName, string.Empty, icon, prefab);
+                    AddItem(new Item(prefab.name, pickable.m_overrideName, string.Empty, icon, prefab));
                 }
             }
 
@@ -138,31 +138,20 @@ namespace VNEI.Logic {
             IndexFinished?.Invoke();
         }
 
-        private static void AddItem(string name, string localizeName, string description, Sprite icon, GameObject prefab) {
+        private static void AddItem(Item item) {
             if (Plugin.fixPlants.Value) {
-                if (name.ToLower().Contains("sapling_") && !name.ToLower().Contains("seed")) {
+                if (item.internalName.ToLower().Contains("sapling_") && !item.internalName.ToLower().Contains("seed")) {
                     return;
                 }
             }
 
-            int key = CleanupName(name).GetStableHashCode();
-            Item item;
+            int key = CleanupName(item.internalName).GetStableHashCode();
 
             if (Items.ContainsKey(key)) {
-                item = Items[key];
-                Log.LogInfo($"Items contains key already: {CleanupName(name)}");
+                Log.LogInfo($"Items contains key already: {CleanupName(item.internalName)}");
             } else {
-                item = new Item();
                 Items.Add(key, item);
-
-                item.isOnBlacklist = Plugin.ItemBlacklist.Contains(name);
             }
-
-            item.internalName = prefab.name;
-            item.localizedName = localizeName.Length > 0 ? Localization.instance.Localize(localizeName) : item.localizedName;
-            item.description = description.Length > 0 ? description : item.description;
-            item.SetIcon(icon);
-            item.gameObject = prefab;
         }
 
         public static void ItemObtainedInRecipe(string name, RecipeInfo recipeInfo) {

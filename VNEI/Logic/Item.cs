@@ -5,16 +5,25 @@ using VNEI.UI;
 
 namespace VNEI.Logic {
     public class Item {
-        public string internalName = string.Empty;
-        public string localizedName = string.Empty;
-        public string description = string.Empty;
-        public GameObject gameObject;
-        public bool isOnBlacklist;
+        public readonly string internalName;
+        public readonly string localizedName;
+        public readonly string description;
+        public readonly GameObject gameObject;
+        public readonly bool isOnBlacklist;
 
-        public List<RecipeInfo> result = new List<RecipeInfo>();
-        public List<RecipeInfo> ingredient = new List<RecipeInfo>();
+        public readonly List<RecipeInfo> result = new List<RecipeInfo>();
+        public readonly List<RecipeInfo> ingredient = new List<RecipeInfo>();
 
         private Sprite icon;
+
+        public Item(string name, string localizeName, string description, Sprite icon, GameObject prefab) {
+            internalName = name;
+            localizedName = Localization.instance.Localize(localizeName);
+            this.description = description;
+            SetIcon(icon);
+            gameObject = prefab;
+            isOnBlacklist = Plugin.ItemBlacklist.Contains(name) || Plugin.ItemBlacklist.Contains(Indexing.CleanupName(name));
+        }
 
         public string GetName() {
             return localizedName + Environment.NewLine + $"({internalName})";
