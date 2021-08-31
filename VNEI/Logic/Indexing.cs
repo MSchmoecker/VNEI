@@ -21,39 +21,40 @@ namespace VNEI.Logic {
                 }
 
                 string fallbackLocalizedName = string.Empty;
+                Sprite icon = null;
+
                 if (prefab.TryGetComponent(out HoverText hoverText)) {
                     fallbackLocalizedName = hoverText.m_text;
                 }
 
                 if (prefab.TryGetComponent(out Piece piece)) {
-                    AddItem(prefab.name, piece.m_name, piece.m_description, new[] { piece.m_icon }, prefab);
+                    AddItem(prefab.name, piece.m_name, piece.m_description, piece.m_icon, prefab);
                 }
 
                 if (prefab.TryGetComponent(out ItemDrop itemDrop)) {
-                    AddItem(prefab.name, itemDrop.m_itemData.m_shared.m_name, itemDrop.m_itemData.m_shared.m_description,
-                            itemDrop.m_itemData.m_shared.m_icons, prefab);
+                    ItemDrop.ItemData itemData = itemDrop.m_itemData;
+
+                    if ((bool)itemDrop && itemData.m_shared.m_icons.Length > 0) {
+                        icon = itemData.GetIcon();
+                    }
+
+                    AddItem(prefab.name, itemData.m_shared.m_name, itemData.m_shared.m_description, icon, prefab);
                 }
 
                 if (prefab.TryGetComponent(out Character character)) {
-                    AddItem(prefab.name, character.m_name, string.Empty, Array.Empty<Sprite>(), prefab);
+                    AddItem(prefab.name, character.m_name, string.Empty, null, prefab);
                 }
 
                 if (prefab.TryGetComponent(out MineRock mineRock)) {
-                    AddItem(prefab.name, mineRock.m_name, string.Empty, Array.Empty<Sprite>(), prefab);
+                    AddItem(prefab.name, mineRock.m_name, string.Empty, null, prefab);
                 }
 
                 if (prefab.TryGetComponent(out DropOnDestroyed dropOnDestroyed)) {
-                    AddItem(prefab.name, fallbackLocalizedName, string.Empty, Array.Empty<Sprite>(), prefab);
+                    AddItem(prefab.name, fallbackLocalizedName, string.Empty, null, prefab);
                 }
 
                 if (prefab.TryGetComponent(out Pickable pickable)) {
-                    Sprite[] icons = Array.Empty<Sprite>();
-
-                    if (pickable.m_itemPrefab.TryGetComponent(out ItemDrop itemDropRef)) {
-                        icons = itemDropRef.m_itemData.m_shared.m_icons;
-                    }
-
-                    AddItem(prefab.name, pickable.m_overrideName, string.Empty, icons, prefab);
+                    AddItem(prefab.name, pickable.m_overrideName, string.Empty, icon, prefab);
                 }
             }
 
@@ -137,7 +138,7 @@ namespace VNEI.Logic {
             IndexFinished?.Invoke();
         }
 
-        private static void AddItem(string name, string localizeName, string description, Sprite[] icons, GameObject prefab) {
+        private static void AddItem(string name, string localizeName, string description, Sprite icon, GameObject prefab) {
             if (Plugin.fixPlants.Value) {
                 if (name.ToLower().Contains("sapling_") && !name.ToLower().Contains("seed")) {
                     return;
@@ -160,7 +161,7 @@ namespace VNEI.Logic {
             item.internalName = prefab.name;
             item.localizedName = localizeName.Length > 0 ? Localization.instance.Localize(localizeName) : item.localizedName;
             item.description = description.Length > 0 ? description : item.description;
-            item.icons = icons != null && icons.Length > 0 ? icons : item.icons;
+            item.SetIcon(icon);
             item.gameObject = prefab;
         }
 

@@ -33,10 +33,7 @@ namespace VNEI.UI {
                 GameObject sprite = Instantiate(BaseUI.Instance.itemPrefab, scrollRect.content);
                 sprite.GetComponentInChildren<MouseHover>().SetItem(item.Value);
                 sprites.Add(sprite.GetComponent<MouseHover>());
-
-                if (item.Value.icons.Length > 0) {
-                    sprite.GetComponent<Image>().sprite = item.Value.icons.First();
-                }
+                sprite.GetComponent<Image>().sprite = item.Value.GetIcon();
             }
 
             scrollRect.onValueChanged.AddListener(UpdateInvisible);
