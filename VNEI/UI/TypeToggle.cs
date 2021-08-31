@@ -19,6 +19,7 @@ namespace VNEI.UI {
             GetComponent<UITooltip>().m_gamepadFocusObject = PrefabManager.Instance.GetPrefab("selected");
             background.sprite = GUIManager.Instance.GetSprite("checkbox");
             background.pixelsPerUnitMultiplier = 2.5f;
+            background.color = new Color(0.61f, 0.61f, 0.61f, 1f);
             UpdateToggle();
         }
 

@@ -22,16 +22,11 @@ namespace VNEI.UI {
             }
 
             foreach (ScrollRect scrollRect in root.GetComponentsInChildren<ScrollRect>(true)) {
-                ApplyScrollRect(scrollRect);
+                GUIManager.Instance.ApplyScrollRectStyle(scrollRect);
             }
 
             ApplyAllDarken(root);
             ApplyAllSunken(root);
-        }
-
-        public static void ApplyWoodpanel(Image image) {
-            image.sprite = GUIManager.Instance.GetSprite("woodpanel_trophys");
-            image.color = new Color(.6f, .6f, .6f);
         }
 
         public static void ApplyText(Text text, Font font, Color color) {
@@ -56,28 +51,6 @@ namespace VNEI.UI {
                     image.type = Image.Type.Sliced;
                     image.pixelsPerUnitMultiplier = 1;
                 }
-            }
-        }
-
-        public static void ApplyScrollRect(ScrollRect scrollRect) {
-            scrollRect.GetComponent<Image>().sprite = GUIManager.Instance.GetSprite("item_background_sunken");
-
-            if ((bool)scrollRect.horizontalScrollbar) {
-                ((Image)scrollRect.horizontalScrollbar.targetGraphic).sprite = GUIManager.Instance.GetSprite("text_field");
-                ((Image)scrollRect.horizontalScrollbar.targetGraphic).color = Color.grey;
-                ((Image)scrollRect.horizontalScrollbar.targetGraphic).type = Image.Type.Sliced;
-                ((Image)scrollRect.horizontalScrollbar.targetGraphic).pixelsPerUnitMultiplier = 2f;
-                scrollRect.horizontalScrollbar.GetComponent<Image>().sprite = GUIManager.Instance.GetSprite("text_field");
-                scrollRect.horizontalScrollbar.GetComponent<Image>().pixelsPerUnitMultiplier = 3f;
-            }
-
-            if ((bool)scrollRect.verticalScrollbar) {
-                ((Image)scrollRect.verticalScrollbar.targetGraphic).sprite = GUIManager.Instance.GetSprite("text_field");
-                ((Image)scrollRect.verticalScrollbar.targetGraphic).color = Color.grey;
-                ((Image)scrollRect.verticalScrollbar.targetGraphic).type = Image.Type.Sliced;
-                ((Image)scrollRect.verticalScrollbar.targetGraphic).pixelsPerUnitMultiplier = 2f;
-                scrollRect.verticalScrollbar.GetComponent<Image>().sprite = GUIManager.Instance.GetSprite("text_field");
-                scrollRect.verticalScrollbar.GetComponent<Image>().pixelsPerUnitMultiplier = 3f;
             }
         }
     }

@@ -32,7 +32,7 @@ namespace VNEI.UI {
             ShowSearch();
 
             Styling.ApplyAllComponents(root);
-            Styling.ApplyWoodpanel(dragHandler.GetComponent<Image>());
+            GUIManager.Instance.ApplyWoodpanelStyle(dragHandler);
 
             if ((bool)InventoryGui.instance) {
                 transform.SetParent(InventoryGui.instance.m_player);
