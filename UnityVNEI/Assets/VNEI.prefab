@@ -53,7 +53,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_tooltipPrefab: {fileID: 0}
   m_text: 
-  m_topic: Show Creature
+  m_topic: $vnei_category_creature
   m_gamepadFocusObject: {fileID: 0}
 --- !u!114 &1418372358
 MonoBehaviour:
@@ -602,7 +602,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_tooltipPrefab: {fileID: 0}
   m_text: 
-  m_topic: Show Undefined
+  m_topic: $vnei_category_undefined
   m_gamepadFocusObject: {fileID: 0}
 --- !u!114 &8752880537123545440
 MonoBehaviour:
@@ -858,7 +858,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_tooltipPrefab: {fileID: 0}
   m_text: 
-  m_topic: Show Item
+  m_topic: $vnei_category_item
   m_gamepadFocusObject: {fileID: 0}
 --- !u!114 &8224696449350392262
 MonoBehaviour:
@@ -1786,7 +1786,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: cheat
+  m_Text: $vnei_enable_cheats
 --- !u!1 &2612183419596493746
 GameObject:
   m_ObjectHideFlags: 0
@@ -2238,7 +2238,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_tooltipPrefab: {fileID: 0}
   m_text: 
-  m_topic: Show Piece
+  m_topic: $vnei_category_piece
   m_gamepadFocusObject: {fileID: 0}
 --- !u!114 &4818593461606324684
 MonoBehaviour:

@@ -2,5 +2,10 @@
   "vnei_search": "Search...",
   "vnei_back_to_search": "Show Search",
   "vnei_obtaining": "Obtaining",
-  "vnei_using": "Using"
+  "vnei_using": "Using",
+  "vnei_category_undefined": "Show Undefined",
+  "vnei_category_creature": "Show Creatures",
+  "vnei_category_piece": "Show Pieces",
+  "vnei_category_item": "Show Items",
+  "vnei_enable_cheats": "Enable cheats"
 }
