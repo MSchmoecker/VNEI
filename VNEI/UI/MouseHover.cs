@@ -28,8 +28,11 @@ namespace VNEI.UI {
         public void OnPointerClick(PointerEventData eventData) {
             if (SearchUI.Instance.IsCheating()) {
                 if (item.itemType == ItemType.Item) {
-                    if (item.gameObject.GetComponent<ItemDrop>()) {
-                        Player.m_localPlayer.PickupPrefab(item.gameObject);
+                    ItemDrop itemDrop = item.gameObject.GetComponent<ItemDrop>();
+                    if ((bool)itemDrop) {
+                        bool isShiftKeyDown = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+                        int stackSize = isShiftKeyDown ? itemDrop.m_itemData.m_shared.m_maxStackSize : 1;
+                        Player.m_localPlayer.PickupPrefab(item.gameObject, stackSize);
                     } else {
                         Player.m_localPlayer.Message(MessageHud.MessageType.Center, $"item '{item.internalName}' has no ItemDrop");
                     }
