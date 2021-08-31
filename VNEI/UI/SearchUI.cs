@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using Jotunn.Managers;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using VNEI.Logic;
 
@@ -14,6 +11,8 @@ namespace VNEI.UI {
         [SerializeField] public InputField searchField;
         private List<MouseHover> sprites = new List<MouseHover>();
         private bool hasInit;
+        private const int ItemsInRow = 11;
+        private Vector2 itemSpacing = new Vector2(50f, 50f);
 
         public void Awake() {
             Instance = this;
@@ -39,13 +38,12 @@ namespace VNEI.UI {
             scrollRect.onValueChanged.AddListener(UpdateInvisible);
 
             UpdateSearch();
-            LayoutRebuilder.ForceRebuildLayoutImmediate(scrollRect.content);
-            UpdateInvisible(Vector2.zero);
         }
 
         public void UpdateSearch() {
             BaseUI.Instance.ShowSearch();
             bool useBlacklist = Plugin.useBlacklist.Value;
+            int activeItemCount = 0;
 
             foreach (MouseHover mouseHover in sprites) {
                 Item item = mouseHover.item;
@@ -58,9 +56,21 @@ namespace VNEI.UI {
                 }
 
                 mouseHover.gameObject.SetActive(active && isSearched);
+
+                RectTransform rectTransform = ((RectTransform)mouseHover.transform);
+                rectTransform.anchorMin = new Vector2(0f, 1f);
+                rectTransform.anchorMax = new Vector2(0f, 1f);
+                int row = activeItemCount % ItemsInRow;
+                int column = activeItemCount / ItemsInRow;
+                rectTransform.anchoredPosition = new Vector2Int(row, -column) * itemSpacing + itemSpacing / 2f;
+
+                if (active && isSearched) {
+                    activeItemCount++;
+                }
             }
 
-            LayoutRebuilder.ForceRebuildLayoutImmediate(scrollRect.content);
+            int rowCount = activeItemCount / ItemsInRow;
+            scrollRect.content.sizeDelta = new Vector2(scrollRect.content.sizeDelta.x, rowCount * itemSpacing.y);
             UpdateInvisible(Vector2.zero);
         }
 
@@ -71,7 +81,7 @@ namespace VNEI.UI {
             foreach (MouseHover sprite in sprites) {
                 float posY = ((RectTransform)sprite.transform).anchoredPosition.y;
                 bool invisible = posY > -scrollPos.y + 40 || posY < -scrollPos.y - rect.height - 40;
-                sprite.image.enabled = !invisible;
+                sprite.gameObject.SetActive(!invisible);
             }
         }
     }
