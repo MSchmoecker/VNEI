@@ -65,6 +65,11 @@ namespace VNEI.Logic {
 
             Log.LogInfo("Index Recipes: " + ObjectDB.instance.m_recipes.Count);
             foreach (Recipe recipe in ObjectDB.instance.m_recipes) {
+                if (!recipe.m_enabled) {
+                    Log.LogInfo($"skipping {recipe.name}: not enabled");
+                    continue;
+                }
+
                 if ((bool)recipe.m_item) {
                     ItemObtainedInRecipe(recipe.m_item.name, new RecipeInfo(recipe));
                 }
