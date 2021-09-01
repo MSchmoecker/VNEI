@@ -45,6 +45,16 @@ This copies the current plugin and all assemblies to Unity. Now you can run `Ass
 
 
 ## Changelog
+0.1.0
+- added iron ore and trailership to blacklist (this is not iron scrap and longboat!)
+- added toggleable categories: items, pieces, creatures and undefined
+- added ability to cheat items when devcommands are enabled
+- skip not enabled recipes
+- greatly increased overall performance in UI
+- changed styling of some GUI layouts
+- fixed incompatibility with MonsterLabZ
+- fixed incompatibility with ChaosArmor
+
 0.0.4
 - load search UI after a local player is present. This resolves a conflict with EpicLoot
 - fixed text was wobbling inside recipe UI due to resizing
