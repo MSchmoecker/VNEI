@@ -90,7 +90,7 @@ namespace VNEI.UI {
             }
 
             if (recalculateLayout) {
-                int rowCount = activeItemCount / ItemsInRow;
+                int rowCount = Mathf.CeilToInt( (float) activeItemCount / ItemsInRow);
                 scrollRect.content.sizeDelta = new Vector2(scrollRect.content.sizeDelta.x, rowCount * itemSpacing.y);
             }
         }
