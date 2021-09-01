@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using BepInEx;
 using UnityEngine;
 using VNEI.UI;
 
@@ -11,6 +12,7 @@ namespace VNEI.Logic {
         public readonly GameObject gameObject;
         public readonly bool isOnBlacklist;
         public readonly ItemType itemType;
+        public readonly BepInPlugin mod;
 
         public readonly List<RecipeInfo> result = new List<RecipeInfo>();
         public readonly List<RecipeInfo> ingredient = new List<RecipeInfo>();
@@ -25,10 +27,12 @@ namespace VNEI.Logic {
             gameObject = prefab;
             isOnBlacklist = Plugin.ItemBlacklist.Contains(name) || Plugin.ItemBlacklist.Contains(Indexing.CleanupName(name));
             this.itemType = itemType;
+            mod = Indexing.GetModByPrefabName(prefab.name);
         }
 
         public string GetName() {
-            return localizedName + Environment.NewLine + $"({internalName})";
+            string modName = mod != null ? mod.Name : string.Empty;
+            return $"<color=orange><b>{localizedName}</b></color>{Environment.NewLine}({internalName}){Environment.NewLine}{modName}";
         }
 
         public string GetDescription() {

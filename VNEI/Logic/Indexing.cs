@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using BepInEx;
+using Jotunn.Entities;
 using Jotunn.Managers;
+using Jotunn.Utils;
 using UnityEngine;
 
 namespace VNEI.Logic {
@@ -8,9 +11,19 @@ namespace VNEI.Logic {
         public static Dictionary<int, Item> Items { get; private set; } = new Dictionary<int, Item>();
         public static event Action IndexFinished;
 
+        private static Dictionary<string, BepInPlugin> sourceMod = new Dictionary<string, BepInPlugin>();
+
         public static void IndexAll() {
             if (Items.Count > 0) {
                 return;
+            }
+
+            foreach (CustomItem customItem in ModRegistry.GetItems()) {
+                sourceMod[customItem.ItemPrefab.name] = customItem.SourceMod;
+            }
+
+            foreach (CustomPiece customPiece in ModRegistry.GetPieces()) {
+                sourceMod[customPiece.PiecePrefab.name] = customPiece.SourceMod;
             }
 
             Log.LogInfo("Index prefabs");
@@ -216,6 +229,14 @@ namespace VNEI.Logic {
             }
 
             return name.ToLower();
+        }
+
+        public static BepInPlugin GetModByPrefabName(string name) {
+            if (sourceMod.ContainsKey(name)) {
+                return sourceMod[name];
+            }
+
+            return null;
         }
     }
 }
