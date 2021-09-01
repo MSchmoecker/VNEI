@@ -18,18 +18,20 @@ namespace VNEI.UI {
         [SerializeField] public Sprite noSprite;
 
         private Item currentItem;
-        private List<RectTransform> obtainingItems = new List<RectTransform>();
+        private List<RectTransform> obtainItems = new List<RectTransform>();
         private List<RectTransform> usingItems = new List<RectTransform>();
         private const float rowHeight = 70f;
 
         private void Awake() {
             Instance = this;
+            obtainingScroll.onValueChanged.AddListener((_) => UpdateObtainingHidden());
+            usingScroll.onValueChanged.AddListener((_) => UpdateUseHidden());
         }
 
         public void SetItem(Item item) {
             currentItem = item;
 
-            foreach (RectTransform resultObject in obtainingItems) {
+            foreach (RectTransform resultObject in obtainItems) {
                 Destroy(resultObject.gameObject);
             }
 
@@ -37,7 +39,7 @@ namespace VNEI.UI {
                 Destroy(ingredientObject.gameObject);
             }
 
-            obtainingItems.Clear();
+            obtainItems.Clear();
             usingItems.Clear();
 
             bool useBlacklist = Plugin.useBlacklist.Value;
@@ -48,7 +50,7 @@ namespace VNEI.UI {
             foreach (RecipeInfo recipe in item.result) {
                 if (useBlacklist && recipe.isOnBlacklist) continue;
 
-                float sizeX = SpawnRecipe(recipe, obtainingScroll.content, obtainingItems, posY);
+                float sizeX = SpawnRecipe(recipe, obtainingScroll.content, obtainItems, posY);
 
                 maxSizeX = Mathf.Max(sizeX, maxSizeX);
                 posY -= rowHeight;
@@ -72,6 +74,37 @@ namespace VNEI.UI {
             infoName.text = currentItem.GetName();
             infoDescription.text = Localization.instance.Localize(currentItem.GetDescription());
             infoIcon.sprite = currentItem.GetIcon();
+
+            UpdateObtainingHidden();
+            UpdateUseHidden();
+        }
+
+        private void UpdateObtainingHidden() {
+            Rect rect = ((RectTransform)obtainingScroll.transform).rect;
+            Vector2 scrollPos = obtainingScroll.content.anchoredPosition;
+
+            foreach (RectTransform obtainingItem in obtainItems) {
+                RectTransform rectTransform = (RectTransform)obtainingItem.transform;
+
+                float posY = rectTransform.anchoredPosition.y;
+                bool invisible = posY > -scrollPos.y + 40 || posY < -scrollPos.y - rect.height - 40;
+
+                obtainingItem.gameObject.SetActive(!invisible);
+            }
+        }
+
+        private void UpdateUseHidden() {
+            Rect rect = ((RectTransform)usingScroll.transform).rect;
+            Vector2 scrollPos = usingScroll.content.anchoredPosition;
+
+            foreach (RectTransform usingItem in usingItems) {
+                RectTransform rectTransform = (RectTransform)usingItem.transform;
+
+                float posY = rectTransform.anchoredPosition.y;
+                bool invisible = posY > -scrollPos.y + 40 || posY < -scrollPos.y - rect.height - 40;
+
+                usingItem.gameObject.SetActive(!invisible);
+            }
         }
 
         public float SpawnRecipe(RecipeInfo recipe, RectTransform root, List<RectTransform> objects, float posY) {
