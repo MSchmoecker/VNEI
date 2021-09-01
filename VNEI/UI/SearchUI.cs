@@ -66,11 +66,13 @@ namespace VNEI.UI {
             Vector2 scrollPos = scrollRect.content.anchoredPosition;
             int activeItemCount = 0;
 
+            string[] searchKeys = searchField.text.Split();
+
             foreach (MouseHover mouseHover in sprites) {
                 RectTransform rectTransform = (RectTransform)mouseHover.transform;
 
                 if (recalculateLayout) {
-                    mouseHover.isActive = CalculateActive(mouseHover, useBlacklist);
+                    mouseHover.isActive = CalculateActive(mouseHover, useBlacklist, searchKeys);
 
                     if (mouseHover.isActive) {
                         rectTransform.anchorMin = new Vector2(0f, 1f);
@@ -95,7 +97,7 @@ namespace VNEI.UI {
             }
         }
 
-        private bool CalculateActive(MouseHover mouseHover, bool useBlacklist) {
+        private bool CalculateActive(MouseHover mouseHover, bool useBlacklist, string[] searchKeys) {
             Item item = mouseHover.item;
             bool onBlackList = useBlacklist && item.isOnBlacklist;
 
@@ -119,11 +121,23 @@ namespace VNEI.UI {
                 return false;
             }
 
-            bool isSearched = item.localizedName.IndexOf(searchField.text, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                              item.internalName.IndexOf(searchField.text, StringComparison.OrdinalIgnoreCase) >= 0;
+            foreach (string searchKey in searchKeys) {
+                bool isSearched;
 
-            if (!isSearched) {
-                return false;
+                if (searchKey.StartsWith("@")) {
+                    if (item.mod == null) {
+                        return false;
+                    }
+
+                    isSearched = item.mod.Name.IndexOf(searchKey.Substring(1), StringComparison.OrdinalIgnoreCase) >= 0;
+                } else {
+                    isSearched = item.localizedName.IndexOf(searchKey, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                 item.internalName.IndexOf(searchKey, StringComparison.OrdinalIgnoreCase) >= 0;
+                }
+
+                if (!isSearched) {
+                    return false;
+                }
             }
 
             return true;
