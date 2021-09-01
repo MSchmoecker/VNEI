@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Jotunn.Managers;
 using UnityEngine;
 using UnityEngine.UI;
@@ -68,21 +69,21 @@ namespace VNEI.UI {
 
             string[] searchKeys = searchField.text.Split();
 
+            if (recalculateLayout) {
+                Parallel.ForEach(sprites, sprite => { sprite.isActive = CalculateActive(sprite, useBlacklist, searchKeys); });
+            }
+
             foreach (MouseHover mouseHover in sprites) {
                 RectTransform rectTransform = (RectTransform)mouseHover.transform;
 
-                if (recalculateLayout) {
-                    mouseHover.isActive = CalculateActive(mouseHover, useBlacklist, searchKeys);
+                if (recalculateLayout && mouseHover.isActive) {
+                    rectTransform.anchorMin = new Vector2(0f, 1f);
+                    rectTransform.anchorMax = new Vector2(0f, 1f);
+                    int row = activeItemCount % ItemsInRow;
+                    int column = activeItemCount / ItemsInRow;
+                    rectTransform.anchoredPosition = new Vector2(row + 0.5f, -column - 0.5f) * itemSpacing;
 
-                    if (mouseHover.isActive) {
-                        rectTransform.anchorMin = new Vector2(0f, 1f);
-                        rectTransform.anchorMax = new Vector2(0f, 1f);
-                        int row = activeItemCount % ItemsInRow;
-                        int column = activeItemCount / ItemsInRow;
-                        rectTransform.anchoredPosition = new Vector2(row + 0.5f, -column - 0.5f) * itemSpacing;
-
-                        activeItemCount++;
-                    }
+                    activeItemCount++;
                 }
 
                 float posY = rectTransform.anchoredPosition.y;
