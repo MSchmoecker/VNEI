@@ -108,22 +108,32 @@ namespace VNEI.UI {
         }
 
         public float SpawnRecipe(RecipeInfo recipe, RectTransform root, List<RectTransform> objects, float posY) {
-            GameObject row = Instantiate(BaseUI.Instance.rowPrefab, root);
-            RectTransform rowRect = (RectTransform)row.transform;
-            rowRect.anchoredPosition = new Vector2(25f, posY);
-            objects.Add(rowRect);
+            RectTransform row = (RectTransform)Instantiate(BaseUI.Instance.rowPrefab, root).transform;
+            row.anchoredPosition = new Vector2(25f, posY);
+            objects.Add(row);
 
             float sizeX = 25;
             float deltaX;
 
             foreach (Tuple<Item, Amount> ingredient in recipe.ingredient) {
-                SpawnItem(ingredient, rowRect, new Vector2(0, -25f), ref sizeX, out deltaX);
+                SpawnItem(ingredient, row, new Vector2(0, -25f), ref sizeX, out deltaX);
             }
 
-            SpawnRowElement(BaseUI.Instance.arrowPrefab, rowRect, new Vector2(-15f, 10f), ref sizeX, out deltaX);
+            if (recipe.station == null) {
+                SpawnRowElement(BaseUI.Instance.arrowPrefab, row, new Vector2(-15f, -25f), ref sizeX, out deltaX);
+            } else {
+                float tmp = sizeX;
+                SpawnRowElement(BaseUI.Instance.arrowPrefab, row, new Vector2(-5f, -15f), ref tmp, out _);
+                tmp = sizeX;
+                RectTransform spawned = SpawnRowElement(BaseUI.Instance.itemPrefab, row, new Vector2(-5f, -40f), ref tmp, out _);
+                spawned.sizeDelta = new Vector2(30f, 30f);
+                deltaX = 40f;
+                sizeX += deltaX;
+                spawned.GetComponent<MouseHover>().SetItem(recipe.station);
+            }
 
             if (recipe.droppedCount.min != 1 || recipe.droppedCount.max != 1 || Math.Abs(recipe.droppedCount.chance - 1f) > 0.01f) {
-                RectTransform recipeDropped = SpawnRowElement(BaseUI.Instance.recipeDroppedTextPrefab, rowRect, new Vector2(0, -25f),
+                RectTransform recipeDropped = SpawnRowElement(BaseUI.Instance.recipeDroppedTextPrefab, row, new Vector2(0, -25f),
                                                               ref sizeX, out deltaX);
                 Text recipeDroppedText = recipeDropped.GetComponent<Text>();
                 recipeDroppedText.text = recipe.droppedCount.ToString();
@@ -131,7 +141,7 @@ namespace VNEI.UI {
             }
 
             foreach (Tuple<Item, Amount> result in recipe.result) {
-                SpawnItem(result, rowRect, new Vector2(0, -25f), ref sizeX, out deltaX);
+                SpawnItem(result, row, new Vector2(0, -25f), ref sizeX, out deltaX);
             }
 
             return sizeX - deltaX / 2f;

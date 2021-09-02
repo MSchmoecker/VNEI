@@ -7,6 +7,7 @@ namespace VNEI.Logic {
     public class RecipeInfo {
         public List<Tuple<Item, Amount>> ingredient = new List<Tuple<Item, Amount>>();
         public List<Tuple<Item, Amount>> result = new List<Tuple<Item, Amount>>();
+        public Item station;
         public Amount droppedCount = new Amount(1);
         public bool isOnBlacklist;
 
@@ -36,6 +37,19 @@ namespace VNEI.Logic {
             }
         }
 
+        public void SetStation<T>(T item, Func<T, string> getName) {
+            if (item != null) {
+                int key = Indexing.CleanupName(getName(item)).GetStableHashCode();
+                if (Indexing.Items.ContainsKey(key)) {
+                    station = Indexing.Items[key];
+                } else {
+                    Log.LogInfo($"cannot set station '{getName(item)}' as is not indexed");
+                }
+            } else {
+                Log.LogInfo($"cannot set station: is null");
+            }
+        }
+
         private void CalculateIsOnBlacklist() {
             if (ingredient.Any(i => Plugin.ItemBlacklist.Contains(i.Item1.internalName))) {
                 isOnBlacklist = true;
@@ -48,6 +62,10 @@ namespace VNEI.Logic {
         }
 
         public RecipeInfo(Recipe recipe) {
+            if (recipe.m_craftingStation != null) {
+                SetStation(recipe.m_craftingStation, i => i.name);
+            }
+
             AddResult(recipe.m_item, new Amount(recipe.m_amount), i => i.name, recipe.name);
 
             foreach (Piece.Requirement resource in recipe.m_resources) {
@@ -57,21 +75,24 @@ namespace VNEI.Logic {
             CalculateIsOnBlacklist();
         }
 
-        public RecipeInfo(Smelter.ItemConversion conversion, string context) {
-            AddIngredient(conversion.m_from, new Amount(1), i => i.name, context);
-            AddResult(conversion.m_to, new Amount(1), i => i.name, context);
+        public RecipeInfo(Smelter.ItemConversion conversion, Smelter smelter) {
+            SetStation(smelter, i => i.name);
+            AddIngredient(conversion.m_from, new Amount(1), i => i.name, smelter.name);
+            AddResult(conversion.m_to, new Amount(1), i => i.name, smelter.name);
             CalculateIsOnBlacklist();
         }
 
-        public RecipeInfo(Fermenter.ItemConversion conversion, string context) {
-            AddIngredient(conversion.m_from, new Amount(1), i => i.name, context);
-            AddResult(conversion.m_to, new Amount(conversion.m_producedItems), i => i.name, context);
+        public RecipeInfo(Fermenter.ItemConversion conversion, Fermenter fermenter) {
+            SetStation(fermenter, i => i.name);
+            AddIngredient(conversion.m_from, new Amount(1), i => i.name, fermenter.name);
+            AddResult(conversion.m_to, new Amount(conversion.m_producedItems), i => i.name, fermenter.name);
             CalculateIsOnBlacklist();
         }
 
-        public RecipeInfo(CookingStation.ItemConversion conversion, string context) {
-            AddIngredient(conversion.m_from, new Amount(1), i => i.name, context);
-            AddResult(conversion.m_to, new Amount(1), i => i.name, context);
+        public RecipeInfo(CookingStation.ItemConversion conversion, CookingStation cookingStation) {
+            SetStation(cookingStation, i => i.name);
+            AddIngredient(conversion.m_from, new Amount(1), i => i.name, cookingStation.name);
+            AddResult(conversion.m_to, new Amount(1), i => i.name, cookingStation.name);
             CalculateIsOnBlacklist();
         }
 

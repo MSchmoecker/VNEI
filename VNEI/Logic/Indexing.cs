@@ -83,35 +83,26 @@ namespace VNEI.Logic {
                     continue;
                 }
 
-                if ((bool)recipe.m_item) {
-                    ItemObtainedInRecipe(recipe.m_item.name, new RecipeInfo(recipe));
-                }
-
-                foreach (Piece.Requirement resource in recipe.m_resources) {
-                    if ((bool)resource.m_resItem) {
-                        ItemUsedInRecipe(resource.m_resItem.name, new RecipeInfo(recipe));
-                    }
-                }
+                AddRecipeToItems(new RecipeInfo(recipe));
             }
 
             Log.LogInfo("Index prefabs Recipes");
             foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
                 if (prefab.TryGetComponent(out Smelter smelter)) {
                     foreach (Smelter.ItemConversion conversion in smelter.m_conversion) {
-                        AddConversionRecipe(conversion.m_from, conversion.m_to, new RecipeInfo(conversion, smelter.name), smelter.name);
+                        AddRecipeToItems(new RecipeInfo(conversion, smelter));
                     }
                 }
 
                 if (prefab.TryGetComponent(out Fermenter fermenter)) {
                     foreach (Fermenter.ItemConversion conversion in fermenter.m_conversion) {
-                        AddConversionRecipe(conversion.m_from, conversion.m_to, new RecipeInfo(conversion, fermenter.name), fermenter.name);
+                        AddRecipeToItems(new RecipeInfo(conversion, fermenter));
                     }
                 }
 
                 if (prefab.TryGetComponent(out CookingStation cookingStation)) {
                     foreach (CookingStation.ItemConversion conversion in cookingStation.m_conversion) {
-                        AddConversionRecipe(conversion.m_from, conversion.m_to, new RecipeInfo(conversion, cookingStation.name),
-                                            cookingStation.name);
+                        AddRecipeToItems(new RecipeInfo(conversion, cookingStation));
                     }
                 }
 
@@ -204,6 +195,10 @@ namespace VNEI.Logic {
 
             foreach (Tuple<Item, Amount> tuple in recipeInfo.result) {
                 ItemObtainedInRecipe(tuple.Item1.internalName, recipeInfo);
+            }
+
+            if (recipeInfo.station != null) {
+                ItemUsedInRecipe(recipeInfo.station.internalName, recipeInfo);
             }
         }
 
