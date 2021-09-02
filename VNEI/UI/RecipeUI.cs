@@ -110,49 +110,51 @@ namespace VNEI.UI {
         public float SpawnRecipe(RecipeInfo recipe, RectTransform root, List<RectTransform> objects, float posY) {
             GameObject row = Instantiate(BaseUI.Instance.rowPrefab, root);
             RectTransform rowRect = (RectTransform)row.transform;
-            objects.Add(rowRect);
             rowRect.anchoredPosition = new Vector2(25f, posY);
+            objects.Add(rowRect);
 
             float sizeX = 25;
+            float deltaX;
 
             foreach (Tuple<Item, Amount> ingredient in recipe.ingredient) {
-                sizeX += SpawnItem(ingredient, rowRect, sizeX);
+                SpawnItem(ingredient, rowRect, new Vector2(0, -25f), ref sizeX, out deltaX);
             }
 
-            GameObject arrow = Instantiate(BaseUI.Instance.arrowPrefab, rowRect);
-            ((RectTransform)arrow.transform).anchoredPosition = new Vector2(sizeX - 15f, 10f);
-            sizeX += ((RectTransform)BaseUI.Instance.arrowPrefab.transform).sizeDelta.x;
+            SpawnRowElement(BaseUI.Instance.arrowPrefab, rowRect, new Vector2(-15f, 10f), ref sizeX, out deltaX);
 
             if (recipe.droppedCount.min != 1 || recipe.droppedCount.max != 1 || Math.Abs(recipe.droppedCount.chance - 1f) > 0.01f) {
-                Text recipeDroppedText = Instantiate(BaseUI.Instance.recipeDroppedTextPrefab, rowRect).GetComponent<Text>();
-                ((RectTransform)recipeDroppedText.transform).anchoredPosition = new Vector2(sizeX, -25f);
-
+                RectTransform recipeDropped = SpawnRowElement(BaseUI.Instance.recipeDroppedTextPrefab, rowRect, new Vector2(0, -25f),
+                                                              ref sizeX, out deltaX);
+                Text recipeDroppedText = recipeDropped.GetComponent<Text>();
                 recipeDroppedText.text = recipe.droppedCount.ToString();
                 Styling.ApplyText(recipeDroppedText, GUIManager.Instance.AveriaSerif, Color.white);
-
-                sizeX += ((RectTransform)BaseUI.Instance.recipeDroppedTextPrefab.transform).sizeDelta.x;
             }
 
             foreach (Tuple<Item, Amount> result in recipe.result) {
-                sizeX += SpawnItem(result, rowRect, sizeX);
+                SpawnItem(result, rowRect, new Vector2(0, -25f), ref sizeX, out deltaX);
             }
 
-            return sizeX - 15f;
+            return sizeX - deltaX / 2f;
         }
 
-        private float SpawnItem(Tuple<Item, Amount> item, RectTransform root, float posX) {
-            GameObject spawnedItem = Instantiate(BaseUI.Instance.itemPrefab, root);
+        private static void SpawnItem(Tuple<Item, Amount> item, Transform root, Vector2 relPos, ref float posX, out float deltaX) {
+            RectTransform spawned = SpawnRowElement(BaseUI.Instance.itemPrefab, root, relPos, ref posX, out deltaX);
 
-            ((RectTransform)spawnedItem.transform).anchoredPosition = new Vector2(posX, -25f);
-            spawnedItem.GetComponent<MouseHover>().SetItem(item.Item1);
-            spawnedItem.GetComponent<Image>().sprite = item.Item1.GetIcon();
+            MouseHover mouseHover = spawned.GetComponent<MouseHover>();
+            mouseHover.SetItem(item.Item1);
+            mouseHover.SetCount(item.Item2.ToString());
+        }
 
-            Text count = spawnedItem.transform.Find("Count").GetComponent<Text>();
-            count.text = item.Item2.ToString();
-            count.gameObject.SetActive(true);
-            Styling.ApplyText(count, GUIManager.Instance.AveriaSerif, Color.white);
+        private static RectTransform SpawnRowElement(GameObject prefab, Transform parent, Vector2 relPos, ref float posX,
+            out float deltaX) {
+            GameObject spawned = Instantiate(prefab, parent);
+            RectTransform rectTransform = (RectTransform)spawned.transform;
 
-            return ((RectTransform)BaseUI.Instance.itemPrefab.transform).sizeDelta.x;
+            rectTransform.anchoredPosition = relPos + new Vector2(posX, 0);
+            deltaX = rectTransform.sizeDelta.x;
+            posX += deltaX;
+
+            return rectTransform;
         }
     }
 }

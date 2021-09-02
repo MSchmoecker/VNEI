@@ -90,6 +90,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   image: {fileID: 8201556185578860035}
+  countText: {fileID: 4782237571178245785}
   isActive: 0
 --- !u!114 &235167197401421400
 MonoBehaviour:

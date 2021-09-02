@@ -8,12 +8,14 @@ namespace VNEI.UI {
     // TODO rename class
     public class MouseHover : MonoBehaviour, IPointerClickHandler {
         public Image image;
+        public Text countText;
         public Item item;
         public bool isActive;
 
         private void Awake() {
             GetComponent<UITooltip>().m_tooltipPrefab = PrefabManager.Instance.GetPrefab("InventoryTooltip");
             GetComponent<UITooltip>().m_gamepadFocusObject = PrefabManager.Instance.GetPrefab("selected");
+            Styling.ApplyText(countText, GUIManager.Instance.AveriaSerif, Color.white);
         }
 
         public void SetItem(Item item) {
@@ -23,6 +25,7 @@ namespace VNEI.UI {
             string tooltip = item.GetTooltip();
             tooltip = tooltip.Length > 0 ? tooltip : item.description;
             GetComponent<UITooltip>().Set(topic, tooltip);
+            GetComponent<Image>().sprite = item.GetIcon();
         }
 
         public void OnPointerClick(PointerEventData eventData) {
@@ -43,6 +46,11 @@ namespace VNEI.UI {
                 RecipeUI.Instance.SetItem(item);
                 BaseUI.Instance.ShowRecipe();
             }
+        }
+
+        public void SetCount(string count) {
+            countText.text = count;
+            countText.gameObject.SetActive(true);
         }
     }
 }
