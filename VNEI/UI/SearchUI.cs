@@ -20,7 +20,7 @@ namespace VNEI.UI {
         [SerializeField] public TypeToggle showPieces;
         [SerializeField] public TypeToggle showItems;
 
-        private List<DisplayItem> displayItems = new List<DisplayItem>();
+        private List<ListItem> displayItems = new List<ListItem>();
         private List<MouseHover> mouseHovers = new List<MouseHover>();
         private bool hasInit;
         private const int RowCount = 6;
@@ -49,8 +49,10 @@ namespace VNEI.UI {
 
         public void Init() {
             foreach (KeyValuePair<int, Item> item in Indexing.Items) {
-                displayItems.Add(new DisplayItem { item = item.Value });
+                displayItems.Add(new ListItem(item.Value));
             }
+
+            displayItems.Sort(ListItem.Comparer);
 
             for (int i = 0; i < RowCount; i++) {
                 for (int j = 0; j < ItemsInRow; j++) {
@@ -83,9 +85,9 @@ namespace VNEI.UI {
             int totalActive = displayItems.Count(i => i.isActive);
             maxPages = Mathf.Max(Mathf.CeilToInt((float)totalActive / (RowCount * ItemsInRow)) - 1, 0);
             int displayPage = Mathf.Min(currentPage, maxPages);
-            List<DisplayItem> activeDisplayItems = displayItems.Where(i => i.isActive)
-                                                               .Skip(displayPage * RowCount * ItemsInRow)
-                                                               .Take(RowCount * ItemsInRow).ToList();
+            List<ListItem> activeDisplayItems = displayItems.Where(i => i.isActive)
+                                                            .Skip(displayPage * RowCount * ItemsInRow)
+                                                            .Take(RowCount * ItemsInRow).ToList();
             pageText.text = $"{displayPage + 1}/{maxPages + 1}";
 
             for (int i = 0; i < RowCount * ItemsInRow; i++) {
@@ -186,9 +188,18 @@ namespace VNEI.UI {
             TypeToggle.OnChange -= typeToggleOnChange;
         }
 
-        private class DisplayItem {
-            public Item item;
+        private class ListItem {
+            public readonly Item item;
             public bool isActive;
+
+            public ListItem(Item item) {
+                this.item = item;
+                isActive = false;
+            }
+
+            public static int Comparer(ListItem a, ListItem b) {
+                return string.Compare(a.item.GetPrimaryName(), b.item.GetPrimaryName(), StringComparison.InvariantCultureIgnoreCase);
+            }
         }
     }
 }

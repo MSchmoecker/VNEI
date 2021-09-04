@@ -118,8 +118,6 @@ namespace VNEI.Logic {
                     AddRecipeToItems(new RecipeInfo(prefab, dropOnDestroyed.m_dropWhenDestroyed));
                 }
 
-                // TODO Source Station listing
-
                 if (prefab.TryGetComponent(out Piece piece)) {
                     AddRecipeToItems(new RecipeInfo(prefab, piece.m_resources));
                 }

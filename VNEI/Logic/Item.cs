@@ -58,5 +58,9 @@ namespace VNEI.Logic {
         public Sprite GetIcon() {
             return icon != null ? icon : RecipeUI.Instance.noSprite;
         }
+
+        public string GetPrimaryName() {
+            return localizedName.Length > 0 ? localizedName : internalName;
+        }
     }
 }
