@@ -20,12 +20,12 @@ namespace VNEI.UI {
         [SerializeField] public TypeToggle showPieces;
         [SerializeField] public TypeToggle showItems;
 
-        private List<ListItem> displayItems = new List<ListItem>();
-        private List<MouseHover> mouseHovers = new List<MouseHover>();
+        private readonly List<ListItem> listItems = new List<ListItem>();
+        private readonly List<DisplayItem> displayItems = new List<DisplayItem>();
         private bool hasInit;
         private const int RowCount = 6;
         private const int ItemsInRow = 11;
-        private Vector2 itemSpacing = new Vector2(50f, 50f);
+        private readonly Vector2 itemSpacing = new Vector2(50f, 50f);
         private Action typeToggleOnChange;
         private int currentPage;
         private int maxPages;
@@ -49,16 +49,16 @@ namespace VNEI.UI {
 
         public void Init() {
             foreach (KeyValuePair<int, Item> item in Indexing.Items) {
-                displayItems.Add(new ListItem(item.Value));
+                listItems.Add(new ListItem(item.Value));
             }
 
-            displayItems.Sort(ListItem.Comparer);
+            listItems.Sort(ListItem.Comparer);
 
             for (int i = 0; i < RowCount; i++) {
                 for (int j = 0; j < ItemsInRow; j++) {
                     GameObject sprite = Instantiate(BaseUI.Instance.itemPrefab, spawnRect);
                     sprite.SetActive(false);
-                    mouseHovers.Add(sprite.GetComponent<MouseHover>());
+                    displayItems.Add(sprite.GetComponent<DisplayItem>());
                 }
             }
 
@@ -79,22 +79,22 @@ namespace VNEI.UI {
             string[] searchKeys = searchField.text.Split();
 
             if (recalculateLayout) {
-                Parallel.ForEach(displayItems, i => { i.isActive = CalculateActive(i.item, useBlacklist, searchKeys); });
+                Parallel.ForEach(listItems, i => { i.isActive = CalculateActive(i.item, useBlacklist, searchKeys); });
             }
 
-            int totalActive = displayItems.Count(i => i.isActive);
+            int totalActive = listItems.Count(i => i.isActive);
             maxPages = Mathf.Max(Mathf.CeilToInt((float)totalActive / (RowCount * ItemsInRow)) - 1, 0);
             int displayPage = Mathf.Min(currentPage, maxPages);
-            List<ListItem> activeDisplayItems = displayItems.Where(i => i.isActive)
+            List<ListItem> activeDisplayItems = listItems.Where(i => i.isActive)
                                                             .Skip(displayPage * RowCount * ItemsInRow)
                                                             .Take(RowCount * ItemsInRow).ToList();
             pageText.text = $"{displayPage + 1}/{maxPages + 1}";
 
             for (int i = 0; i < RowCount * ItemsInRow; i++) {
                 if (i < activeDisplayItems.Count) {
-                    mouseHovers[i].gameObject.SetActive(true);
-                    mouseHovers[i].SetItem(activeDisplayItems[i].item);
-                    RectTransform rectTransform = (RectTransform)mouseHovers[i].transform;
+                    displayItems[i].gameObject.SetActive(true);
+                    displayItems[i].SetItem(activeDisplayItems[i].item);
+                    RectTransform rectTransform = (RectTransform)displayItems[i].transform;
 
                     rectTransform.anchorMin = new Vector2(0f, 1f);
                     rectTransform.anchorMax = new Vector2(0f, 1f);
@@ -102,7 +102,7 @@ namespace VNEI.UI {
                     int column = i / ItemsInRow;
                     rectTransform.anchoredPosition = new Vector2(row + 0.5f, -column - 0.5f) * itemSpacing;
                 } else {
-                    mouseHovers[i].gameObject.SetActive(false);
+                    displayItems[i].gameObject.SetActive(false);
                 }
             }
         }

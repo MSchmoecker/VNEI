@@ -129,7 +129,7 @@ namespace VNEI.UI {
                 spawned.sizeDelta = new Vector2(30f, 30f);
                 deltaX = 40f;
                 sizeX += deltaX;
-                spawned.GetComponent<MouseHover>().SetItem(recipe.station);
+                spawned.GetComponent<DisplayItem>().SetItem(recipe.station);
             }
 
             if (recipe.droppedCount.min != 1 || recipe.droppedCount.max != 1 || Math.Abs(recipe.droppedCount.chance - 1f) > 0.01f) {
@@ -150,9 +150,9 @@ namespace VNEI.UI {
         private static void SpawnItem(Tuple<Item, Amount> item, Transform root, Vector2 relPos, ref float posX, out float deltaX) {
             RectTransform spawned = SpawnRowElement(BaseUI.Instance.itemPrefab, root, relPos, ref posX, out deltaX);
 
-            MouseHover mouseHover = spawned.GetComponent<MouseHover>();
-            mouseHover.SetItem(item.Item1);
-            mouseHover.SetCount(item.Item2.ToString());
+            DisplayItem displayItem = spawned.GetComponent<DisplayItem>();
+            displayItem.SetItem(item.Item1);
+            displayItem.SetCount(item.Item2.ToString());
         }
 
         private static RectTransform SpawnRowElement(GameObject prefab, Transform parent, Vector2 relPos, ref float posX,

@@ -5,27 +5,22 @@ using UnityEngine.UI;
 using VNEI.Logic;
 
 namespace VNEI.UI {
-    // TODO rename class
-    public class MouseHover : MonoBehaviour, IPointerClickHandler {
+    public class DisplayItem : MonoBehaviour, IPointerClickHandler {
         public Image image;
+        public UITooltip uiTooltip;
         public Text countText;
         public Item item;
-        public bool isActive;
 
         private void Awake() {
-            GetComponent<UITooltip>().m_tooltipPrefab = PrefabManager.Instance.GetPrefab("InventoryTooltip");
-            GetComponent<UITooltip>().m_gamepadFocusObject = PrefabManager.Instance.GetPrefab("selected");
+            uiTooltip.m_tooltipPrefab = PrefabManager.Instance.GetPrefab("InventoryTooltip");
+            uiTooltip.m_gamepadFocusObject = PrefabManager.Instance.GetPrefab("selected");
             Styling.ApplyText(countText, GUIManager.Instance.AveriaSerif, Color.white);
         }
 
-        public void SetItem(Item item) {
-            this.item = item;
-
-            string topic = item.localizedName.Length > 0 ? item.localizedName : item.internalName;
-            string tooltip = item.GetTooltip();
-            tooltip = tooltip.Length > 0 ? tooltip : item.description;
-            GetComponent<UITooltip>().Set(topic, tooltip);
-            GetComponent<Image>().sprite = item.GetIcon();
+        public void SetItem(Item target) {
+            item = target;
+            image.sprite = item.GetIcon();
+            uiTooltip.Set(item.GetPrimaryName(), item.GetTooltip());
         }
 
         public void OnPointerClick(PointerEventData eventData) {

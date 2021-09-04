@@ -86,12 +86,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1707802139643701713}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 379123267, guid: c09b8d6d0746d374d9f0b1a7470d1e74, type: 3}
+  m_Script: {fileID: -2048174641, guid: c09b8d6d0746d374d9f0b1a7470d1e74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   image: {fileID: 8201556185578860035}
+  uiTooltip: {fileID: 235167197401421400}
   countText: {fileID: 4782237571178245785}
-  isActive: 0
 --- !u!114 &235167197401421400
 MonoBehaviour:
   m_ObjectHideFlags: 0
