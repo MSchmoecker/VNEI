@@ -24,7 +24,7 @@ namespace VNEI.UI {
         }
 
         public void OnPointerClick(PointerEventData eventData) {
-            if (SearchUI.Instance.IsCheating()) {
+            if (SearchUI.Instance.IsCheating() && eventData.button == PointerEventData.InputButton.Right) {
                 if (item.itemType == ItemType.Item) {
                     ItemDrop itemDrop = item.gameObject.GetComponent<ItemDrop>();
                     if ((bool)itemDrop) {
