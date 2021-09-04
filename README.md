@@ -1,31 +1,31 @@
 # VNEI - Valheim Not Enough Items
 
 ## About
-VNEI shows all items and recipes inside an ingame GUI for easy access.
-If items or recipes from other mods are missing, please contact me.
+VNEI shows all items and recipes from the vanilla game and other mods inside an ingame GUI for easy access.
 
 ![screenshot](https://raw.githubusercontent.com/MSchmoecker/VNEI/master/Docs/WholeScreenshot.png)
 
 ![crafting](https://raw.githubusercontent.com/MSchmoecker/VNEI/master/Docs/CarrotCrafting.png)
 
 ## Installation
-This mod requiers BepInEx and Jötunn.
-
+This mod requires BepInEx and Jötunn.\
 Extract the content of `VNEI` into the `BepInEx/plugins` folder.
 
 This is a client side mod and not everyone has to use it if you are playing in multiplayer.
-
+If items or recipes from other mods are missing, please contact me.
 
 ## Development
 BepInEx must be setup at manual or with r2modman/Thunderstore Mod Manager.
 Jötunn must be installed.
 Everything else is setup to be as automatic as possible, no need to copy any files or folders.
 
+Note the master branch will always use a stable Jötunn version while others may use a directly compiled one.
+
 Create a file called `Environment.props` inside the project root.
 Copy the example and change the Valheim install path to your location.
 If you use r2modman/Tunderstore Mod Manager you can set the path too, but this is optional.
 
-````
+```
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
@@ -36,12 +36,14 @@ If you use r2modman/Tunderstore Mod Manager you can set the path too, but this i
         <USE_R2MODMAN_AS_DEPLOY_FOLDER>false</USE_R2MODMAN_AS_DEPLOY_FOLDER>
     </PropertyGroup>
 </Project>
-````
-If the paths are set correctly, all assemblies are loaded and the project can be build.
-Now you can run `deploy.sh`, this will copy the plugin to your plugin folder as you setup in `Environment.props`.
+```
 
-If you want to rebuild the asset bundle, open Unity with the project loaded and having `deploy.sh` runned.
-This copies the current plugin and all assemblies to Unity. Now you can run `Assets/Build AssetBundles` at the toolbar, this also copies the asset bundle back to the C# project.
+If the paths are set correctly, all assemblies are loaded and the project can be build.
+Now you can run `deploy.sh`, this will copy the mod to your BepInEx plugin folder as you setup in `Environment.props`.
+
+If you want to rebuild the asset bundle, open the Unity project.
+Because VNEI.dll, Jotunn.dll and dependencies must be present inside Unity, `deploy.sh` had to be ran at least once.
+Now you can run `Assets/Build AssetBundles` at the toolbar, this copies the asset bundle back to the C# project.
 
 
 ## Changelog
