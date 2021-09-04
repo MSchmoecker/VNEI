@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Jotunn.Managers;
@@ -9,20 +10,25 @@ using VNEI.Logic;
 namespace VNEI.UI {
     public class SearchUI : MonoBehaviour {
         public static SearchUI Instance { get; private set; }
-        [SerializeField] private ScrollRect scrollRect;
+        [SerializeField] private Transform spawnRect;
         [SerializeField] public InputField searchField;
         [SerializeField] public Toggle cheat;
+        [SerializeField] public Text pageText;
 
         [SerializeField] public TypeToggle showUndefined;
         [SerializeField] public TypeToggle showCreatures;
         [SerializeField] public TypeToggle showPieces;
         [SerializeField] public TypeToggle showItems;
 
-        private List<MouseHover> sprites = new List<MouseHover>();
+        private List<DisplayItem> displayItems = new List<DisplayItem>();
+        private List<MouseHover> mouseHovers = new List<MouseHover>();
         private bool hasInit;
+        private const int RowCount = 6;
         private const int ItemsInRow = 11;
         private Vector2 itemSpacing = new Vector2(50f, 50f);
         private Action typeToggleOnChange;
+        private int currentPage;
+        private int maxPages;
 
         public void Awake() {
             Instance = this;
@@ -43,12 +49,17 @@ namespace VNEI.UI {
 
         public void Init() {
             foreach (KeyValuePair<int, Item> item in Indexing.Items) {
-                GameObject sprite = Instantiate(BaseUI.Instance.itemPrefab, scrollRect.content);
-                sprite.GetComponentInChildren<MouseHover>().SetItem(item.Value);
-                sprites.Add(sprite.GetComponent<MouseHover>());
+                displayItems.Add(new DisplayItem { item = item.Value });
             }
 
-            scrollRect.onValueChanged.AddListener((_) => UpdateSearch(false));
+            for (int i = 0; i < RowCount; i++) {
+                for (int j = 0; j < ItemsInRow; j++) {
+                    GameObject sprite = Instantiate(BaseUI.Instance.itemPrefab, spawnRect);
+                    sprite.SetActive(false);
+                    mouseHovers.Add(sprite.GetComponent<MouseHover>());
+                }
+            }
+
             searchField.onValueChanged.AddListener((_) => UpdateSearch(true));
 
             showUndefined.image.sprite = RecipeUI.Instance.noSprite;
@@ -62,43 +73,67 @@ namespace VNEI.UI {
         public void UpdateSearch(bool recalculateLayout) {
             BaseUI.Instance.ShowSearch();
             bool useBlacklist = Plugin.useBlacklist.Value;
-            Rect rect = ((RectTransform)scrollRect.transform).rect;
-            Vector2 scrollPos = scrollRect.content.anchoredPosition;
-            int activeItemCount = 0;
 
             string[] searchKeys = searchField.text.Split();
 
             if (recalculateLayout) {
-                Parallel.ForEach(sprites, sprite => { sprite.isActive = CalculateActive(sprite, useBlacklist, searchKeys); });
+                Parallel.ForEach(displayItems, i => { i.isActive = CalculateActive(i.item, useBlacklist, searchKeys); });
             }
 
-            foreach (MouseHover mouseHover in sprites) {
-                RectTransform rectTransform = (RectTransform)mouseHover.transform;
+            int totalActive = displayItems.Count(i => i.isActive);
+            maxPages = Mathf.Max(Mathf.CeilToInt((float)totalActive / (RowCount * ItemsInRow)) - 1, 0);
+            int displayPage = Mathf.Min(currentPage, maxPages);
+            List<DisplayItem> activeDisplayItems = displayItems.Where(i => i.isActive)
+                                                               .Skip(displayPage * RowCount * ItemsInRow)
+                                                               .Take(RowCount * ItemsInRow).ToList();
+            pageText.text = $"{displayPage + 1}/{maxPages + 1}";
 
-                if (recalculateLayout && mouseHover.isActive) {
+            for (int i = 0; i < RowCount * ItemsInRow; i++) {
+                if (i < activeDisplayItems.Count) {
+                    mouseHovers[i].gameObject.SetActive(true);
+                    mouseHovers[i].SetItem(activeDisplayItems[i].item);
+                    RectTransform rectTransform = (RectTransform)mouseHovers[i].transform;
+
                     rectTransform.anchorMin = new Vector2(0f, 1f);
                     rectTransform.anchorMax = new Vector2(0f, 1f);
-                    int row = activeItemCount % ItemsInRow;
-                    int column = activeItemCount / ItemsInRow;
+                    int row = i % ItemsInRow;
+                    int column = i / ItemsInRow;
                     rectTransform.anchoredPosition = new Vector2(row + 0.5f, -column - 0.5f) * itemSpacing;
-
-                    activeItemCount++;
+                } else {
+                    mouseHovers[i].gameObject.SetActive(false);
                 }
-
-                float posY = rectTransform.anchoredPosition.y;
-                bool invisible = posY > -scrollPos.y + 40 || posY < -scrollPos.y - rect.height - 40;
-
-                mouseHover.gameObject.SetActive(mouseHover.isActive && !invisible);
-            }
-
-            if (recalculateLayout) {
-                int rowCount = Mathf.CeilToInt( (float) activeItemCount / ItemsInRow);
-                scrollRect.content.sizeDelta = new Vector2(scrollRect.content.sizeDelta.x, rowCount * itemSpacing.y);
             }
         }
 
-        private bool CalculateActive(MouseHover mouseHover, bool useBlacklist, string[] searchKeys) {
-            Item item = mouseHover.item;
+        public void NextPage() {
+            if (currentPage > maxPages) {
+                currentPage = maxPages;
+            }
+
+            currentPage++;
+
+            if (currentPage > maxPages) {
+                currentPage = maxPages;
+            }
+
+            UpdateSearch(false);
+        }
+
+        public void PreviousPage() {
+            if (currentPage > maxPages) {
+                currentPage = maxPages;
+            }
+
+            currentPage--;
+
+            if (currentPage < 0) {
+                currentPage = 0;
+            }
+
+            UpdateSearch(false);
+        }
+
+        private bool CalculateActive(Item item, bool useBlacklist, string[] searchKeys) {
             bool onBlackList = useBlacklist && item.isOnBlacklist;
 
             if (onBlackList) {
@@ -149,6 +184,11 @@ namespace VNEI.UI {
 
         private void OnDestroy() {
             TypeToggle.OnChange -= typeToggleOnChange;
+        }
+
+        private class DisplayItem {
+            public Item item;
+            public bool isActive;
         }
     }
 }
