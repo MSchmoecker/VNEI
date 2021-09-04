@@ -25,17 +25,14 @@ namespace VNEI.UI {
 
         public void OnPointerClick(PointerEventData eventData) {
             if (SearchUI.Instance.IsCheating() && eventData.button == PointerEventData.InputButton.Right) {
-                if (item.itemType == ItemType.Item) {
+                if (item.itemType == ItemType.Item && (bool)item.gameObject.GetComponent<ItemDrop>()) {
                     ItemDrop itemDrop = item.gameObject.GetComponent<ItemDrop>();
-                    if ((bool)itemDrop) {
-                        bool isShiftKeyDown = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
-                        int stackSize = isShiftKeyDown ? itemDrop.m_itemData.m_shared.m_maxStackSize : 1;
-                        Player.m_localPlayer.PickupPrefab(item.gameObject, stackSize);
-                    } else {
-                        Player.m_localPlayer.Message(MessageHud.MessageType.Center, $"item '{item.internalName}' has no ItemDrop");
-                    }
+                    bool isShiftKeyDown = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+                    int stackSize = isShiftKeyDown ? itemDrop.m_itemData.m_shared.m_maxStackSize : 1;
+                    Player.m_localPlayer.PickupPrefab(item.gameObject, stackSize);
                 } else {
-                    Player.m_localPlayer.Message(MessageHud.MessageType.Center, "only item spawning is possible");
+                    Transform playerTransform = Player.m_localPlayer.transform;
+                    Instantiate(item.gameObject, playerTransform.position + playerTransform.forward * 2f, Quaternion.identity);
                 }
             } else {
                 RecipeUI.Instance.SetItem(item);
