@@ -35,12 +35,12 @@ namespace VNEI {
             const string fixPlantsDescription = "This combines plants which are stored as two separate objects to one, " +
                                                 "as one is used for seeds and the other for the real plant. " +
                                                 "Turn this off if some other mod has problems with this fix and provide a bug report, please";
-            fixPlants = Config.Bind("General", "fix_cultivate_plants", true, new ConfigDescription(fixPlantsDescription));
+            fixPlants = Config.Bind("General", "Fix Cultivate Plants", true, new ConfigDescription(fixPlantsDescription));
 
             const string useBlacklistDescription = "Disables items that are not used currently in the game. This doesn't include " +
                                                    "placeholder items but testing objects for the devs or not obtainable items/effects. " +
                                                    "This list is manual, so please contact me if an item is missing/not on the list";
-            useBlacklist = Config.Bind("General", "use_item_blacklist", true, new ConfigDescription(useBlacklistDescription));
+            useBlacklist = Config.Bind("General", "Use Item Blacklist", true, new ConfigDescription(useBlacklistDescription));
             harmony = new Harmony(ModGuid);
             harmony.PatchAll();
 
