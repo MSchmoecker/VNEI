@@ -106,10 +106,11 @@ namespace VNEI.Logic {
             CalculateIsOnBlacklist();
         }
 
-        public RecipeInfo(GameObject prefab, Piece.Requirement[] requirements) {
+        public RecipeInfo(GameObject prefab, Piece piece, Item crafter) {
+            station = crafter;
             AddResult(prefab, new Amount(1), i => i.name, prefab.name);
 
-            foreach (Piece.Requirement requirement in requirements) {
+            foreach (Piece.Requirement requirement in piece.m_resources) {
                 AddIngredient(requirement.m_resItem, new Amount(requirement.m_amount), i => i.name, prefab.name);
             }
 

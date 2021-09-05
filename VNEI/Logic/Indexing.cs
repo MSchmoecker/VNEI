@@ -26,6 +26,8 @@ namespace VNEI.Logic {
                 sourceMod[customPiece.PiecePrefab.name] = customPiece.SourceMod;
             }
 
+            Dictionary<string, PieceTable> pieceTables = new Dictionary<string, PieceTable>();
+
             Log.LogInfo("Index prefabs");
             foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
                 if (!(bool)prefab) {
@@ -40,7 +42,8 @@ namespace VNEI.Logic {
                     fallbackLocalizedName = hoverText.m_text;
                 }
 
-                if (prefab.TryGetComponent(out Piece piece)) {
+                // Treasure Chests are the only none-buildable prefabs that needs to be indexed
+                if (prefab.TryGetComponent(out Piece piece) && prefab.name.StartsWith("TreasureChest")) {
                     AddItem(new Item(prefab.name, piece.m_name, piece.m_description, piece.m_icon, ItemType.Piece, prefab));
                 }
 
@@ -57,6 +60,19 @@ namespace VNEI.Logic {
                     }
 
                     AddItem(new Item(prefab.name, itemData.m_shared.m_name, itemData.m_shared.m_description, icon, ItemType.Item, prefab));
+
+                    // add pieces here as it is guaranteed they are buildable
+                    if ((bool)itemData.m_shared.m_buildPieces) {
+                        pieceTables.Add(CleanupName(prefab.name), itemData.m_shared.m_buildPieces);
+
+                        foreach (GameObject buildPiece in itemData.m_shared.m_buildPieces.m_pieces) {
+                            if (!buildPiece.TryGetComponent(out Piece p)) {
+                                continue;
+                            }
+
+                            AddItem(new Item(buildPiece.name, p.m_name, p.m_description, p.m_icon, ItemType.Piece, buildPiece));
+                        }
+                    }
                 }
 
                 if (prefab.TryGetComponent(out Character character)) {
@@ -73,6 +89,14 @@ namespace VNEI.Logic {
 
                 if (prefab.TryGetComponent(out Pickable pickable)) {
                     AddItem(new Item(prefab.name, pickable.m_overrideName, string.Empty, icon, ItemType.Undefined, prefab));
+                }
+            }
+
+            foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
+                if (prefab.TryGetComponent(out Piece piece)) {
+                    if (!Items.ContainsKey(CleanupName(prefab.name).GetStableHashCode())) {
+                        Log.LogInfo($"not indexed piece {piece.name}: not buildable");
+                    }
                 }
             }
 
@@ -118,9 +142,7 @@ namespace VNEI.Logic {
                     AddRecipeToItems(new RecipeInfo(prefab, dropOnDestroyed.m_dropWhenDestroyed));
                 }
 
-                if (prefab.TryGetComponent(out Piece piece)) {
-                    AddRecipeToItems(new RecipeInfo(prefab, piece.m_resources));
-                }
+                prefab.TryGetComponent(out Piece piece);
 
                 if ((bool)piece && prefab.TryGetComponent(out Plant plant)) {
                     foreach (GameObject grownPrefab in plant.m_grownPrefabs) {
@@ -142,6 +164,14 @@ namespace VNEI.Logic {
 
                 if (prefab.TryGetComponent(out Pickable pickable)) {
                     AddRecipeToItems(new RecipeInfo(prefab, pickable));
+                }
+            }
+
+            foreach (KeyValuePair<string, PieceTable> pair in pieceTables) {
+                foreach (GameObject prefab in pair.Value.m_pieces) {
+                    if (prefab.TryGetComponent(out Piece piece)) {
+                        AddRecipeToItems(new RecipeInfo(prefab, piece, Items[pair.Key.GetStableHashCode()]));
+                    }
                 }
             }
 
