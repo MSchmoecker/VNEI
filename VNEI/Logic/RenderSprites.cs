@@ -61,7 +61,7 @@ namespace VNEI.Logic {
 
             renderer.backgroundColor = new Color(0, 0, 0, 0);
             renderer.clearFlags = CameraClearFlags.SolidColor;
-            renderer.transform.position = spawnPoint + new Vector3(0, 0.2f, 0);
+            renderer.transform.position = spawnPoint + new Vector3(0, 0, 0);
             renderer.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
             renderer.cullingMask = 1 << layer;
             Log.LogInfo("Setup camera");
@@ -155,6 +155,16 @@ namespace VNEI.Logic {
             // needs to be destroyed first as Character depend on it
             foreach (CharacterDrop characterDrop in spawn.GetComponentsInChildren<CharacterDrop>()) {
                 Destroy(characterDrop);
+            }
+
+            // needs to be destroyed first as Rigidbody depend on it
+            foreach (FixedJoint fixedJoint in spawn.GetComponentsInChildren<FixedJoint>()) {
+                Destroy(fixedJoint);
+            }
+
+            // needs to be destroyed first as Rigidbody depend on it
+            foreach (ConfigurableJoint fixedJoint in spawn.GetComponentsInChildren<ConfigurableJoint>()) {
+                Destroy(fixedJoint);
             }
 
             // destroy all other components
