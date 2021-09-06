@@ -18,6 +18,7 @@ namespace VNEI.Logic {
 
         private bool spawningIsRunning;
         private GameObject currentSpawn;
+        private static Vector3 spawnPoint = new Vector3(1000f, 1000f, 1000f);
 
         private void Awake() {
             instance = this;
@@ -60,7 +61,8 @@ namespace VNEI.Logic {
 
             renderer.backgroundColor = new Color(0, 0, 0, 0);
             renderer.clearFlags = CameraClearFlags.SolidColor;
-            renderer.transform.position = new Vector3(-831.3f, 51.0f, -35.6f - 3f);
+            renderer.transform.position = spawnPoint + new Vector3(0, 0.2f, 0);
+            renderer.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
             renderer.cullingMask = 1 << layer;
             Log.LogInfo("Setup camera");
         }
@@ -132,7 +134,23 @@ namespace VNEI.Logic {
             prefab.SetActive(false);
             ZNetView.m_forceDisableInit = true;
 
-            GameObject spawn = Instantiate(prefab, new Vector3(-831.3f, 51.0f, -35.6f), Quaternion.identity);
+            GameObject spawn = Instantiate(prefab, new Vector3(0, 0, 0), Quaternion.identity);
+            spawn.transform.rotation = Quaternion.Euler(0, -30f, 0);
+
+            Vector3 min = new Vector3(100, 100, 100);
+            Vector3 max = new Vector3(-100, -100, -100);
+            Vector3 size = new Vector3(0, 0, 0);
+
+            foreach (Renderer meshRenderer in spawn.GetComponentsInChildren<Renderer>()) {
+                min = Vector3.Min(min, meshRenderer.bounds.min);
+                max = Vector3.Max(max, meshRenderer.bounds.max);
+                size = Vector3.Max(size, meshRenderer.bounds.size);
+            }
+
+            min.y *= -1f;
+            max.y *= -1f;
+
+            spawn.transform.position = spawnPoint + (min + max) / 2f + Vector3.back * (1f + size.magnitude * 0.5f);
 
             // needs to be destroyed first as Character depend on it
             foreach (CharacterDrop characterDrop in spawn.GetComponentsInChildren<CharacterDrop>()) {
