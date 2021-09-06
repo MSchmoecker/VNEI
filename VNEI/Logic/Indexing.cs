@@ -12,6 +12,7 @@ namespace VNEI.Logic {
         public static event Action IndexFinished;
 
         private static Dictionary<string, BepInPlugin> sourceMod = new Dictionary<string, BepInPlugin>();
+        public static readonly Queue<string> ToRenderSprite = new Queue<string>();
 
         public static void IndexAll() {
             if (Items.Count > 0) {
@@ -76,14 +77,17 @@ namespace VNEI.Logic {
                 }
 
                 if (prefab.TryGetComponent(out Character character)) {
+                    ToRenderSprite.Enqueue(prefab.name);
                     AddItem(new Item(prefab.name, character.m_name, string.Empty, null, ItemType.Creature, prefab));
                 }
 
                 if (prefab.TryGetComponent(out MineRock mineRock)) {
+                    ToRenderSprite.Enqueue(prefab.name);
                     AddItem(new Item(prefab.name, mineRock.m_name, string.Empty, null, ItemType.Undefined, prefab));
                 }
 
                 if (prefab.TryGetComponent(out DropOnDestroyed dropOnDestroyed)) {
+                    ToRenderSprite.Enqueue(prefab.name);
                     AddItem(new Item(prefab.name, fallbackLocalizedName, string.Empty, null, ItemType.Undefined, prefab));
                 }
 
