@@ -52,12 +52,6 @@ namespace VNEI {
             GUIManager.OnCustomGUIAvailable += BaseUI.Create;
         }
 
-        private void Update() {
-            if (Indexing.ToRenderSprite.Count > 0 && !(bool)Player.m_localPlayer && !(bool)RenderSprites.instance) {
-                new GameObject("RenderSprites", typeof(RenderSprites));
-            }
-        }
-
         private void OnDestroy() {
             harmony?.UnpatchAll(ModGuid);
         }

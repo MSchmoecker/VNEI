@@ -181,6 +181,12 @@ namespace VNEI.Logic {
 
             Log.LogInfo($"Loaded {Items.Count} items");
 
+            if (!(bool)RenderSprites.instance) {
+                new GameObject("RenderSprites", typeof(RenderSprites));
+            }
+
+            RenderSprites.instance.StartRender();
+
             IndexFinished?.Invoke();
         }
 

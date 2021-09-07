@@ -2,92 +2,74 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
-using Jotunn;
-using Jotunn.Managers;
-using Jotunn.Utils;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace VNEI.Logic {
     public class RenderSprites : MonoBehaviour {
         public static RenderSprites instance;
         private static Camera renderer;
-        private static int layer = 3;
-        private bool hasSetup;
+        private const int Layer = 3;
 
-        private bool spawningIsRunning;
-        private GameObject currentSpawn;
         private static Vector3 spawnPoint = new Vector3(1000f, 1000f, 1000f);
 
         private void Awake() {
             instance = this;
         }
 
-        private void Update() {
-            if ((bool)Player.m_localPlayer) {
-                if (Indexing.ToRenderSprite.Count > 0) {
-                    if (!hasSetup) {
-                        Log.LogInfo("Render all missing sprites");
-                        Setup();
-                    }
-
-                    string prefabName = Indexing.ToRenderSprite.Peek();
-
-                    if (!(bool)currentSpawn) {
-                        if (!spawningIsRunning) {
-                            StartCoroutine(StartSpawnSafe(ZNetScene.instance.GetPrefab(prefabName)));
-                        }
-
-                        return;
-                    }
-
-                    Indexing.ToRenderSprite.Dequeue();
-                    RenderSpriteFromPrefab(prefabName);
-                    currentSpawn = null;
-                } else {
-                    if (hasSetup) {
-                        Clear();
-                    }
-                }
-            }
+        public void StartRender() {
+            StartCoroutine(RenderAll());
         }
 
-        void Setup() {
-            hasSetup = true;
-
+        private void SetupRendering() {
+            Log.LogInfo("Setup renderer camera");
             renderer = new GameObject("Render Camera", typeof(Camera)).GetComponent<Camera>();
-            Log.LogInfo("Created renderer");
-
             renderer.backgroundColor = new Color(0, 0, 0, 0);
             renderer.clearFlags = CameraClearFlags.SolidColor;
             renderer.transform.position = spawnPoint + new Vector3(0, 0, 0);
             renderer.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
-            renderer.cullingMask = 1 << layer;
-            Log.LogInfo("Setup camera");
+            renderer.cullingMask = 1 << Layer;
         }
 
-        void Clear() {
-            hasSetup = false;
-
+        private void ClearRendering() {
+            Log.LogInfo("Destroy renderer camera");
             Destroy(renderer.gameObject);
-            Log.LogInfo("Destroyed Camera");
         }
 
-        private void RenderSpriteFromPrefab(string prefabName) {
+        IEnumerator RenderAll() {
+            Queue<GameObject> queue = new Queue<GameObject>();
+
+            while (Indexing.ToRenderSprite.Count > 0) {
+                string prefabName = Indexing.ToRenderSprite.Dequeue();
+                GameObject spawn = SpawnSafe(ZNetScene.instance.GetPrefab(prefabName));
+                queue.Enqueue(spawn);
+            }
+
+            // wait for destroyed components really be destroyed
+            yield return null;
+
+            SetupRendering();
+
+            while (queue.Count > 0) {
+                GameObject currentSpawn = queue.Dequeue();
+                RenderSpriteFromPrefab(currentSpawn);
+            }
+
+            ClearRendering();
+        }
+
+        private void RenderSpriteFromPrefab(GameObject spawn) {
             RenderTexture oldRenderTexture = RenderTexture.active;
             renderer.targetTexture = RenderTexture.GetTemporary(128, 128, 32);
             RenderTexture.active = renderer.targetTexture;
-            Log.LogInfo("Setup Render Texture");
 
-            SetLayerRecursive(currentSpawn.transform, layer);
-            currentSpawn.SetActive(true);
+            SetLayerRecursive(spawn.transform, Layer);
+            spawn.SetActive(true);
 
             renderer.Render();
-            Log.LogInfo($"Rendered {prefabName}");
+            Log.LogInfo($"Rendered {spawn.name}");
 
-            currentSpawn.SetActive(false);
-            Destroy(currentSpawn);
+            spawn.SetActive(false);
+            Destroy(spawn);
 
             RenderTexture targetTexture = renderer.targetTexture;
             Texture2D previewImage = new Texture2D(targetTexture.width, targetTexture.height, TextureFormat.RGBA32, false);
@@ -97,11 +79,10 @@ namespace VNEI.Logic {
             RenderTexture.active = oldRenderTexture;
 
             Sprite sprite = Sprite.Create(previewImage, new Rect(0, 0, previewImage.width, previewImage.height), new Vector2(0.5f, 0.5f));
-            Indexing.Items[Indexing.CleanupName(prefabName).GetStableHashCode()].SetIcon(sprite);
+            Indexing.Items[Indexing.CleanupName(spawn.name).GetStableHashCode()].SetIcon(sprite);
 
-            string dir = BepInEx.Paths.PluginPath + "/VNEI-Out/";
-            string path = dir + prefabName + ".png";
-            Log.LogInfo(path);
+            string dir = $"{BepInEx.Paths.PluginPath}/VNEI-Out";
+            string path = $"{dir}/{spawn.name}.png";
 
             Directory.CreateDirectory(dir);
 
@@ -119,23 +100,15 @@ namespace VNEI.Logic {
             transform.gameObject.layer = layer;
         }
 
-        private IEnumerator StartSpawnSafe(GameObject prefab) {
-            spawningIsRunning = true;
-            currentSpawn = SpawnSafe(prefab);
-            // wait for destroyed components really be destroyed
-            yield return null;
-            spawningIsRunning = false;
-        }
-
         private static GameObject SpawnSafe(GameObject prefab) {
             bool wasActive = prefab.activeSelf;
-            bool wasForceDisableInit = ZNetView.m_forceDisableInit;
-
             prefab.SetActive(false);
-            ZNetView.m_forceDisableInit = true;
 
             GameObject spawn = Instantiate(prefab, new Vector3(0, 0, 0), Quaternion.identity);
+            spawn.name = prefab.name;
             spawn.transform.rotation = Quaternion.Euler(0, -30f, 0);
+
+            prefab.SetActive(wasActive);
 
             Vector3 min = new Vector3(100, 100, 100);
             Vector3 max = new Vector3(-100, -100, -100);
@@ -158,13 +131,8 @@ namespace VNEI.Logic {
             }
 
             // needs to be destroyed first as Rigidbody depend on it
-            foreach (FixedJoint fixedJoint in spawn.GetComponentsInChildren<FixedJoint>()) {
-                Destroy(fixedJoint);
-            }
-
-            // needs to be destroyed first as Rigidbody depend on it
-            foreach (ConfigurableJoint fixedJoint in spawn.GetComponentsInChildren<ConfigurableJoint>()) {
-                Destroy(fixedJoint);
+            foreach (Joint joint in spawn.GetComponentsInChildren<Joint>()) {
+                Destroy(joint);
             }
 
             // destroy all other components
@@ -177,12 +145,9 @@ namespace VNEI.Logic {
                 Destroy(component);
             }
 
-            // // just in case it doesn't gets deleted properly later
+            // just in case it doesn't gets deleted properly later
             TimedDestruction timedDestruction = spawn.AddComponent<TimedDestruction>();
             timedDestruction.Trigger(1f);
-
-            prefab.SetActive(wasActive);
-            ZNetView.m_forceDisableInit = wasForceDisableInit;
 
             return spawn;
         }
