@@ -7,7 +7,8 @@ using UnityEngine;
 namespace VNEI.Logic {
     public class RenderSprites : MonoBehaviour {
         public static RenderSprites instance;
-        private static Camera renderer;
+        private Camera renderer;
+        private Light light;
         private const int Layer = 3;
 
         private static Vector3 spawnPoint = new Vector3(1000f, 1000f, 1000f);
@@ -28,11 +29,18 @@ namespace VNEI.Logic {
             renderer.transform.position = spawnPoint + new Vector3(0, 0, 0);
             renderer.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
             renderer.cullingMask = 1 << Layer;
+
+            light = new GameObject("Render Light", typeof(Light)).GetComponent<Light>();
+            light.transform.position = spawnPoint;
+            light.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+            light.type = LightType.Directional;
+            light.cullingMask = 1 << Layer;
         }
 
         private void ClearRendering() {
             Log.LogInfo("Destroy renderer camera");
             Destroy(renderer.gameObject);
+            Destroy(light.gameObject);
         }
 
         IEnumerator RenderAll() {
