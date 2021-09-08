@@ -37,7 +37,6 @@ namespace VNEI.Logic {
                 }
 
                 string fallbackLocalizedName = string.Empty;
-                Sprite icon = null;
 
                 if (prefab.TryGetComponent(out HoverText hoverText)) {
                     fallbackLocalizedName = hoverText.m_text;
@@ -50,6 +49,7 @@ namespace VNEI.Logic {
 
                 if (prefab.TryGetComponent(out ItemDrop itemDrop)) {
                     ItemDrop.ItemData itemData = itemDrop.m_itemData;
+                    Sprite icon = null;
 
                     if ((bool)itemDrop && itemData.m_shared.m_icons.Length > 0) {
                         icon = itemData.GetIcon();
@@ -77,22 +77,19 @@ namespace VNEI.Logic {
                 }
 
                 if (prefab.TryGetComponent(out Character character)) {
-                    ToRenderSprite.Enqueue(prefab.name);
                     AddItem(new Item(prefab.name, character.m_name, string.Empty, null, ItemType.Creature, prefab));
                 }
 
                 if (prefab.TryGetComponent(out MineRock mineRock)) {
-                    ToRenderSprite.Enqueue(prefab.name);
                     AddItem(new Item(prefab.name, mineRock.m_name, string.Empty, null, ItemType.Undefined, prefab));
                 }
 
                 if (prefab.TryGetComponent(out DropOnDestroyed dropOnDestroyed)) {
-                    ToRenderSprite.Enqueue(prefab.name);
                     AddItem(new Item(prefab.name, fallbackLocalizedName, string.Empty, null, ItemType.Undefined, prefab));
                 }
 
                 if (prefab.TryGetComponent(out Pickable pickable)) {
-                    AddItem(new Item(prefab.name, pickable.m_overrideName, string.Empty, icon, ItemType.Undefined, prefab));
+                    AddItem(new Item(prefab.name, pickable.m_overrideName, string.Empty, null, ItemType.Undefined, prefab));
                 }
             }
 

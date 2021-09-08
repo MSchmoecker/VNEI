@@ -23,11 +23,16 @@ namespace VNEI.Logic {
             internalName = name;
             localizedName = Localization.instance.Localize(localizeName);
             this.description = description;
-            SetIcon(icon);
             gameObject = prefab;
             isOnBlacklist = Plugin.ItemBlacklist.Contains(name) || Plugin.ItemBlacklist.Contains(Indexing.CleanupName(name));
             this.itemType = itemType;
             mod = Indexing.GetModByPrefabName(prefab.name);
+
+            if (icon != null) {
+                SetIcon(icon);
+            } else {
+                Indexing.ToRenderSprite.Enqueue(name);
+            }
         }
 
         public string GetName() {
