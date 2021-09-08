@@ -88,16 +88,6 @@ namespace VNEI.Logic {
 
             Sprite sprite = Sprite.Create(previewImage, new Rect(0, 0, previewImage.width, previewImage.height), new Vector2(0.5f, 0.5f));
             Indexing.Items[Indexing.CleanupName(spawn.name).GetStableHashCode()].SetIcon(sprite);
-
-            string dir = $"{BepInEx.Paths.PluginPath}/VNEI-Out";
-            string path = $"{dir}/{spawn.name}.png";
-
-            Directory.CreateDirectory(dir);
-
-            using (FileStream fileStream = File.Create(path)) {
-                byte[] bytes = previewImage.EncodeToPNG();
-                fileStream.Write(bytes, 0, bytes.Length);
-            }
         }
 
         private static void SetLayerRecursive(Transform transform, int layer) {
