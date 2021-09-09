@@ -9,9 +9,9 @@ namespace VNEI.Logic {
         public static RenderSprites instance;
         private Camera renderer;
         private Light light;
-        private const int Layer = 3;
 
-        private static Vector3 spawnPoint = new Vector3(1000f, 1000f, 1000f);
+        private const int Layer = 3;
+        private static readonly Vector3 SpawnPoint = new Vector3(1000f, 1000f, 1000f);
 
         private void Awake() {
             instance = this;
@@ -26,12 +26,12 @@ namespace VNEI.Logic {
             renderer = new GameObject("Render Camera", typeof(Camera)).GetComponent<Camera>();
             renderer.backgroundColor = new Color(0, 0, 0, 0);
             renderer.clearFlags = CameraClearFlags.SolidColor;
-            renderer.transform.position = spawnPoint + new Vector3(0, 0, 0);
+            renderer.transform.position = SpawnPoint + new Vector3(0, 0, 0);
             renderer.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
             renderer.cullingMask = 1 << Layer;
 
             light = new GameObject("Render Light", typeof(Light)).GetComponent<Light>();
-            light.transform.position = spawnPoint;
+            light.transform.position = SpawnPoint;
             light.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
             light.type = LightType.Directional;
             light.cullingMask = 1 << Layer;
@@ -41,15 +41,16 @@ namespace VNEI.Logic {
             Log.LogInfo("Destroy renderer camera");
             Destroy(renderer.gameObject);
             Destroy(light.gameObject);
+            renderer.targetTexture.Release();
         }
 
         IEnumerator RenderAll() {
-            Queue<GameObject> queue = new Queue<GameObject>();
+            Queue<RenderObject> queue = new Queue<RenderObject>();
 
             while (Indexing.ToRenderSprite.Count > 0) {
                 string prefabName = Indexing.ToRenderSprite.Dequeue();
-                GameObject spawn = SpawnSafe(ZNetScene.instance.GetPrefab(prefabName));
-                queue.Enqueue(spawn);
+                GameObject spawn = SpawnSafe(ZNetScene.instance.GetPrefab(prefabName), out Vector3 size);
+                queue.Enqueue(new RenderObject(prefabName, spawn, size));
             }
 
             // wait for destroyed components really be destroyed
@@ -58,26 +59,26 @@ namespace VNEI.Logic {
             SetupRendering();
 
             while (queue.Count > 0) {
-                GameObject currentSpawn = queue.Dequeue();
+                RenderObject currentSpawn = queue.Dequeue();
                 RenderSpriteFromPrefab(currentSpawn);
             }
 
             ClearRendering();
         }
 
-        private void RenderSpriteFromPrefab(GameObject spawn) {
+        private void RenderSpriteFromPrefab(RenderObject spawn) {
             RenderTexture oldRenderTexture = RenderTexture.active;
             renderer.targetTexture = RenderTexture.GetTemporary(128, 128, 32);
             RenderTexture.active = renderer.targetTexture;
 
-            SetLayerRecursive(spawn.transform, Layer);
-            spawn.SetActive(true);
+            SetLayerRecursive(spawn.gameObject.transform, Layer);
+            spawn.gameObject.SetActive(true);
 
             renderer.Render();
             Log.LogInfo($"Rendered {spawn.name}");
 
-            spawn.SetActive(false);
-            Destroy(spawn);
+            spawn.gameObject.SetActive(false);
+            Destroy(spawn.gameObject);
 
             RenderTexture targetTexture = renderer.targetTexture;
             Texture2D previewImage = new Texture2D(targetTexture.width, targetTexture.height, TextureFormat.RGBA32, false);
@@ -98,7 +99,7 @@ namespace VNEI.Logic {
             transform.gameObject.layer = layer;
         }
 
-        private static GameObject SpawnSafe(GameObject prefab) {
+        private static GameObject SpawnSafe(GameObject prefab, out Vector3 size) {
             bool wasActive = prefab.activeSelf;
             prefab.SetActive(false);
 
@@ -110,7 +111,7 @@ namespace VNEI.Logic {
 
             Vector3 min = new Vector3(100, 100, 100);
             Vector3 max = new Vector3(-100, -100, -100);
-            Vector3 size = new Vector3(0, 0, 0);
+            size = new Vector3(0, 0, 0);
 
             foreach (Renderer meshRenderer in spawn.GetComponentsInChildren<Renderer>()) {
                 min = Vector3.Min(min, meshRenderer.bounds.min);
@@ -121,7 +122,7 @@ namespace VNEI.Logic {
             min.y *= -1f;
             max.y *= -1f;
 
-            spawn.transform.position = spawnPoint + (min + max) / 2f + Vector3.back * (1f + size.magnitude * 0.5f);
+            spawn.transform.position = SpawnPoint + (min + max) / 2f + Vector3.back * (1f + size.magnitude * 0.5f);
 
             // needs to be destroyed first as Character depend on it
             foreach (CharacterDrop characterDrop in spawn.GetComponentsInChildren<CharacterDrop>()) {
@@ -148,6 +149,18 @@ namespace VNEI.Logic {
             timedDestruction.Trigger(1f);
 
             return spawn;
+        }
+
+        private class RenderObject {
+            public string name;
+            public GameObject gameObject;
+            public Vector3 size;
+
+            public RenderObject(string name, GameObject gameObject, Vector3 size) {
+                this.name = name;
+                this.gameObject = gameObject;
+                this.size = size;
+            }
         }
     }
 }
