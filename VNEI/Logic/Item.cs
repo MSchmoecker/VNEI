@@ -13,6 +13,7 @@ namespace VNEI.Logic {
         public readonly bool isOnBlacklist;
         public readonly ItemType itemType;
         public readonly BepInPlugin mod;
+        public bool isActive = true;
 
         public readonly List<RecipeInfo> result = new List<RecipeInfo>();
         public readonly List<RecipeInfo> ingredient = new List<RecipeInfo>();

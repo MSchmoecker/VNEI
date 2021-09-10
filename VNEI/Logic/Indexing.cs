@@ -30,6 +30,8 @@ namespace VNEI.Logic {
             Dictionary<string, PieceTable> pieceTables = new Dictionary<string, PieceTable>();
 
             Log.LogInfo("Index prefabs");
+
+            // m_prefabs first iteration: base indexing
             foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
                 if (!(bool)prefab) {
                     Log.LogInfo("prefab is null!");
@@ -93,10 +95,42 @@ namespace VNEI.Logic {
                 }
             }
 
+            // m_prefabs second iteration: disable prefabs
             foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
                 if (prefab.TryGetComponent(out Piece piece)) {
                     if (!Items.ContainsKey(CleanupName(prefab.name).GetStableHashCode())) {
                         Log.LogInfo($"not indexed piece {piece.name}: not buildable");
+                    }
+                }
+
+                if (prefab.TryGetComponent(out Humanoid humanoid) && !(humanoid is Player)) {
+                    foreach (GameObject defaultItem in humanoid.m_defaultItems) {
+                        if (!(bool)defaultItem) continue;
+                        DisableItem(defaultItem.name, $"is defaultItem from {prefab.name}");
+                    }
+
+                    foreach (GameObject weapon in humanoid.m_randomWeapon) {
+                        if (!(bool)weapon) continue;
+                        DisableItem(weapon.name, $"is weapon from {prefab.name}");
+                    }
+
+                    foreach (GameObject shield in humanoid.m_randomShield) {
+                        if (!(bool)shield) continue;
+                        DisableItem(shield.name, $"is shield from {prefab.name}");
+                    }
+
+                    foreach (GameObject armour in humanoid.m_randomArmor) {
+                        if (!(bool)armour) continue;
+                        DisableItem(armour.name, $"is armour from {prefab.name}");
+                    }
+
+                    foreach (Humanoid.ItemSet set in humanoid.m_randomSets) {
+                        if (set?.m_items == null) continue;
+
+                        foreach (GameObject item in set.m_items) {
+                            if (!(bool)item) continue;
+                            DisableItem(item.name, $"is randomSet item from {prefab.name}");
+                        }
                     }
                 }
             }
@@ -112,6 +146,7 @@ namespace VNEI.Logic {
             }
 
             Log.LogInfo("Index prefabs Recipes");
+            // m_prefabs third iteration: recipes
             foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
                 if (prefab.TryGetComponent(out Smelter smelter)) {
                     foreach (Smelter.ItemConversion conversion in smelter.m_conversion) {
@@ -185,6 +220,13 @@ namespace VNEI.Logic {
             RenderSprites.instance.StartRender();
 
             IndexFinished?.Invoke();
+        }
+
+        private static void DisableItem(string name, string context) {
+            if (Items.ContainsKey(CleanupName(name).GetStableHashCode())) {
+                Items[CleanupName(name).GetStableHashCode()].isActive = false;
+                Log.LogInfo($"disabling {name}: {context}");
+            }
         }
 
         private static void AddItem(Item item) {

@@ -48,7 +48,7 @@ namespace VNEI.UI {
         }
 
         public void Init() {
-            foreach (KeyValuePair<int, Item> item in Indexing.Items) {
+            foreach (KeyValuePair<int, Item> item in Indexing.Items.Where(i => i.Value.isActive)) {
                 listItems.Add(new ListItem(item.Value));
             }
 
