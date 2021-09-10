@@ -7,6 +7,8 @@ namespace VNEI.Logic {
         public bool fixedCount;
         public float chance;
 
+        public static Amount Zero { get; } = new Amount(0, 0, 0f);
+
         public Amount(int min, int max, float chance = 1f) {
             this.min = min;
             this.max = max;
@@ -19,6 +21,10 @@ namespace VNEI.Logic {
             max = amount;
             fixedCount = true;
             this.chance = chance;
+        }
+
+        public static bool IsSameMinMax(Amount a, Amount b) {
+            return a.min == b.min && a.max == b.max;
         }
 
         public override string ToString() {

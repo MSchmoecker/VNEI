@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using BepInEx;
 using UnityEngine;
 using VNEI.UI;
 
@@ -11,6 +12,8 @@ namespace VNEI.Logic {
         public readonly GameObject gameObject;
         public readonly bool isOnBlacklist;
         public readonly ItemType itemType;
+        public readonly BepInPlugin mod;
+        public bool isActive = true;
 
         public readonly List<RecipeInfo> result = new List<RecipeInfo>();
         public readonly List<RecipeInfo> ingredient = new List<RecipeInfo>();
@@ -21,23 +24,30 @@ namespace VNEI.Logic {
             internalName = name;
             localizedName = Localization.instance.Localize(localizeName);
             this.description = description;
-            SetIcon(icon);
             gameObject = prefab;
             isOnBlacklist = Plugin.ItemBlacklist.Contains(name) || Plugin.ItemBlacklist.Contains(Indexing.CleanupName(name));
             this.itemType = itemType;
+            mod = Indexing.GetModByPrefabName(prefab.name);
+
+            if (icon != null) {
+                SetIcon(icon);
+            } else {
+                Indexing.ToRenderSprite.Enqueue(name);
+            }
         }
 
         public string GetName() {
-            return localizedName + Environment.NewLine + $"({internalName})";
+            string modName = mod != null ? mod.Name : string.Empty;
+            return $"<color=orange><b>{localizedName}</b></color>{Environment.NewLine}({internalName}){Environment.NewLine}{modName}";
         }
 
         public string GetDescription() {
             return description;
         }
 
-        public string GetTooltip() {
+        public string GetTooltip(int quality) {
             if ((bool)gameObject && gameObject.TryGetComponent(out ItemDrop itemDrop)) {
-                return itemDrop.m_itemData.GetTooltip();
+                return ItemDrop.ItemData.GetTooltip(itemDrop.m_itemData, quality, true);
             }
 
             return description;
@@ -53,6 +63,10 @@ namespace VNEI.Logic {
 
         public Sprite GetIcon() {
             return icon != null ? icon : RecipeUI.Instance.noSprite;
+        }
+
+        public string GetPrimaryName() {
+            return localizedName.Length > 0 ? localizedName : internalName;
         }
     }
 }

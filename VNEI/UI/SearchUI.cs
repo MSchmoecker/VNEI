@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Jotunn.Managers;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,20 +10,25 @@ using VNEI.Logic;
 namespace VNEI.UI {
     public class SearchUI : MonoBehaviour {
         public static SearchUI Instance { get; private set; }
-        [SerializeField] private ScrollRect scrollRect;
+        [SerializeField] private Transform spawnRect;
         [SerializeField] public InputField searchField;
         [SerializeField] public Toggle cheat;
+        [SerializeField] public Text pageText;
 
         [SerializeField] public TypeToggle showUndefined;
         [SerializeField] public TypeToggle showCreatures;
         [SerializeField] public TypeToggle showPieces;
         [SerializeField] public TypeToggle showItems;
 
-        private List<MouseHover> sprites = new List<MouseHover>();
+        private readonly List<ListItem> listItems = new List<ListItem>();
+        private readonly List<DisplayItem> displayItems = new List<DisplayItem>();
         private bool hasInit;
-        private const int ItemsInRow = 11;
-        private Vector2 itemSpacing = new Vector2(50f, 50f);
+        private const int RowCount = 6;
+        private const int ItemsInRow = 12;
+        private readonly Vector2 itemSpacing = new Vector2(50f, 50f);
         private Action typeToggleOnChange;
+        private int currentPage;
+        private int maxPages;
 
         public void Awake() {
             Instance = this;
@@ -41,14 +48,20 @@ namespace VNEI.UI {
         }
 
         public void Init() {
-            foreach (KeyValuePair<int, Item> item in Indexing.Items) {
-                GameObject sprite = Instantiate(BaseUI.Instance.itemPrefab, scrollRect.content);
-                sprite.GetComponentInChildren<MouseHover>().SetItem(item.Value);
-                sprites.Add(sprite.GetComponent<MouseHover>());
-                sprite.GetComponent<Image>().sprite = item.Value.GetIcon();
+            foreach (KeyValuePair<int, Item> item in Indexing.Items.Where(i => i.Value.isActive)) {
+                listItems.Add(new ListItem(item.Value));
             }
 
-            scrollRect.onValueChanged.AddListener((_) => UpdateSearch(false));
+            listItems.Sort(ListItem.Comparer);
+
+            for (int i = 0; i < RowCount; i++) {
+                for (int j = 0; j < ItemsInRow; j++) {
+                    GameObject sprite = Instantiate(BaseUI.Instance.itemPrefab, spawnRect);
+                    sprite.SetActive(false);
+                    displayItems.Add(sprite.GetComponent<DisplayItem>());
+                }
+            }
+
             searchField.onValueChanged.AddListener((_) => UpdateSearch(true));
 
             showUndefined.image.sprite = RecipeUI.Instance.noSprite;
@@ -62,41 +75,77 @@ namespace VNEI.UI {
         public void UpdateSearch(bool recalculateLayout) {
             BaseUI.Instance.ShowSearch();
             bool useBlacklist = Plugin.useBlacklist.Value;
-            Rect rect = ((RectTransform)scrollRect.transform).rect;
-            Vector2 scrollPos = scrollRect.content.anchoredPosition;
-            int activeItemCount = 0;
 
-            foreach (MouseHover mouseHover in sprites) {
-                RectTransform rectTransform = (RectTransform)mouseHover.transform;
-
-                if (recalculateLayout) {
-                    mouseHover.isActive = CalculateActive(mouseHover, useBlacklist);
-
-                    if (mouseHover.isActive) {
-                        rectTransform.anchorMin = new Vector2(0f, 1f);
-                        rectTransform.anchorMax = new Vector2(0f, 1f);
-                        int row = activeItemCount % ItemsInRow;
-                        int column = activeItemCount / ItemsInRow;
-                        rectTransform.anchoredPosition = new Vector2(row + 0.5f, -column - 0.5f) * itemSpacing;
-
-                        activeItemCount++;
-                    }
-                }
-
-                float posY = rectTransform.anchoredPosition.y;
-                bool invisible = posY > -scrollPos.y + 40 || posY < -scrollPos.y - rect.height - 40;
-
-                mouseHover.gameObject.SetActive(mouseHover.isActive && !invisible);
-            }
+            string[] searchKeys = searchField.text.Split();
 
             if (recalculateLayout) {
-                int rowCount = Mathf.CeilToInt( (float) activeItemCount / ItemsInRow);
-                scrollRect.content.sizeDelta = new Vector2(scrollRect.content.sizeDelta.x, rowCount * itemSpacing.y);
+                Parallel.ForEach(listItems, i => { i.isActive = CalculateActive(i.item, useBlacklist, searchKeys); });
+            }
+
+            int totalActive = listItems.Count(i => i.isActive);
+            maxPages = Mathf.Max(Mathf.CeilToInt((float)totalActive / (RowCount * ItemsInRow)) - 1, 0);
+            int displayPage = Mathf.Min(currentPage, maxPages);
+            List<ListItem> activeDisplayItems = listItems.Where(i => i.isActive)
+                                                         .Skip(displayPage * RowCount * ItemsInRow)
+                                                         .Take(RowCount * ItemsInRow).ToList();
+            pageText.text = $"{displayPage + 1}/{maxPages + 1}";
+
+            for (int i = 0; i < RowCount * ItemsInRow; i++) {
+                if (i < activeDisplayItems.Count) {
+                    displayItems[i].gameObject.SetActive(true);
+                    displayItems[i].SetItem(activeDisplayItems[i].item, 1);
+                    RectTransform rectTransform = (RectTransform)displayItems[i].transform;
+
+                    rectTransform.anchorMin = new Vector2(0f, 1f);
+                    rectTransform.anchorMax = new Vector2(0f, 1f);
+                    int row = i % ItemsInRow;
+                    int column = i / ItemsInRow;
+                    rectTransform.anchoredPosition = new Vector2(row + 0.5f, -column - 0.5f) * itemSpacing;
+                } else {
+                    displayItems[i].gameObject.SetActive(false);
+                }
             }
         }
 
-        private bool CalculateActive(MouseHover mouseHover, bool useBlacklist) {
-            Item item = mouseHover.item;
+        public void NextPage() {
+            if (currentPage > maxPages) {
+                currentPage = maxPages;
+            }
+
+            currentPage++;
+
+            if (currentPage > maxPages) {
+                currentPage = maxPages;
+            }
+
+            UpdateSearch(false);
+        }
+
+        public void PreviousPage() {
+            if (currentPage > maxPages) {
+                currentPage = maxPages;
+            }
+
+            currentPage--;
+
+            if (currentPage < 0) {
+                currentPage = 0;
+            }
+
+            UpdateSearch(false);
+        }
+
+        public void FirstPage() {
+            currentPage = 0;
+            UpdateSearch(false);
+        }
+
+        public void LastPage() {
+            currentPage = maxPages;
+            UpdateSearch(false);
+        }
+
+        private bool CalculateActive(Item item, bool useBlacklist, string[] searchKeys) {
             bool onBlackList = useBlacklist && item.isOnBlacklist;
 
             if (onBlackList) {
@@ -119,11 +168,23 @@ namespace VNEI.UI {
                 return false;
             }
 
-            bool isSearched = item.localizedName.IndexOf(searchField.text, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                              item.internalName.IndexOf(searchField.text, StringComparison.OrdinalIgnoreCase) >= 0;
+            foreach (string searchKey in searchKeys) {
+                bool isSearched;
 
-            if (!isSearched) {
-                return false;
+                if (searchKey.StartsWith("@")) {
+                    if (item.mod == null) {
+                        return false;
+                    }
+
+                    isSearched = item.mod.Name.IndexOf(searchKey.Substring(1), StringComparison.OrdinalIgnoreCase) >= 0;
+                } else {
+                    isSearched = item.localizedName.IndexOf(searchKey, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                 item.internalName.IndexOf(searchKey, StringComparison.OrdinalIgnoreCase) >= 0;
+                }
+
+                if (!isSearched) {
+                    return false;
+                }
             }
 
             return true;
@@ -135,6 +196,20 @@ namespace VNEI.UI {
 
         private void OnDestroy() {
             TypeToggle.OnChange -= typeToggleOnChange;
+        }
+
+        private class ListItem {
+            public readonly Item item;
+            public bool isActive;
+
+            public ListItem(Item item) {
+                this.item = item;
+                isActive = false;
+            }
+
+            public static int Comparer(ListItem a, ListItem b) {
+                return string.Compare(a.item.GetPrimaryName(), b.item.GetPrimaryName(), StringComparison.InvariantCultureIgnoreCase);
+            }
         }
     }
 }

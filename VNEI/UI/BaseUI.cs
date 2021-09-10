@@ -36,7 +36,7 @@ namespace VNEI.UI {
 
             if ((bool)InventoryGui.instance) {
                 transform.SetParent(InventoryGui.instance.m_player);
-                ((RectTransform)transform).anchoredPosition = new Vector2(668, -45);
+                ((RectTransform)transform).anchoredPosition = new Vector2(665, -45);
             } else {
                 root.gameObject.SetActive(false);
                 dragHandler.gameObject.SetActive(false);

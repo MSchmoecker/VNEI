@@ -5,16 +5,29 @@ using UnityEngine;
 
 namespace VNEI.Logic {
     public class RecipeInfo {
-        public List<Tuple<Item, Amount>> ingredient = new List<Tuple<Item, Amount>>();
-        public List<Tuple<Item, Amount>> result = new List<Tuple<Item, Amount>>();
+        public List<Part> ingredient = new List<Part>();
+        public List<Part> result = new List<Part>();
+        public Part station;
         public Amount droppedCount = new Amount(1);
         public bool isOnBlacklist;
 
-        public void AddIngredient<T>(T item, Amount count, Func<T, string> getName, string context) {
+        public class Part {
+            public Item item;
+            public Amount amount;
+            public int quality;
+
+            public Part(Item item, Amount amount, int quality) {
+                this.item = item;
+                this.amount = amount;
+                this.quality = quality;
+            }
+        }
+
+        public void AddIngredient<T>(T item, Amount count, int quality, Func<T, string> getName, string context) {
             if (item != null) {
                 int key = Indexing.CleanupName(getName(item)).GetStableHashCode();
                 if (Indexing.Items.ContainsKey(key)) {
-                    ingredient.Add(new Tuple<Item, Amount>(Indexing.Items[key], count));
+                    ingredient.Add(new Part(Indexing.Items[key], count, quality));
                 } else {
                     Log.LogInfo($"cannot add item '{getName(item)}' to ingredient as is not indexed");
                 }
@@ -23,11 +36,11 @@ namespace VNEI.Logic {
             }
         }
 
-        public void AddResult<T>(T item, Amount count, Func<T, string> getName, string context) {
+        public void AddResult<T>(T item, Amount count, int quality, Func<T, string> getName, string context) {
             if (item != null) {
                 int key = Indexing.CleanupName(getName(item)).GetStableHashCode();
                 if (Indexing.Items.ContainsKey(key)) {
-                    result.Add(new Tuple<Item, Amount>(Indexing.Items[key], count));
+                    result.Add(new Part(Indexing.Items[key], count, quality));
                 } else {
                     Log.LogInfo($"cannot add item '{getName(item)}' to result as is not indexed");
                 }
@@ -36,84 +49,114 @@ namespace VNEI.Logic {
             }
         }
 
+        public void SetStation<T>(T item, int level, Func<T, string> getName) {
+            if (item != null) {
+                int key = Indexing.CleanupName(getName(item)).GetStableHashCode();
+                if (Indexing.Items.ContainsKey(key)) {
+                    station = new Part(Indexing.Items[key], new Amount(1), level);
+                } else {
+                    Log.LogInfo($"cannot set station '{getName(item)}' as is not indexed");
+                }
+            } else {
+                Log.LogInfo($"cannot set station: is null");
+            }
+        }
+
         private void CalculateIsOnBlacklist() {
-            if (ingredient.Any(i => Plugin.ItemBlacklist.Contains(i.Item1.internalName))) {
+            if (ingredient.Any(i => Plugin.ItemBlacklist.Contains(i.item.internalName))) {
                 isOnBlacklist = true;
                 return;
             }
 
-            if (result.Any(i => Plugin.ItemBlacklist.Contains(i.Item1.internalName))) {
+            if (result.Any(i => Plugin.ItemBlacklist.Contains(i.item.internalName))) {
                 isOnBlacklist = true;
             }
         }
 
-        public RecipeInfo(Recipe recipe) {
-            AddResult(recipe.m_item, new Amount(recipe.m_amount), i => i.name, recipe.name);
+        public RecipeInfo(Recipe recipe, int quality) {
+            if (recipe.m_craftingStation != null) {
+                SetStation(recipe.m_craftingStation, quality, i => i.name);
+            }
+
+            AddResult(recipe.m_item, new Amount(recipe.m_amount), quality, i => i.name, recipe.name);
+
+            if (quality > 1) {
+                AddIngredient(recipe.m_item, new Amount(1), quality - 1, i => i.name, recipe.name);
+            }
 
             foreach (Piece.Requirement resource in recipe.m_resources) {
-                AddIngredient(resource.m_resItem, new Amount(resource.m_amount), i => i.name, recipe.name);
+                Amount amount = new Amount(resource.GetAmount(quality));
+                if (Amount.IsSameMinMax(amount, Amount.Zero)) {
+                    continue;
+                }
+
+                AddIngredient(resource.m_resItem, amount, quality, i => i.name, recipe.name);
             }
 
             CalculateIsOnBlacklist();
         }
 
-        public RecipeInfo(Smelter.ItemConversion conversion, string context) {
-            AddIngredient(conversion.m_from, new Amount(1), i => i.name, context);
-            AddResult(conversion.m_to, new Amount(1), i => i.name, context);
+        public RecipeInfo(Smelter.ItemConversion conversion, Smelter smelter) {
+            SetStation(smelter, 1, i => i.name);
+            AddIngredient(conversion.m_from, new Amount(1), 1, i => i.name, smelter.name);
+            AddResult(conversion.m_to, new Amount(1), 1, i => i.name, smelter.name);
             CalculateIsOnBlacklist();
         }
 
-        public RecipeInfo(Fermenter.ItemConversion conversion, string context) {
-            AddIngredient(conversion.m_from, new Amount(1), i => i.name, context);
-            AddResult(conversion.m_to, new Amount(conversion.m_producedItems), i => i.name, context);
+        public RecipeInfo(Fermenter.ItemConversion conversion, Fermenter fermenter) {
+            SetStation(fermenter, 1, i => i.name);
+            AddIngredient(conversion.m_from, new Amount(1), 1, i => i.name, fermenter.name);
+            AddResult(conversion.m_to, new Amount(conversion.m_producedItems), 1, i => i.name, fermenter.name);
             CalculateIsOnBlacklist();
         }
 
-        public RecipeInfo(CookingStation.ItemConversion conversion, string context) {
-            AddIngredient(conversion.m_from, new Amount(1), i => i.name, context);
-            AddResult(conversion.m_to, new Amount(1), i => i.name, context);
+        public RecipeInfo(CookingStation.ItemConversion conversion, CookingStation cookingStation) {
+            SetStation(cookingStation, 1, i => i.name);
+            AddIngredient(conversion.m_from, new Amount(1), 1, i => i.name, cookingStation.name);
+            AddResult(conversion.m_to, new Amount(1), 1, i => i.name, cookingStation.name);
             CalculateIsOnBlacklist();
         }
 
         public RecipeInfo(Character character, List<CharacterDrop.Drop> characterDrops) {
-            AddIngredient(character, new Amount(1), i => i.name, character.name);
+            AddIngredient(character, new Amount(1), 1, i => i.name, character.name);
 
             foreach (CharacterDrop.Drop drop in characterDrops) {
-                AddResult(drop.m_prefab, new Amount(drop.m_amountMin, drop.m_amountMax, drop.m_chance), i => i.name, character.name);
+                AddResult(drop.m_prefab, new Amount(drop.m_amountMin, drop.m_amountMax, drop.m_chance), 1, i => i.name, character.name);
             }
 
             CalculateIsOnBlacklist();
         }
 
-        public RecipeInfo(GameObject prefab, Piece.Requirement[] requirements) {
-            AddResult(prefab, new Amount(1), i => i.name, prefab.name);
+        public RecipeInfo(GameObject prefab, Piece piece, Item crafter) {
+            station = new Part(crafter, new Amount(1), 1);
+            AddResult(prefab, new Amount(1), 1, i => i.name, prefab.name);
 
-            foreach (Piece.Requirement requirement in requirements) {
-                AddIngredient(requirement.m_resItem, new Amount(requirement.m_amount), i => i.name, prefab.name);
+            foreach (Piece.Requirement requirement in piece.m_resources) {
+                AddIngredient(requirement.m_resItem, new Amount(requirement.m_amount), 1, i => i.name, prefab.name);
             }
 
             CalculateIsOnBlacklist();
         }
 
         public RecipeInfo(GameObject piece, Pickable pickable) {
-            AddIngredient(piece, new Amount(1), i => i.name, piece.name);
-            AddResult(pickable.m_itemPrefab, new Amount(pickable.m_amount), i => i.name, pickable.name);
+            AddIngredient(piece, new Amount(1), 1, i => i.name, piece.name);
+            AddResult(pickable.m_itemPrefab, new Amount(pickable.m_amount), 1, i => i.name, pickable.name);
 
             if (pickable.m_extraDrops != null && pickable.m_extraDrops.m_drops.Count > 0) {
                 RecipeInfo fromDropTable = new RecipeInfo(piece, pickable.m_extraDrops);
 
                 // TODO extra drops could potentially be wrong in future, extra drops min/max is ignored as not displayable at the moment
 
-                foreach (Tuple<Item, Amount> tuple in fromDropTable.ingredient) {
-                    Amount amount = tuple.Item2;
+                foreach (Part part in fromDropTable.ingredient) {
+                    Amount amount = part.amount;
                     amount.chance = fromDropTable.droppedCount.chance;
-                    ingredient.Add(new Tuple<Item, Amount>(tuple.Item1, amount));
+                    ingredient.Add(new Part(part.item, amount, 1));
                 }
 
-                foreach (Tuple<Item, Amount> tuple in fromDropTable.result) {
-                    Amount amount = tuple.Item2;
+                foreach (Part part in fromDropTable.result) {
+                    Amount amount = part.amount;
                     amount.chance = fromDropTable.droppedCount.chance;
-                    ingredient.Add(new Tuple<Item, Amount>(tuple.Item1, amount));
+                    ingredient.Add(new Part(part.item, amount, 1));
                 }
             }
 
@@ -122,13 +165,22 @@ namespace VNEI.Logic {
 
         public RecipeInfo(GameObject from, DropTable dropTable) {
             droppedCount = new Amount(dropTable.m_dropMin, dropTable.m_dropMax, dropTable.m_dropChance);
-            AddIngredient(from, new Amount(1), i => i.name, from.name);
+            AddIngredient(from, new Amount(1), 1, i => i.name, from.name);
 
             float totalWeight = dropTable.m_drops.Sum(i => i.m_weight);
 
             foreach (DropTable.DropData drop in dropTable.m_drops) {
                 float chance = totalWeight == 0 ? 1 : drop.m_weight / totalWeight;
-                AddResult(drop.m_item, new Amount(drop.m_stackMin, drop.m_stackMax, chance), i => i.name, from.name);
+                AddResult(drop.m_item, new Amount(drop.m_stackMin, drop.m_stackMax, chance), 1, i => i.name, from.name);
+            }
+
+            CalculateIsOnBlacklist();
+        }
+
+        public RecipeInfo(SpawnArea spawnArea) {
+            AddIngredient(spawnArea, new Amount(1), 1, i => i.name, spawnArea.name);
+            foreach (SpawnArea.SpawnData spawnData in spawnArea.m_prefabs) {
+                AddResult(spawnData.m_prefab, new Amount(1, 1f / spawnArea.m_prefabs.Count), 1, i => i.name, spawnArea.name);
             }
 
             CalculateIsOnBlacklist();

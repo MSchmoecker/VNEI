@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using BepInEx;
+using Jotunn.Entities;
 using Jotunn.Managers;
+using Jotunn.Utils;
 using UnityEngine;
 
 namespace VNEI.Logic {
@@ -8,12 +11,27 @@ namespace VNEI.Logic {
         public static Dictionary<int, Item> Items { get; private set; } = new Dictionary<int, Item>();
         public static event Action IndexFinished;
 
+        private static Dictionary<string, BepInPlugin> sourceMod = new Dictionary<string, BepInPlugin>();
+        public static readonly Queue<string> ToRenderSprite = new Queue<string>();
+
         public static void IndexAll() {
             if (Items.Count > 0) {
                 return;
             }
 
+            foreach (CustomItem customItem in ModRegistry.GetItems()) {
+                sourceMod[customItem.ItemPrefab.name] = customItem.SourceMod;
+            }
+
+            foreach (CustomPiece customPiece in ModRegistry.GetPieces()) {
+                sourceMod[customPiece.PiecePrefab.name] = customPiece.SourceMod;
+            }
+
+            Dictionary<string, PieceTable> pieceTables = new Dictionary<string, PieceTable>();
+
             Log.LogInfo("Index prefabs");
+
+            // m_prefabs first iteration: base indexing
             foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
                 if (!(bool)prefab) {
                     Log.LogInfo("prefab is null!");
@@ -21,18 +39,19 @@ namespace VNEI.Logic {
                 }
 
                 string fallbackLocalizedName = string.Empty;
-                Sprite icon = null;
 
                 if (prefab.TryGetComponent(out HoverText hoverText)) {
                     fallbackLocalizedName = hoverText.m_text;
                 }
 
-                if (prefab.TryGetComponent(out Piece piece)) {
+                // Treasure Chests are the only none-buildable prefabs that needs to be indexed
+                if (prefab.TryGetComponent(out Piece piece) && prefab.name.StartsWith("TreasureChest")) {
                     AddItem(new Item(prefab.name, piece.m_name, piece.m_description, piece.m_icon, ItemType.Piece, prefab));
                 }
 
                 if (prefab.TryGetComponent(out ItemDrop itemDrop)) {
                     ItemDrop.ItemData itemData = itemDrop.m_itemData;
+                    Sprite icon = null;
 
                     if ((bool)itemDrop && itemData.m_shared.m_icons.Length > 0) {
                         icon = itemData.GetIcon();
@@ -44,6 +63,19 @@ namespace VNEI.Logic {
                     }
 
                     AddItem(new Item(prefab.name, itemData.m_shared.m_name, itemData.m_shared.m_description, icon, ItemType.Item, prefab));
+
+                    // add pieces here as it is guaranteed they are buildable
+                    if ((bool)itemData.m_shared.m_buildPieces) {
+                        pieceTables.Add(CleanupName(prefab.name), itemData.m_shared.m_buildPieces);
+
+                        foreach (GameObject buildPiece in itemData.m_shared.m_buildPieces.m_pieces) {
+                            if (!buildPiece.TryGetComponent(out Piece p)) {
+                                continue;
+                            }
+
+                            AddItem(new Item(buildPiece.name, p.m_name, p.m_description, p.m_icon, ItemType.Piece, buildPiece));
+                        }
+                    }
                 }
 
                 if (prefab.TryGetComponent(out Character character)) {
@@ -59,7 +91,51 @@ namespace VNEI.Logic {
                 }
 
                 if (prefab.TryGetComponent(out Pickable pickable)) {
-                    AddItem(new Item(prefab.name, pickable.m_overrideName, string.Empty, icon, ItemType.Undefined, prefab));
+                    AddItem(new Item(prefab.name, pickable.m_overrideName, string.Empty, null, ItemType.Undefined, prefab));
+                }
+
+                if (prefab.TryGetComponent(out SpawnArea spawnArea)) {
+                    AddItem(new Item(prefab.name, fallbackLocalizedName, String.Empty, null, ItemType.Creature, prefab));
+                }
+            }
+
+            // m_prefabs second iteration: disable prefabs
+            foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
+                if (prefab.TryGetComponent(out Piece piece)) {
+                    if (!Items.ContainsKey(CleanupName(prefab.name).GetStableHashCode())) {
+                        Log.LogInfo($"not indexed piece {piece.name}: not buildable");
+                    }
+                }
+
+                if (prefab.TryGetComponent(out Humanoid humanoid) && !(humanoid is Player)) {
+                    foreach (GameObject defaultItem in humanoid.m_defaultItems) {
+                        if (!(bool)defaultItem) continue;
+                        DisableItem(defaultItem.name, $"is defaultItem from {prefab.name}");
+                    }
+
+                    foreach (GameObject weapon in humanoid.m_randomWeapon) {
+                        if (!(bool)weapon) continue;
+                        DisableItem(weapon.name, $"is weapon from {prefab.name}");
+                    }
+
+                    foreach (GameObject shield in humanoid.m_randomShield) {
+                        if (!(bool)shield) continue;
+                        DisableItem(shield.name, $"is shield from {prefab.name}");
+                    }
+
+                    foreach (GameObject armour in humanoid.m_randomArmor) {
+                        if (!(bool)armour) continue;
+                        DisableItem(armour.name, $"is armour from {prefab.name}");
+                    }
+
+                    foreach (Humanoid.ItemSet set in humanoid.m_randomSets) {
+                        if (set?.m_items == null) continue;
+
+                        foreach (GameObject item in set.m_items) {
+                            if (!(bool)item) continue;
+                            DisableItem(item.name, $"is randomSet item from {prefab.name}");
+                        }
+                    }
                 }
             }
 
@@ -70,35 +146,34 @@ namespace VNEI.Logic {
                     continue;
                 }
 
-                if ((bool)recipe.m_item) {
-                    ItemObtainedInRecipe(recipe.m_item.name, new RecipeInfo(recipe));
+                if (!(bool)recipe.m_item) {
+                    Log.LogInfo($"skipping {recipe.name}: item is null");
+                    continue;
                 }
 
-                foreach (Piece.Requirement resource in recipe.m_resources) {
-                    if ((bool)resource.m_resItem) {
-                        ItemUsedInRecipe(resource.m_resItem.name, new RecipeInfo(recipe));
-                    }
+                for (int quality = 1; quality <= recipe.m_item.m_itemData.m_shared.m_maxQuality; quality++) {
+                    AddRecipeToItems(new RecipeInfo(recipe, quality));
                 }
             }
 
             Log.LogInfo("Index prefabs Recipes");
+            // m_prefabs third iteration: recipes
             foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
                 if (prefab.TryGetComponent(out Smelter smelter)) {
                     foreach (Smelter.ItemConversion conversion in smelter.m_conversion) {
-                        AddConversionRecipe(conversion.m_from, conversion.m_to, new RecipeInfo(conversion, smelter.name), smelter.name);
+                        AddRecipeToItems(new RecipeInfo(conversion, smelter));
                     }
                 }
 
                 if (prefab.TryGetComponent(out Fermenter fermenter)) {
                     foreach (Fermenter.ItemConversion conversion in fermenter.m_conversion) {
-                        AddConversionRecipe(conversion.m_from, conversion.m_to, new RecipeInfo(conversion, fermenter.name), fermenter.name);
+                        AddRecipeToItems(new RecipeInfo(conversion, fermenter));
                     }
                 }
 
                 if (prefab.TryGetComponent(out CookingStation cookingStation)) {
                     foreach (CookingStation.ItemConversion conversion in cookingStation.m_conversion) {
-                        AddConversionRecipe(conversion.m_from, conversion.m_to, new RecipeInfo(conversion, cookingStation.name),
-                                            cookingStation.name);
+                        AddRecipeToItems(new RecipeInfo(conversion, cookingStation));
                     }
                 }
 
@@ -114,11 +189,7 @@ namespace VNEI.Logic {
                     AddRecipeToItems(new RecipeInfo(prefab, dropOnDestroyed.m_dropWhenDestroyed));
                 }
 
-                // TODO Source Station listing
-
-                if (prefab.TryGetComponent(out Piece piece)) {
-                    AddRecipeToItems(new RecipeInfo(prefab, piece.m_resources));
-                }
+                prefab.TryGetComponent(out Piece piece);
 
                 if ((bool)piece && prefab.TryGetComponent(out Plant plant)) {
                     foreach (GameObject grownPrefab in plant.m_grownPrefabs) {
@@ -141,11 +212,36 @@ namespace VNEI.Logic {
                 if (prefab.TryGetComponent(out Pickable pickable)) {
                     AddRecipeToItems(new RecipeInfo(prefab, pickable));
                 }
+
+                if (prefab.TryGetComponent(out SpawnArea spawnArea)) {
+                    AddRecipeToItems(new RecipeInfo(spawnArea));
+                }
+            }
+
+            foreach (KeyValuePair<string, PieceTable> pair in pieceTables) {
+                foreach (GameObject prefab in pair.Value.m_pieces) {
+                    if (prefab.TryGetComponent(out Piece piece)) {
+                        AddRecipeToItems(new RecipeInfo(prefab, piece, Items[pair.Key.GetStableHashCode()]));
+                    }
+                }
             }
 
             Log.LogInfo($"Loaded {Items.Count} items");
 
+            if (!(bool)RenderSprites.instance) {
+                new GameObject("RenderSprites", typeof(RenderSprites));
+            }
+
+            RenderSprites.instance.StartRender();
+
             IndexFinished?.Invoke();
+        }
+
+        private static void DisableItem(string name, string context) {
+            if (Items.ContainsKey(CleanupName(name).GetStableHashCode())) {
+                Items[CleanupName(name).GetStableHashCode()].isActive = false;
+                Log.LogInfo($"disabling {name}: {context}");
+            }
         }
 
         private static void AddItem(Item item) {
@@ -185,12 +281,16 @@ namespace VNEI.Logic {
         }
 
         public static void AddRecipeToItems(RecipeInfo recipeInfo) {
-            foreach (Tuple<Item, Amount> tuple in recipeInfo.ingredient) {
-                ItemUsedInRecipe(tuple.Item1.internalName, recipeInfo);
+            foreach (RecipeInfo.Part part in recipeInfo.ingredient) {
+                ItemUsedInRecipe(part.item.internalName, recipeInfo);
             }
 
-            foreach (Tuple<Item, Amount> tuple in recipeInfo.result) {
-                ItemObtainedInRecipe(tuple.Item1.internalName, recipeInfo);
+            foreach (RecipeInfo.Part part in recipeInfo.result) {
+                ItemObtainedInRecipe(part.item.internalName, recipeInfo);
+            }
+
+            if (recipeInfo.station != null) {
+                ItemUsedInRecipe(recipeInfo.station.item.internalName, recipeInfo);
             }
         }
 
@@ -216,6 +316,14 @@ namespace VNEI.Logic {
             }
 
             return name.ToLower();
+        }
+
+        public static BepInPlugin GetModByPrefabName(string name) {
+            if (sourceMod.ContainsKey(name)) {
+                return sourceMod[name];
+            }
+
+            return null;
         }
     }
 }
