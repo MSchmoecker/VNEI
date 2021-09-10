@@ -86,8 +86,8 @@ namespace VNEI.UI {
             maxPages = Mathf.Max(Mathf.CeilToInt((float)totalActive / (RowCount * ItemsInRow)) - 1, 0);
             int displayPage = Mathf.Min(currentPage, maxPages);
             List<ListItem> activeDisplayItems = listItems.Where(i => i.isActive)
-                                                            .Skip(displayPage * RowCount * ItemsInRow)
-                                                            .Take(RowCount * ItemsInRow).ToList();
+                                                         .Skip(displayPage * RowCount * ItemsInRow)
+                                                         .Take(RowCount * ItemsInRow).ToList();
             pageText.text = $"{displayPage + 1}/{maxPages + 1}";
 
             for (int i = 0; i < RowCount * ItemsInRow; i++) {
@@ -132,6 +132,16 @@ namespace VNEI.UI {
                 currentPage = 0;
             }
 
+            UpdateSearch(false);
+        }
+
+        public void FirstPage() {
+            currentPage = 0;
+            UpdateSearch(false);
+        }
+
+        public void LastPage() {
+            currentPage = maxPages;
             UpdateSearch(false);
         }
 
