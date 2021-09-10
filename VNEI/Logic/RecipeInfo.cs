@@ -156,6 +156,15 @@ namespace VNEI.Logic {
             CalculateIsOnBlacklist();
         }
 
+        public RecipeInfo(SpawnArea spawnArea) {
+            AddIngredient(spawnArea, new Amount(1), i => i.name, spawnArea.name);
+            foreach (SpawnArea.SpawnData spawnData in spawnArea.m_prefabs) {
+                AddResult(spawnData.m_prefab, new Amount(1, 1f / spawnArea.m_prefabs.Count), i => i.name, spawnArea.name);
+            }
+
+            CalculateIsOnBlacklist();
+        }
+
         public bool IngredientsAndResultSame() {
             return ingredient.SequenceEqual(result);
         }

@@ -93,6 +93,10 @@ namespace VNEI.Logic {
                 if (prefab.TryGetComponent(out Pickable pickable)) {
                     AddItem(new Item(prefab.name, pickable.m_overrideName, string.Empty, null, ItemType.Undefined, prefab));
                 }
+
+                if (prefab.TryGetComponent(out SpawnArea spawnArea)) {
+                    AddItem(new Item(prefab.name, fallbackLocalizedName, String.Empty, null, ItemType.Creature, prefab));
+                }
             }
 
             // m_prefabs second iteration: disable prefabs
@@ -200,6 +204,10 @@ namespace VNEI.Logic {
 
                 if (prefab.TryGetComponent(out Pickable pickable)) {
                     AddRecipeToItems(new RecipeInfo(prefab, pickable));
+                }
+
+                if (prefab.TryGetComponent(out SpawnArea spawnArea)) {
+                    AddRecipeToItems(new RecipeInfo(spawnArea));
                 }
             }
 
