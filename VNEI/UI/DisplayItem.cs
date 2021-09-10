@@ -17,10 +17,10 @@ namespace VNEI.UI {
             Styling.ApplyText(countText, GUIManager.Instance.AveriaSerif, Color.white);
         }
 
-        public void SetItem(Item target) {
+        public void SetItem(Item target, int quality) {
             item = target;
             image.sprite = item.GetIcon();
-            uiTooltip.Set(item.GetPrimaryName(), item.GetTooltip());
+            uiTooltip.Set(item.GetPrimaryName(), item.GetTooltip(quality));
         }
 
         public void OnPointerClick(PointerEventData eventData) {

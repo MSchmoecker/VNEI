@@ -115,7 +115,7 @@ namespace VNEI.UI {
             float sizeX = 25;
             float deltaX;
 
-            foreach (Tuple<Item, Amount> ingredient in recipe.ingredient) {
+            foreach (RecipeInfo.Part ingredient in recipe.ingredient) {
                 SpawnItem(ingredient, row, new Vector2(0, -25f), ref sizeX, out deltaX);
             }
 
@@ -129,7 +129,7 @@ namespace VNEI.UI {
                 spawned.sizeDelta = new Vector2(30f, 30f);
                 deltaX = 40f;
                 sizeX += deltaX;
-                spawned.GetComponent<DisplayItem>().SetItem(recipe.station);
+                spawned.GetComponent<DisplayItem>().SetItem(recipe.station.item, recipe.station.quality);
             }
 
             if (recipe.droppedCount.min != 1 || recipe.droppedCount.max != 1 || Math.Abs(recipe.droppedCount.chance - 1f) > 0.01f) {
@@ -140,19 +140,19 @@ namespace VNEI.UI {
                 Styling.ApplyText(recipeDroppedText, GUIManager.Instance.AveriaSerif, Color.white);
             }
 
-            foreach (Tuple<Item, Amount> result in recipe.result) {
+            foreach (RecipeInfo.Part result in recipe.result) {
                 SpawnItem(result, row, new Vector2(0, -25f), ref sizeX, out deltaX);
             }
 
             return sizeX - deltaX / 2f;
         }
 
-        private static void SpawnItem(Tuple<Item, Amount> item, Transform root, Vector2 relPos, ref float posX, out float deltaX) {
+        private static void SpawnItem(RecipeInfo.Part part, Transform root, Vector2 relPos, ref float posX, out float deltaX) {
             RectTransform spawned = SpawnRowElement(BaseUI.Instance.itemPrefab, root, relPos, ref posX, out deltaX);
 
             DisplayItem displayItem = spawned.GetComponent<DisplayItem>();
-            displayItem.SetItem(item.Item1);
-            displayItem.SetCount(item.Item2.ToString());
+            displayItem.SetItem(part.item, part.quality);
+            displayItem.SetCount(part.amount.ToString());
         }
 
         private static RectTransform SpawnRowElement(GameObject prefab, Transform parent, Vector2 relPos, ref float posX,

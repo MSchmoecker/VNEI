@@ -146,7 +146,14 @@ namespace VNEI.Logic {
                     continue;
                 }
 
-                AddRecipeToItems(new RecipeInfo(recipe));
+                if (!(bool)recipe.m_item) {
+                    Log.LogInfo($"skipping {recipe.name}: item is null");
+                    continue;
+                }
+
+                for (int quality = 1; quality <= recipe.m_item.m_itemData.m_shared.m_maxQuality; quality++) {
+                    AddRecipeToItems(new RecipeInfo(recipe, quality));
+                }
             }
 
             Log.LogInfo("Index prefabs Recipes");
@@ -274,16 +281,16 @@ namespace VNEI.Logic {
         }
 
         public static void AddRecipeToItems(RecipeInfo recipeInfo) {
-            foreach (Tuple<Item, Amount> tuple in recipeInfo.ingredient) {
-                ItemUsedInRecipe(tuple.Item1.internalName, recipeInfo);
+            foreach (RecipeInfo.Part part in recipeInfo.ingredient) {
+                ItemUsedInRecipe(part.item.internalName, recipeInfo);
             }
 
-            foreach (Tuple<Item, Amount> tuple in recipeInfo.result) {
-                ItemObtainedInRecipe(tuple.Item1.internalName, recipeInfo);
+            foreach (RecipeInfo.Part part in recipeInfo.result) {
+                ItemObtainedInRecipe(part.item.internalName, recipeInfo);
             }
 
             if (recipeInfo.station != null) {
-                ItemUsedInRecipe(recipeInfo.station.internalName, recipeInfo);
+                ItemUsedInRecipe(recipeInfo.station.item.internalName, recipeInfo);
             }
         }
 

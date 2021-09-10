@@ -45,9 +45,9 @@ namespace VNEI.Logic {
             return description;
         }
 
-        public string GetTooltip() {
+        public string GetTooltip(int quality) {
             if ((bool)gameObject && gameObject.TryGetComponent(out ItemDrop itemDrop)) {
-                return itemDrop.m_itemData.GetTooltip();
+                return ItemDrop.ItemData.GetTooltip(itemDrop.m_itemData, quality, true);
             }
 
             return description;

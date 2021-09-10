@@ -93,7 +93,7 @@ namespace VNEI.UI {
             for (int i = 0; i < RowCount * ItemsInRow; i++) {
                 if (i < activeDisplayItems.Count) {
                     displayItems[i].gameObject.SetActive(true);
-                    displayItems[i].SetItem(activeDisplayItems[i].item);
+                    displayItems[i].SetItem(activeDisplayItems[i].item, 1);
                     RectTransform rectTransform = (RectTransform)displayItems[i].transform;
 
                     rectTransform.anchorMin = new Vector2(0f, 1f);
