@@ -24,7 +24,7 @@ namespace VNEI.UI {
         private readonly List<DisplayItem> displayItems = new List<DisplayItem>();
         private bool hasInit;
         private const int RowCount = 6;
-        private const int ItemsInRow = 11;
+        private const int ItemsInRow = 12;
         private readonly Vector2 itemSpacing = new Vector2(50f, 50f);
         private Action typeToggleOnChange;
         private int currentPage;
