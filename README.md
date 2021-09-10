@@ -5,7 +5,7 @@ VNEI shows all items and recipes from the vanilla game and other mods inside an 
 
 ![screenshot](https://raw.githubusercontent.com/MSchmoecker/VNEI/master/Docs/WholeScreenshot.png)
 
-![crafting](https://raw.githubusercontent.com/MSchmoecker/VNEI/master/Docs/CarrotCrafting.png)
+![crafting](https://raw.githubusercontent.com/MSchmoecker/VNEI/master/Docs/MeatCrafting.png)
 
 ## Installation
 This mod requires BepInEx and Jötunn.\
@@ -47,6 +47,20 @@ Now you can run `Assets/Build AssetBundles` at the toolbar, this copies the asse
 
 
 ## Changelog
+0.2.0
+- added ability to search with @ for a mod name. Only works with Jötunn mods
+- added crafting station/build tool to recipe
+- added quality levels for recipes
+- added rendering of sprites from existing objects if none exists. It is not perfect, mainly because they are renders and not dedicated sprites but they are good enough. Works with other mods, too
+- added valheim.exe process filter, this will stop the mod be executed by a server as it is fully client-side anyway
+- removed scroll view in search, instead there are now pages which can be switched. This is done because of performance, especially heavily modded games will profit a lot
+- find attack-prefabs automatically and not from blacklist, reduces number of empty items from mods that add monsters
+- changed that items are sorted alphabetically
+- changed only buildable pieces are shown
+- cheating only works with right mouse button, allowing to still view recipes
+- cheating spawns all prefabs, not just items
+- renamed config keys to be more readable. The old are not working anymore and the new have their default values set
+
 0.1.0
 - added iron ore and trailership to blacklist (this is not iron scrap and longboat!)
 - added toggleable categories: items, pieces, creatures and undefined
