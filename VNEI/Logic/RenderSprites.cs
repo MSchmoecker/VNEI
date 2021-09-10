@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 
 namespace VNEI.Logic {
@@ -49,8 +50,10 @@ namespace VNEI.Logic {
 
             while (Indexing.ToRenderSprite.Count > 0) {
                 string prefabName = Indexing.ToRenderSprite.Dequeue();
-                GameObject spawn = SpawnSafe(ZNetScene.instance.GetPrefab(prefabName), out Vector3 size);
-                queue.Enqueue(new RenderObject(prefabName, spawn, size));
+                GameObject spawn = SpawnSafe(ZNetScene.instance.GetPrefab(prefabName), out Vector3 size, out bool hasMesh);
+                if (hasMesh) {
+                    queue.Enqueue(new RenderObject(prefabName, spawn, size));
+                }
             }
 
             // wait for destroyed components really be destroyed
@@ -99,7 +102,18 @@ namespace VNEI.Logic {
             transform.gameObject.layer = layer;
         }
 
-        private static GameObject SpawnSafe(GameObject prefab, out Vector3 size) {
+        private static bool IsVisual(Component component) {
+            return component is Renderer || component is MeshFilter;
+        }
+
+        private static GameObject SpawnSafe(GameObject prefab, out Vector3 size, out bool hasMesh) {
+            hasMesh = prefab.GetComponentsInChildren<Component>(false).Any(IsVisual);
+
+            if (!hasMesh) {
+                size = Vector3.zero;
+                return null;
+            }
+
             bool wasActive = prefab.activeSelf;
             prefab.SetActive(false);
 
@@ -135,11 +149,10 @@ namespace VNEI.Logic {
             }
 
             // destroy all other components
-            foreach (Component component in spawn.GetComponentsInChildren<Component>()) {
-                if (component is Transform) continue;
-                if (component is SkinnedMeshRenderer) continue;
-                if (component is MeshRenderer) continue;
-                if (component is MeshFilter) continue;
+            foreach (Component component in spawn.GetComponentsInChildren<Component>(true)) {
+                if (component is Transform || IsVisual(component)) {
+                    continue;
+                }
 
                 Destroy(component);
             }
