@@ -23,39 +23,36 @@ namespace VNEI.Logic {
             }
         }
 
-        public void AddIngredient<T>(T item, Amount count, int quality, Func<T, string> getName, string context) {
-            if (item != null) {
-                int key = Indexing.CleanupName(getName(item)).GetStableHashCode();
-                if (Indexing.Items.ContainsKey(key)) {
-                    ingredient.Add(new Part(Indexing.Items[key], count, quality));
-                } else {
-                    Log.LogInfo($"cannot add item '{getName(item)}' to ingredient as is not indexed");
+        public void AddIngredient<T>(T target, Amount count, int quality, Func<T, string> getName, string context) {
+            if (target != null) {
+                Item item = Indexing.GetItem(getName(target));
+
+                if (item != null) {
+                    ingredient.Add(new Part(item, count, quality));
                 }
             } else {
                 Log.LogInfo($"cannot add ingredient to '{context}', item is null (uses amount {count})");
             }
         }
 
-        public void AddResult<T>(T item, Amount count, int quality, Func<T, string> getName, string context) {
-            if (item != null) {
-                int key = Indexing.CleanupName(getName(item)).GetStableHashCode();
-                if (Indexing.Items.ContainsKey(key)) {
-                    result.Add(new Part(Indexing.Items[key], count, quality));
-                } else {
-                    Log.LogInfo($"cannot add item '{getName(item)}' to result as is not indexed");
+        public void AddResult<T>(T target, Amount count, int quality, Func<T, string> getName, string context) {
+            if (target != null) {
+                Item item = Indexing.GetItem(getName(target));
+
+                if (item != null) {
+                    result.Add(new Part(item, count, quality));
                 }
             } else {
                 Log.LogInfo($"cannot add result to '{context}', item is null (uses amount {count})");
             }
         }
 
-        public void SetStation<T>(T item, int level, Func<T, string> getName) {
-            if (item != null) {
-                int key = Indexing.CleanupName(getName(item)).GetStableHashCode();
-                if (Indexing.Items.ContainsKey(key)) {
-                    station = new Part(Indexing.Items[key], new Amount(1), level);
-                } else {
-                    Log.LogInfo($"cannot set station '{getName(item)}' as is not indexed");
+        public void SetStation<T>(T target, int level, Func<T, string> getName) {
+            if (target != null) {
+                Item item = Indexing.GetItem(getName(target));
+
+                if (item != null) {
+                    station = new Part(item, new Amount(1), level);
                 }
             } else {
                 Log.LogInfo($"cannot set station: is null");

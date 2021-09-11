@@ -53,7 +53,7 @@ namespace VNEI.Logic {
             while (Indexing.ToRenderSprite.Count > 0) {
                 string prefabName = Indexing.ToRenderSprite.Dequeue();
 
-                if (!Indexing.Items[Indexing.CleanupName(prefabName).GetStableHashCode()].isActive) {
+                if (Indexing.GetItem(prefabName)?.isActive != true) {
                     continue;
                 }
 
@@ -105,7 +105,7 @@ namespace VNEI.Logic {
             RenderTexture.active = oldRenderTexture;
 
             Sprite sprite = Sprite.Create(previewImage, new Rect(0, 0, previewImage.width, previewImage.height), new Vector2(0.5f, 0.5f));
-            Indexing.Items[Indexing.CleanupName(spawn.name).GetStableHashCode()].SetIcon(sprite);
+            Indexing.GetItem(spawn.name).SetIcon(sprite);
         }
 
         private static void SetLayerRecursive(Transform transform, int layer) {

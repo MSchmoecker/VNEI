@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using BepInEx;
 using Jotunn.Entities;
 using Jotunn.Managers;
@@ -8,11 +9,11 @@ using UnityEngine;
 
 namespace VNEI.Logic {
     public static class Indexing {
-        public static Dictionary<int, Item> Items { get; private set; } = new Dictionary<int, Item>();
         public static event Action IndexFinished;
-
-        private static Dictionary<string, BepInPlugin> sourceMod = new Dictionary<string, BepInPlugin>();
         public static readonly Queue<string> ToRenderSprite = new Queue<string>();
+
+        private static Dictionary<int, Item> Items { get; } = new Dictionary<int, Item>();
+        private static Dictionary<string, BepInPlugin> sourceMod = new Dictionary<string, BepInPlugin>();
 
         public static void IndexAll() {
             if (Items.Count > 0) {
@@ -102,7 +103,7 @@ namespace VNEI.Logic {
             // m_prefabs second iteration: disable prefabs
             foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
                 if (prefab.TryGetComponent(out Piece piece)) {
-                    if (!Items.ContainsKey(CleanupName(prefab.name).GetStableHashCode())) {
+                    if (GetItem(prefab.name) == null) {
                         Log.LogInfo($"not indexed piece {piece.name}: not buildable");
                     }
                 }
@@ -221,7 +222,7 @@ namespace VNEI.Logic {
             foreach (KeyValuePair<string, PieceTable> pair in pieceTables) {
                 foreach (GameObject prefab in pair.Value.m_pieces) {
                     if (prefab.TryGetComponent(out Piece piece)) {
-                        AddRecipeToItems(new RecipeInfo(prefab, piece, Items[pair.Key.GetStableHashCode()]));
+                        AddRecipeToItems(new RecipeInfo(prefab, piece, GetItem(pair.Key)));
                     }
                 }
             }
@@ -238,8 +239,10 @@ namespace VNEI.Logic {
         }
 
         private static void DisableItem(string name, string context) {
-            if (Items.ContainsKey(CleanupName(name).GetStableHashCode())) {
-                Items[CleanupName(name).GetStableHashCode()].isActive = false;
+            Item item = GetItem(name);
+
+            if (item != null) {
+                item.isActive = false;
                 Log.LogInfo($"disabling {name}: {context}");
             }
         }
@@ -261,20 +264,20 @@ namespace VNEI.Logic {
         }
 
         public static void ItemObtainedInRecipe(string name, RecipeInfo recipeInfo) {
-            int key = CleanupName(name).GetStableHashCode();
+            Item item = GetItem(name);
 
-            if (Items.ContainsKey(key)) {
-                Items[key].result.Add(recipeInfo);
+            if (item != null) {
+                item.result.Add(recipeInfo);
             } else {
                 Log.LogInfo($"cannot add recipe to obtaining, '{CleanupName(name)}' is not indexed");
             }
         }
 
         public static void ItemUsedInRecipe(string name, RecipeInfo recipeInfo) {
-            int key = CleanupName(name).GetStableHashCode();
+            Item item = GetItem(name);
 
-            if (Items.ContainsKey(key)) {
-                Items[key].ingredient.Add(recipeInfo);
+            if (item != null) {
+                item.ingredient.Add(recipeInfo);
             } else {
                 Log.LogInfo($"cannot add recipe to using, '{CleanupName(name)}' is not indexed");
             }
@@ -323,6 +326,21 @@ namespace VNEI.Logic {
                 return sourceMod[name];
             }
 
+            return null;
+        }
+
+        public static IEnumerable<KeyValuePair<int, Item>> GetActiveItems() {
+            return Items.Where(i => i.Value.isActive);
+        }
+
+        public static Item GetItem(string name) {
+            int key = CleanupName(name).GetStableHashCode();
+
+            if (Items.ContainsKey(key)) {
+                return Items[key];
+            }
+
+            Log.LogInfo($"cannot get item: '{CleanupName(name)}' is not indexed");
             return null;
         }
     }
