@@ -27,8 +27,10 @@ namespace VNEI.Logic {
             renderer = new GameObject("Render Camera", typeof(Camera)).GetComponent<Camera>();
             renderer.backgroundColor = new Color(0, 0, 0, 0);
             renderer.clearFlags = CameraClearFlags.SolidColor;
-            renderer.transform.position = SpawnPoint + new Vector3(0, 0, 0);
+            renderer.transform.position = SpawnPoint;
             renderer.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+            renderer.fieldOfView = 0.5f;
+            renderer.farClipPlane = 100000;
             renderer.cullingMask = 1 << Layer;
 
             light = new GameObject("Render Light", typeof(Light)).GetComponent<Light>();
@@ -76,6 +78,10 @@ namespace VNEI.Logic {
 
             SetLayerRecursive(spawn.gameObject.transform, Layer);
             spawn.gameObject.SetActive(true);
+
+            float maxMeshSize = spawn.MaxSizeXY() + 0.1f;
+            float distance = maxMeshSize / Mathf.Tan(renderer.fieldOfView * Mathf.Deg2Rad);
+            renderer.transform.position = SpawnPoint + new Vector3(0, 0, distance);
 
             renderer.Render();
             Log.LogInfo($"Rendered {spawn.name}");
@@ -133,10 +139,7 @@ namespace VNEI.Logic {
                 size = Vector3.Max(size, meshRenderer.bounds.size);
             }
 
-            min.y *= -1f;
-            max.y *= -1f;
-
-            spawn.transform.position = SpawnPoint + (min + max) / 2f + Vector3.back * (1f + size.magnitude * 0.5f);
+            spawn.transform.position = SpawnPoint - (min + max) / 2f;
 
             // needs to be destroyed first as Character depend on it
             foreach (CharacterDrop characterDrop in spawn.GetComponentsInChildren<CharacterDrop>()) {
@@ -173,6 +176,10 @@ namespace VNEI.Logic {
                 this.name = name;
                 this.gameObject = gameObject;
                 this.size = size;
+            }
+
+            public float MaxSizeXY() {
+                return Mathf.Max(size.x, size.y);
             }
         }
     }
