@@ -52,10 +52,18 @@ namespace VNEI.Logic {
 
             while (Indexing.ToRenderSprite.Count > 0) {
                 string prefabName = Indexing.ToRenderSprite.Dequeue();
-                GameObject spawn = SpawnSafe(ZNetScene.instance.GetPrefab(prefabName), out Vector3 size, out bool hasMesh);
-                if (hasMesh) {
-                    queue.Enqueue(new RenderObject(prefabName, spawn, size));
+
+                if (!Indexing.Items[Indexing.CleanupName(prefabName).GetStableHashCode()].isActive) {
+                    continue;
                 }
+
+                GameObject spawn = SpawnSafe(ZNetScene.instance.GetPrefab(prefabName), out Vector3 size, out bool hasMesh);
+
+                if (!hasMesh) {
+                    continue;
+                }
+
+                queue.Enqueue(new RenderObject(prefabName, spawn, size));
             }
 
             // wait for destroyed components really be destroyed
