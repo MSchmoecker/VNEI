@@ -42,29 +42,26 @@ namespace VNEI {
                                                    "placeholder items but testing objects for the devs or not obtainable items/effects. " +
                                                    "This list is manual, so please contact me if an item is missing/not on the list";
             useBlacklist = Config.Bind("General", "Use Item Blacklist", true, new ConfigDescription(useBlacklistDescription));
+
             harmony = new Harmony(ModGuid);
             harmony.PatchAll();
 
-            LocalizationManager.Instance.AddJson("English", LoadTextFromResources("Localization.English.json"));
-
+            // load embedded asset bundle
             AssetBundle = AssetUtils.LoadAssetBundleFromResources("VNEI_AssetBundle", Assembly.GetExecutingAssembly());
-            ItemBlacklist = SimpleJson.SimpleJson.DeserializeObject<List<string>>(LoadTextFromResources("ItemBlacklist.json")).ToHashSet();
+
+            // load embedded localisation
+            string englishJson = AssetUtils.LoadTextFromResources("Localization.English.json", Assembly.GetExecutingAssembly());
+            LocalizationManager.Instance.AddJson("English", englishJson);
+
+            // load embedded blacklist
+            string blacklistJson = AssetUtils.LoadTextFromResources("ItemBlacklist.json", Assembly.GetExecutingAssembly());
+            ItemBlacklist = SimpleJson.SimpleJson.DeserializeObject<List<string>>(blacklistJson).ToHashSet();
 
             GUIManager.OnCustomGUIAvailable += BaseUI.Create;
         }
 
         private void OnDestroy() {
             harmony?.UnpatchAll(ModGuid);
-        }
-
-        public static string LoadTextFromResources(string fileName) {
-            Assembly execAssembly = Assembly.GetExecutingAssembly();
-            string resourceName = execAssembly.GetManifestResourceNames().Single(str => str.EndsWith(fileName));
-            using (Stream stream = execAssembly.GetManifestResourceStream(resourceName)) {
-                using (StreamReader reader = new StreamReader(stream)) {
-                    return reader.ReadToEnd();
-                }
-            }
         }
     }
 }
