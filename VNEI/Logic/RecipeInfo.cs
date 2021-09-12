@@ -84,6 +84,11 @@ namespace VNEI.Logic {
         public RecipeInfo(Smelter.ItemConversion conversion, Smelter smelter) {
             SetStation(smelter, 1, i => i.name);
             AddIngredient(conversion.m_from, new Amount(1), 1, i => i.name, smelter.name);
+
+            if ((bool)smelter.m_fuelItem) {
+                AddIngredient(smelter.m_fuelItem, new Amount(smelter.m_fuelPerProduct), 1, i => i.name, smelter.name);
+            }
+
             AddResult(conversion.m_to, new Amount(1), 1, i => i.name, smelter.name);
             CalculateIsOnBlacklist();
         }
