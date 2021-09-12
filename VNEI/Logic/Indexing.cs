@@ -87,6 +87,10 @@ namespace VNEI.Logic {
                     AddItem(new Item(prefab.name, mineRock.m_name, string.Empty, null, ItemType.Undefined, prefab));
                 }
 
+                if (prefab.TryGetComponent(out MineRock5 mineRock5)) {
+                    AddItem(new Item(prefab.name, mineRock5.m_name, string.Empty, null, ItemType.Undefined, prefab));
+                }
+
                 if (prefab.TryGetComponent(out DropOnDestroyed dropOnDestroyed)) {
                     AddItem(new Item(prefab.name, fallbackLocalizedName, string.Empty, null, ItemType.Undefined, prefab));
                 }
@@ -96,7 +100,11 @@ namespace VNEI.Logic {
                 }
 
                 if (prefab.TryGetComponent(out SpawnArea spawnArea)) {
-                    AddItem(new Item(prefab.name, fallbackLocalizedName, String.Empty, null, ItemType.Creature, prefab));
+                    AddItem(new Item(prefab.name, fallbackLocalizedName, string.Empty, null, ItemType.Creature, prefab));
+                }
+
+                if (prefab.TryGetComponent(out Destructible destructible)) {
+                    AddItem(new Item(prefab.name, fallbackLocalizedName, string.Empty, null, ItemType.Undefined, prefab));
                 }
             }
 
@@ -186,6 +194,10 @@ namespace VNEI.Logic {
                     AddRecipeToItems(new RecipeInfo(prefab, mineRock.m_dropItems));
                 }
 
+                if (prefab.TryGetComponent(out MineRock5 mineRock5)) {
+                    AddRecipeToItems(new RecipeInfo(prefab, mineRock5.m_dropItems));
+                }
+
                 if (prefab.TryGetComponent(out DropOnDestroyed dropOnDestroyed)) {
                     AddRecipeToItems(new RecipeInfo(prefab, dropOnDestroyed.m_dropWhenDestroyed));
                 }
@@ -216,6 +228,10 @@ namespace VNEI.Logic {
 
                 if (prefab.TryGetComponent(out SpawnArea spawnArea)) {
                     AddRecipeToItems(new RecipeInfo(spawnArea));
+                }
+
+                if (prefab.TryGetComponent(out Destructible destructible)) {
+                    AddRecipeToItems(new RecipeInfo(destructible));
                 }
             }
 

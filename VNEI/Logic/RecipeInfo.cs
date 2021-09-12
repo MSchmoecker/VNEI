@@ -169,6 +169,11 @@ namespace VNEI.Logic {
             CalculateIsOnBlacklist();
         }
 
+        public RecipeInfo(Destructible spawnArea) {
+            AddIngredient(spawnArea, new Amount(1), 1, i => i.name, spawnArea.name);
+            AddResult(spawnArea.m_spawnWhenDestroyed, new Amount(1), 1, i => i.name, spawnArea.name);
+        }
+
         public bool IngredientsAndResultSame() {
             return ingredient.SequenceEqual(result);
         }
