@@ -115,7 +115,7 @@ namespace VNEI.UI {
             float sizeX = 25;
             float deltaX;
 
-            foreach (RecipeInfo.Part ingredient in recipe.ingredient) {
+            foreach (Part ingredient in recipe.ingredient) {
                 SpawnItem(ingredient, row, new Vector2(0, -25f), ref sizeX, out deltaX);
             }
 
@@ -140,14 +140,14 @@ namespace VNEI.UI {
                 Styling.ApplyText(recipeDroppedText, GUIManager.Instance.AveriaSerif, Color.white);
             }
 
-            foreach (RecipeInfo.Part result in recipe.result) {
+            foreach (Part result in recipe.result) {
                 SpawnItem(result, row, new Vector2(0, -25f), ref sizeX, out deltaX);
             }
 
             return sizeX - deltaX / 2f;
         }
 
-        private static void SpawnItem(RecipeInfo.Part part, Transform root, Vector2 relPos, ref float posX, out float deltaX) {
+        private static void SpawnItem(Part part, Transform root, Vector2 relPos, ref float posX, out float deltaX) {
             RectTransform spawned = SpawnRowElement(BaseUI.Instance.itemPrefab, root, relPos, ref posX, out deltaX);
 
             DisplayItem displayItem = spawned.GetComponent<DisplayItem>();

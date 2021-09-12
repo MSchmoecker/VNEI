@@ -284,11 +284,11 @@ namespace VNEI.Logic {
         }
 
         public static void AddRecipeToItems(RecipeInfo recipeInfo) {
-            foreach (RecipeInfo.Part part in recipeInfo.ingredient) {
+            foreach (Part part in recipeInfo.ingredient) {
                 ItemUsedInRecipe(part.item.internalName, recipeInfo);
             }
 
-            foreach (RecipeInfo.Part part in recipeInfo.result) {
+            foreach (Part part in recipeInfo.result) {
                 ItemObtainedInRecipe(part.item.internalName, recipeInfo);
             }
 
