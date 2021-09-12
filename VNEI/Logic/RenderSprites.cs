@@ -139,15 +139,16 @@ namespace VNEI.Logic {
 
             Vector3 min = new Vector3(100, 100, 100);
             Vector3 max = new Vector3(-100, -100, -100);
-            size = new Vector3(0, 0, 0);
 
             foreach (Renderer meshRenderer in spawn.GetComponentsInChildren<Renderer>()) {
                 min = Vector3.Min(min, meshRenderer.bounds.min);
                 max = Vector3.Max(max, meshRenderer.bounds.max);
-                size = Vector3.Max(size, meshRenderer.bounds.size);
             }
 
             spawn.transform.position = SpawnPoint - (min + max) / 2f;
+            size = new Vector3(Mathf.Abs(min.x) + Mathf.Abs(max.x),
+                               Mathf.Abs(min.y) + Mathf.Abs(max.y),
+                               Mathf.Abs(min.z) + Mathf.Abs(max.z));
 
             // needs to be destroyed first as Character depend on it
             foreach (CharacterDrop characterDrop in spawn.GetComponentsInChildren<CharacterDrop>()) {
