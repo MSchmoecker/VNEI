@@ -57,6 +57,10 @@ namespace VNEI.Logic {
                     continue;
                 }
 
+                if (queue.Any(i => i.name == prefabName)) {
+                    continue;
+                }
+
                 GameObject spawn = SpawnSafe(ZNetScene.instance.GetPrefab(prefabName), out Vector3 size, out bool hasMesh);
 
                 if (!hasMesh) {
