@@ -1,25 +1,22 @@
 ﻿using UnityEngine;
 
 namespace VNEI.Logic {
-    public struct Amount {
-        public int min;
-        public int max;
-        public bool fixedCount;
-        public float chance;
+    public readonly struct Amount {
+        public readonly int min;
+        public readonly int max;
+        public readonly float chance;
 
         public static Amount Zero { get; } = new Amount(0, 0, 0f);
 
         public Amount(int min, int max, float chance = 1f) {
             this.min = min;
             this.max = max;
-            fixedCount = min == max;
             this.chance = chance;
         }
 
         public Amount(int amount, float chance = 1f) {
             min = amount;
             max = amount;
-            fixedCount = true;
             this.chance = chance;
         }
 
@@ -37,7 +34,7 @@ namespace VNEI.Logic {
                 hasPercent = true;
             }
 
-            if (fixedCount) {
+            if (min == max) {
                 if (!(hasPercent && max == 1)) {
                     value += $"{max}x";
                 }
@@ -46,6 +43,23 @@ namespace VNEI.Logic {
             }
 
             return value;
+        }
+
+        public bool Equals(Amount other) {
+            return min == other.min && max == other.max && chance.Equals(other.chance);
+        }
+
+        public override bool Equals(object obj) {
+            return obj is Amount other && Equals(other);
+        }
+
+        public override int GetHashCode() {
+            unchecked {
+                int hashCode = min;
+                hashCode = (hashCode * 397) ^ max;
+                hashCode = (hashCode * 397) ^ chance.GetHashCode();
+                return hashCode;
+            }
         }
     }
 }

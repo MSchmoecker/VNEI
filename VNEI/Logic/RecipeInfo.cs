@@ -133,14 +133,12 @@ namespace VNEI.Logic {
                 // TODO extra drops could potentially be wrong in future, extra drops min/max is ignored as not displayable at the moment
 
                 foreach (Part part in fromDropTable.ingredient) {
-                    Amount amount = part.amount;
-                    amount.chance = fromDropTable.droppedCount.chance;
+                    Amount amount = new Amount(part.amount.min, part.amount.max, fromDropTable.droppedCount.chance);
                     ingredient.Add(new Part(part.item, amount, 1));
                 }
 
                 foreach (Part part in fromDropTable.result) {
-                    Amount amount = part.amount;
-                    amount.chance = fromDropTable.droppedCount.chance;
+                    Amount amount = new Amount(part.amount.min, part.amount.max, fromDropTable.droppedCount.chance);
                     ingredient.Add(new Part(part.item, amount, 1));
                 }
             }
