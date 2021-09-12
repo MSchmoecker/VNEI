@@ -230,7 +230,7 @@ namespace VNEI.Logic {
                     AddRecipeToItems(new RecipeInfo(spawnArea));
                 }
 
-                if (prefab.TryGetComponent(out Destructible destructible)) {
+                if (prefab.TryGetComponent(out Destructible destructible) && destructible.m_spawnWhenDestroyed != null) {
                     AddRecipeToItems(new RecipeInfo(destructible));
                 }
             }
