@@ -44,7 +44,7 @@ namespace VNEI.UI {
                 hasInit = true;
             }
 
-            cheat.gameObject.SetActive(Player.m_localPlayer != null && Console.instance.IsCheatsEnabled());
+            cheat.gameObject.SetActive(Player.m_localPlayer != null && Console.instance.m_cheat);
         }
 
         public void Init() {
