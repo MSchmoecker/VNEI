@@ -108,6 +108,7 @@
         <Compile Include="UI\BaseUI.cs" />
         <Compile Include="UI\DisplayItem.cs" />
         <Compile Include="UI\RecipeUI.cs" />
+        <Compile Include="UI\ScrollHandler.cs" />
         <Compile Include="UI\SearchUI.cs" />
         <Compile Include="UI\TypeToggle.cs" />
         <Compile Include="UI\Styling.cs" />

@@ -107,30 +107,10 @@ namespace VNEI.UI {
             }
         }
 
-        public void NextPage() {
-            if (currentPage > maxPages) {
-                currentPage = maxPages;
-            }
-
-            currentPage++;
-
-            if (currentPage > maxPages) {
-                currentPage = maxPages;
-            }
-
-            UpdateSearch(false);
-        }
-
-        public void PreviousPage() {
-            if (currentPage > maxPages) {
-                currentPage = maxPages;
-            }
-
-            currentPage--;
-
-            if (currentPage < 0) {
-                currentPage = 0;
-            }
+        public void SwitchPage(int skip = 1) {
+            currentPage = Mathf.Clamp(currentPage, 0, maxPages);
+            currentPage += skip;
+            currentPage = Mathf.Clamp(currentPage, 0, maxPages);
 
             UpdateSearch(false);
         }

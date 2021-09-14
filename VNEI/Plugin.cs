@@ -26,6 +26,7 @@ namespace VNEI {
 
         public static ConfigEntry<bool> fixPlants;
         public static ConfigEntry<bool> useBlacklist;
+        public static ConfigEntry<bool> invertScroll;
 
         private Harmony harmony;
 
@@ -42,6 +43,9 @@ namespace VNEI {
                                                    "placeholder items but testing objects for the devs or not obtainable items/effects. " +
                                                    "This list is manual, so please contact me if an item is missing/not on the list";
             useBlacklist = Config.Bind("General", "Use Item Blacklist", true, new ConfigDescription(useBlacklistDescription));
+
+            const string invertScrollDescription = "Inverts scrolling for page switching";
+            invertScroll = Config.Bind("General", "Invert Scroll", false, new ConfigDescription(invertScrollDescription));
 
             harmony = new Harmony(ModGuid);
             harmony.PatchAll();
