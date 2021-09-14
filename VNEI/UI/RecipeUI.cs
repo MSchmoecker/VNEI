@@ -12,7 +12,7 @@ namespace VNEI.UI {
 
         [SerializeField] public ScrollRect obtainingScroll;
         [SerializeField] public ScrollRect usingScroll;
-        [SerializeField] public Image infoIcon;
+        [SerializeField] public DisplayItem infoIcon;
         [SerializeField] public Text infoName;
         [SerializeField] public Text infoNameContext;
         [SerializeField] public Text infoDescription;
@@ -75,7 +75,7 @@ namespace VNEI.UI {
             infoName.text = currentItem.GetName();
             infoNameContext.text = currentItem.GetNameContext();
             infoDescription.text = Localization.instance.Localize(currentItem.GetDescription());
-            infoIcon.sprite = currentItem.GetIcon();
+            infoIcon.SetItem(currentItem, 1);
 
             UpdateObtainingHidden();
             UpdateUseHidden();
