@@ -19,7 +19,7 @@ namespace VNEI.Logic {
                     ingredient.Add(new Part(item, count, quality));
                 }
             } else {
-                Log.LogInfo($"cannot add ingredient to '{context}', item is null (uses amount {count})");
+                Log.LogDebug($"cannot add ingredient to '{context}', item is null (uses amount {count})");
             }
         }
 
@@ -31,7 +31,7 @@ namespace VNEI.Logic {
                     result.Add(new Part(item, count, quality));
                 }
             } else {
-                Log.LogInfo($"cannot add result to '{context}', item is null (uses amount {count})");
+                Log.LogDebug($"cannot add result to '{context}', item is null (uses amount {count})");
             }
         }
 
@@ -43,7 +43,7 @@ namespace VNEI.Logic {
                     station = new Part(item, new Amount(1), level);
                 }
             } else {
-                Log.LogInfo($"cannot set station: is null");
+                Log.LogDebug($"cannot set station: is null");
             }
         }
 

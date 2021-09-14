@@ -41,10 +41,10 @@ namespace VNEI.Logic {
         }
 
         private void ClearRendering() {
-            Log.LogInfo("Destroy renderer camera");
             Destroy(renderer.gameObject);
             Destroy(light.gameObject);
             renderer.targetTexture.Release();
+            Log.LogInfo("Finished rendering");
         }
 
         IEnumerator RenderAll() {
@@ -96,7 +96,7 @@ namespace VNEI.Logic {
             renderer.transform.position = SpawnPoint + new Vector3(0, 0, distance);
 
             renderer.Render();
-            Log.LogInfo($"Rendered {spawn.name}");
+            Log.LogDebug($"Rendered {spawn.name}");
 
             spawn.gameObject.SetActive(false);
             Destroy(spawn.gameObject);

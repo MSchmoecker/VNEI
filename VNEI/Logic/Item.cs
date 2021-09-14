@@ -61,7 +61,7 @@ namespace VNEI.Logic {
             if (icon == null) {
                 icon = sprite;
             } else {
-                Log.LogInfo($"cannot set sprite for '{internalName}', icon already exists");
+                Log.LogDebug($"cannot set sprite for '{internalName}', icon already exists");
             }
         }
 

@@ -35,7 +35,7 @@ namespace VNEI.Logic {
             // m_prefabs first iteration: base indexing
             foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
                 if (!(bool)prefab) {
-                    Log.LogInfo("prefab is null!");
+                    Log.LogDebug("prefab is null!");
                     continue;
                 }
 
@@ -112,7 +112,7 @@ namespace VNEI.Logic {
             foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
                 if (prefab.TryGetComponent(out Piece piece)) {
                     if (GetItem(prefab.name) == null) {
-                        Log.LogInfo($"not indexed piece {piece.name}: not buildable");
+                        Log.LogDebug($"not indexed piece {piece.name}: not buildable");
                     }
                 }
 
@@ -148,15 +148,15 @@ namespace VNEI.Logic {
                 }
             }
 
-            Log.LogInfo("Index Recipes: " + ObjectDB.instance.m_recipes.Count);
+            Log.LogInfo($"Index recipes");
             foreach (Recipe recipe in ObjectDB.instance.m_recipes) {
                 if (!recipe.m_enabled) {
-                    Log.LogInfo($"skipping {recipe.name}: not enabled");
+                    Log.LogDebug($"skipping {recipe.name}: not enabled");
                     continue;
                 }
 
                 if (!(bool)recipe.m_item) {
-                    Log.LogInfo($"skipping {recipe.name}: item is null");
+                    Log.LogDebug($"skipping {recipe.name}: item is null");
                     continue;
                 }
 
@@ -165,7 +165,7 @@ namespace VNEI.Logic {
                 }
             }
 
-            Log.LogInfo("Index prefabs Recipes");
+            Log.LogInfo("Index prefabs recipes");
             // m_prefabs third iteration: recipes
             foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
                 if (prefab.TryGetComponent(out Smelter smelter)) {
@@ -243,7 +243,7 @@ namespace VNEI.Logic {
                 }
             }
 
-            Log.LogInfo($"Loaded {Items.Count} items");
+            Log.LogInfo($"Loaded {GetActiveItems().Count()} items");
 
             if (!(bool)RenderSprites.instance) {
                 new GameObject("RenderSprites", typeof(RenderSprites));
@@ -259,7 +259,7 @@ namespace VNEI.Logic {
 
             if (item != null) {
                 item.isActive = false;
-                Log.LogInfo($"disabling {name}: {context}");
+                Log.LogDebug($"disabling {name}: {context}");
             }
         }
 
@@ -273,7 +273,7 @@ namespace VNEI.Logic {
             int key = CleanupName(item.internalName).GetStableHashCode();
 
             if (Items.ContainsKey(key)) {
-                Log.LogInfo($"Items contains key already: {CleanupName(item.internalName)}");
+                Log.LogDebug($"Items contains key already: {CleanupName(item.internalName)}");
             } else {
                 Items.Add(key, item);
             }
@@ -285,7 +285,7 @@ namespace VNEI.Logic {
             if (item != null) {
                 item.result.Add(recipeInfo);
             } else {
-                Log.LogInfo($"cannot add recipe to obtaining, '{CleanupName(name)}' is not indexed");
+                Log.LogDebug($"cannot add recipe to obtaining, '{CleanupName(name)}' is not indexed");
             }
         }
 
@@ -295,7 +295,7 @@ namespace VNEI.Logic {
             if (item != null) {
                 item.ingredient.Add(recipeInfo);
             } else {
-                Log.LogInfo($"cannot add recipe to using, '{CleanupName(name)}' is not indexed");
+                Log.LogDebug($"cannot add recipe to using, '{CleanupName(name)}' is not indexed");
             }
         }
 
@@ -317,13 +317,13 @@ namespace VNEI.Logic {
             if ((bool)from) {
                 ItemUsedInRecipe(from.name, recipeInfo);
             } else {
-                Log.LogInfo($"conversion from is null: {name}");
+                Log.LogDebug($"conversion from is null: {name}");
             }
 
             if ((bool)to) {
                 ItemObtainedInRecipe(to.name, recipeInfo);
             } else {
-                Log.LogInfo($"conversion to is null: {name}");
+                Log.LogDebug($"conversion to is null: {name}");
             }
         }
 
@@ -356,7 +356,7 @@ namespace VNEI.Logic {
                 return Items[key];
             }
 
-            Log.LogInfo($"cannot get item: '{CleanupName(name)}' is not indexed");
+            Log.LogDebug($"cannot get item: '{CleanupName(name)}' is not indexed");
             return null;
         }
     }
