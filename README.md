@@ -47,6 +47,16 @@ Now you can run `Assets/Build AssetBundles` at the toolbar, this copies the asse
 
 
 ## Changelog
+0.2.1
+- improved sprite rendering
+- added scrolling with mouse wheel to changes pages
+- added more rocks and ores to indexing
+- added fuel for smelters in recipes
+- fixed double cultivated plants was not removed
+- fixed recipe title was blurred and icon not hoverable
+- fixed cheating was not working when connected to a server
+- changed most logging to debug logs
+
 0.2.0
 - added ability to search with @ for a mod name. Only works with Jötunn mods
 - added crafting station/build tool to recipe
