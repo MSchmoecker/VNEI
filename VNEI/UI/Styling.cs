@@ -6,7 +6,11 @@ namespace VNEI.UI {
     public class Styling {
         public static void ApplyAllComponents(Transform root) {
             foreach (Text text in root.GetComponentsInChildren<Text>(true)) {
-                ApplyText(text, GUIManager.Instance.AveriaSerif, Color.white);
+                if (text == RecipeUI.Instance.infoName) {
+                    ApplyText(text, GUIManager.Instance.AveriaSerifBold, GUIManager.Instance.ValheimOrange, 14);
+                } else {
+                    ApplyText(text, GUIManager.Instance.AveriaSerif, Color.white, 14);
+                }
             }
 
             foreach (InputField inputField in root.GetComponentsInChildren<InputField>(true)) {
@@ -29,9 +33,10 @@ namespace VNEI.UI {
             ApplyAllSunken(root);
         }
 
-        public static void ApplyText(Text text, Font font, Color color) {
+        public static void ApplyText(Text text, Font font, Color color, int fontSize) {
             text.font = font;
             text.color = color;
+            text.fontSize = fontSize;
         }
 
         public static void ApplyAllDarken(Transform root) {

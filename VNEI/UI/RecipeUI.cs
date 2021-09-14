@@ -14,6 +14,7 @@ namespace VNEI.UI {
         [SerializeField] public ScrollRect usingScroll;
         [SerializeField] public Image infoIcon;
         [SerializeField] public Text infoName;
+        [SerializeField] public Text infoNameContext;
         [SerializeField] public Text infoDescription;
         [SerializeField] public Sprite noSprite;
 
@@ -72,6 +73,7 @@ namespace VNEI.UI {
             usingScroll.content.sizeDelta = new Vector2(maxSizeX, -(posY + rowHeight / 2f - 10f));
 
             infoName.text = currentItem.GetName();
+            infoNameContext.text = currentItem.GetNameContext();
             infoDescription.text = Localization.instance.Localize(currentItem.GetDescription());
             infoIcon.sprite = currentItem.GetIcon();
 
@@ -137,7 +139,7 @@ namespace VNEI.UI {
                                                               ref sizeX, out deltaX);
                 Text recipeDroppedText = recipeDropped.GetComponent<Text>();
                 recipeDroppedText.text = recipe.droppedCount.ToString();
-                Styling.ApplyText(recipeDroppedText, GUIManager.Instance.AveriaSerif, Color.white);
+                Styling.ApplyText(recipeDroppedText, GUIManager.Instance.AveriaSerif, Color.white, 14);
             }
 
             foreach (Part result in recipe.result) {

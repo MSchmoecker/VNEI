@@ -14,7 +14,7 @@ namespace VNEI.UI {
         private void Awake() {
             uiTooltip.m_tooltipPrefab = PrefabManager.Instance.GetPrefab("InventoryTooltip");
             uiTooltip.m_gamepadFocusObject = PrefabManager.Instance.GetPrefab("selected");
-            Styling.ApplyText(countText, GUIManager.Instance.AveriaSerif, Color.white);
+            Styling.ApplyText(countText, GUIManager.Instance.AveriaSerif, Color.white, 12);
         }
 
         public void SetItem(Item target, int quality) {

@@ -37,8 +37,12 @@ namespace VNEI.Logic {
         }
 
         public string GetName() {
+            return localizedName;
+        }
+
+        public string GetNameContext() {
             string modName = mod != null ? mod.Name : string.Empty;
-            return $"<color=orange><b>{localizedName}</b></color>{Environment.NewLine}({internalName}){Environment.NewLine}{modName}";
+            return $"{internalName}{Environment.NewLine}{modName}";
         }
 
         public string GetDescription() {
