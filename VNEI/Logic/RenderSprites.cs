@@ -61,13 +61,13 @@ namespace VNEI.Logic {
                     continue;
                 }
 
-                GameObject spawn = SpawnSafe(ZNetScene.instance.GetPrefab(prefabName), out Vector3 size, out bool hasMesh);
+                RenderObject renderObject = SpawnSafe(ZNetScene.instance.GetPrefab(prefabName), out bool hasMesh);
 
                 if (!hasMesh) {
                     continue;
                 }
 
-                queue.Enqueue(new RenderObject(prefabName, spawn, size));
+                queue.Enqueue(renderObject);
             }
 
             // wait for destroyed components really be destroyed
@@ -124,11 +124,10 @@ namespace VNEI.Logic {
             return component is Renderer || component is MeshFilter;
         }
 
-        private static GameObject SpawnSafe(GameObject prefab, out Vector3 size, out bool hasMesh) {
+        private static RenderObject SpawnSafe(GameObject prefab, out bool hasMesh) {
             hasMesh = prefab.GetComponentsInChildren<Component>(false).Any(IsVisual);
 
             if (!hasMesh) {
-                size = Vector3.zero;
                 return null;
             }
 
@@ -150,9 +149,9 @@ namespace VNEI.Logic {
             }
 
             spawn.transform.position = SpawnPoint - (min + max) / 2f;
-            size = new Vector3(Mathf.Abs(min.x) + Mathf.Abs(max.x),
-                               Mathf.Abs(min.y) + Mathf.Abs(max.y),
-                               Mathf.Abs(min.z) + Mathf.Abs(max.z));
+            Vector3 size = new Vector3(Mathf.Abs(min.x) + Mathf.Abs(max.x),
+                                       Mathf.Abs(min.y) + Mathf.Abs(max.y),
+                                       Mathf.Abs(min.z) + Mathf.Abs(max.z));
 
             // needs to be destroyed first as Character depend on it
             foreach (CharacterDrop characterDrop in spawn.GetComponentsInChildren<CharacterDrop>()) {
@@ -177,7 +176,7 @@ namespace VNEI.Logic {
             TimedDestruction timedDestruction = spawn.AddComponent<TimedDestruction>();
             timedDestruction.Trigger(1f);
 
-            return spawn;
+            return new RenderObject(prefab.name, spawn, size);
         }
 
         private class RenderObject {
