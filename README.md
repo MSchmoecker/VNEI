@@ -47,6 +47,9 @@ Now you can run `Assets/Build AssetBundles` at the toolbar, this copies the asse
 
 
 ## Changelog
+0.2.2
+- fixed incompatibility with H&H update
+
 0.2.1
 - improved sprite rendering
 - added scrolling with mouse wheel to changes pages
