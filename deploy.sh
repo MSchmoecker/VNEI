@@ -56,11 +56,25 @@ cp "$VALHEIM_INSTALL/BepInEx/plugins/MMHOOK/MMHOOK_assembly_sunshafts.dll" "$Mod
 cp "$VALHEIM_INSTALL/BepInEx/plugins/MMHOOK/MMHOOK_assembly_guiutils.dll" "$ModNameUnity/Assets/Assemblies"
 cp "$VALHEIM_INSTALL/BepInEx/plugins/MMHOOK/MMHOOK_assembly_steamworks.dll" "$ModNameUnity/Assets/Assemblies"
 cp "$VALHEIM_INSTALL/BepInEx/plugins/MMHOOK/MMHOOK_assembly_googleanalytics.dll" "$ModNameUnity/Assets/Assemblies"
-echo Coping to: $ModDir
+echo Coping to: "$ModDir"
 
 # copy content
-mkdir -p $ModDir
-cp "$ModName/obj/Debug/$ModName.dll" $ModDir
-cp README.md $ModDir
-cp manifest.json $ModDir
-cp icon.png $ModDir
+mkdir -p "$ModDir"
+cp "$ModName/obj/Debug/$ModName.dll" "$ModDir"
+cp README.md "$ModDir"
+cp manifest.json "$ModDir"
+cp icon.png "$ModDir"
+
+# make zip files
+cd "$ModDir" || exit
+
+[ -f "$ModName.zip" ] && rm "$ModName.zip"
+[ -f "$ModName-Nexus.zip" ] && rm "$ModName-Nexus.zip"
+
+mkdir -p plugins
+cp "$ModName.dll" plugins
+
+zip "$ModName.zip" "$ModName.dll" README.md manifest.json icon.png
+zip -r "$ModName-Nexus.zip" plugins
+
+rm -r plugins
