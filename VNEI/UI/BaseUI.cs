@@ -28,8 +28,8 @@ namespace VNEI.UI {
 
         private void Awake() {
             Instance = this;
-            DragWindowCntrl.ApplyDragWindowCntrl(dragHandler.gameObject);
-            root.gameObject.AddComponent<ScrollHandler>();
+            dragHandler.gameObject.AddComponent<DragWindowCntrl>();
+            gameObject.AddComponent<ScrollHandler>();
             ShowSearch();
 
             Styling.ApplyAllComponents(root);
