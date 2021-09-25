@@ -12,7 +12,6 @@ namespace VNEI.UI {
         public static SearchUI Instance { get; private set; }
         [SerializeField] private Transform spawnRect;
         [SerializeField] public InputField searchField;
-        [SerializeField] public Toggle cheat;
         [SerializeField] public Text pageText;
 
         [SerializeField] public TypeToggle showUndefined;
@@ -43,8 +42,6 @@ namespace VNEI.UI {
                 Init();
                 hasInit = true;
             }
-
-            cheat.gameObject.SetActive(Player.m_localPlayer != null && Terminal.m_cheat);
         }
 
         public void Init() {
@@ -171,7 +168,7 @@ namespace VNEI.UI {
         }
 
         public bool IsCheating() {
-            return cheat.gameObject.activeSelf && cheat.isOn;
+            return Player.m_localPlayer != null && Terminal.m_cheat;
         }
 
         private void OnDestroy() {

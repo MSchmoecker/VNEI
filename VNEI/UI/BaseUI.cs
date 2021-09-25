@@ -12,7 +12,6 @@ namespace VNEI.UI {
     public class BaseUI : MonoBehaviour {
         public static BaseUI Instance { get; private set; }
 
-        [SerializeField] private RectTransform panel;
         [SerializeField] private RectTransform root;
         [SerializeField] private RectTransform dragHandler;
         [SerializeField] public GameObject itemPrefab;
