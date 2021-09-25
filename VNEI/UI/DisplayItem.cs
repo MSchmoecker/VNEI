@@ -17,6 +17,10 @@ namespace VNEI.UI {
             Styling.ApplyText(countText, GUIManager.Instance.AveriaSerif, Color.white, 12);
         }
 
+        public void Update() {
+            uiTooltip.m_showTimer = 1;
+        }
+
         public void SetItem(Item target, int quality) {
             item = target;
             image.sprite = item.GetIcon();
