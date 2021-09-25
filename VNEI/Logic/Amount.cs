@@ -7,6 +7,7 @@ namespace VNEI.Logic {
         public readonly float chance;
 
         public static Amount Zero { get; } = new Amount(0, 0, 0f);
+        public static Amount One { get; } = new Amount(1);
 
         public Amount(int min, int max, float chance = 1f) {
             this.min = min;

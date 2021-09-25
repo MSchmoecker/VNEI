@@ -117,8 +117,18 @@ namespace VNEI.UI {
             float sizeX = 25;
             float deltaX;
 
-            foreach (Part ingredient in recipe.ingredient) {
-                SpawnItem(ingredient, row, new Vector2(0, -25f), ref sizeX, out deltaX);
+            foreach (KeyValuePair<Amount, List<Part>> pair in recipe.ingredient) {
+                if (recipe.ingredient.Count > 1 || pair.Key.min != 1 || pair.Key.max != 1 || Math.Abs(pair.Key.chance - 1f) > 0.01f) {
+                    RectTransform recipeDropped = SpawnRowElement(BaseUI.Instance.recipeDroppedTextPrefab, row, new Vector2(0, -25f),
+                                                                  ref sizeX, out deltaX);
+                    Text recipeDroppedText = recipeDropped.GetComponent<Text>();
+                    recipeDroppedText.text = pair.Key.ToString();
+                    Styling.ApplyText(recipeDroppedText, GUIManager.Instance.AveriaSerif, Color.white, 14);
+                }
+
+                foreach (Part ingredient in pair.Value) {
+                    SpawnItem(ingredient, row, new Vector2(0, -25f), ref sizeX, out deltaX);
+                }
             }
 
             if (recipe.station == null) {
@@ -134,16 +144,18 @@ namespace VNEI.UI {
                 spawned.GetComponent<DisplayItem>().SetItem(recipe.station.item, recipe.station.quality);
             }
 
-            if (recipe.droppedCount.min != 1 || recipe.droppedCount.max != 1 || Math.Abs(recipe.droppedCount.chance - 1f) > 0.01f) {
-                RectTransform recipeDropped = SpawnRowElement(BaseUI.Instance.recipeDroppedTextPrefab, row, new Vector2(0, -25f),
-                                                              ref sizeX, out deltaX);
-                Text recipeDroppedText = recipeDropped.GetComponent<Text>();
-                recipeDroppedText.text = recipe.droppedCount.ToString();
-                Styling.ApplyText(recipeDroppedText, GUIManager.Instance.AveriaSerif, Color.white, 14);
-            }
+            foreach (KeyValuePair<Amount, List<Part>> pair in recipe.result) {
+                if (recipe.result.Count > 1 || pair.Key.min != 1 || pair.Key.max != 1 || Math.Abs(pair.Key.chance - 1f) > 0.01f) {
+                    RectTransform recipeDropped = SpawnRowElement(BaseUI.Instance.recipeDroppedTextPrefab, row, new Vector2(0, -25f),
+                                                                  ref sizeX, out deltaX);
+                    Text recipeDroppedText = recipeDropped.GetComponent<Text>();
+                    recipeDroppedText.text = pair.Key.ToString();
+                    Styling.ApplyText(recipeDroppedText, GUIManager.Instance.AveriaSerif, Color.white, 14);
+                }
 
-            foreach (Part result in recipe.result) {
-                SpawnItem(result, row, new Vector2(0, -25f), ref sizeX, out deltaX);
+                foreach (Part ingredient in pair.Value) {
+                    SpawnItem(ingredient, row, new Vector2(0, -25f), ref sizeX, out deltaX);
+                }
             }
 
             return sizeX - deltaX / 2f;

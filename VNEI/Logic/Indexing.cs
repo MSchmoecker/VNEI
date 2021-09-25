@@ -106,6 +106,14 @@ namespace VNEI.Logic {
                 if (prefab.TryGetComponent(out Destructible destructible)) {
                     AddItem(new Item(prefab.name, fallbackLocalizedName, string.Empty, null, ItemType.Undefined, prefab));
                 }
+
+                if (prefab.TryGetComponent(out TreeLog treeLog)) {
+                    AddItem(new Item(prefab.name, fallbackLocalizedName, string.Empty, null, ItemType.Undefined, prefab));
+                }
+
+                if (prefab.TryGetComponent(out TreeBase treeBase)) {
+                    AddItem(new Item(prefab.name, fallbackLocalizedName, string.Empty, null, ItemType.Undefined, prefab));
+                }
             }
 
             // m_prefabs second iteration: disable prefabs
@@ -233,6 +241,14 @@ namespace VNEI.Logic {
                 if (prefab.TryGetComponent(out Destructible destructible) && destructible.m_spawnWhenDestroyed != null) {
                     AddRecipeToItems(new RecipeInfo(destructible));
                 }
+
+                if (prefab.TryGetComponent(out TreeLog treeLog)) {
+                    AddRecipeToItems(new RecipeInfo(treeLog));
+                }
+
+                if (prefab.TryGetComponent(out TreeBase treeBase)) {
+                    AddRecipeToItems(new RecipeInfo(treeBase));
+                }
             }
 
             foreach (KeyValuePair<string, PieceTable> pair in pieceTables) {
@@ -300,11 +316,11 @@ namespace VNEI.Logic {
         }
 
         public static void AddRecipeToItems(RecipeInfo recipeInfo) {
-            foreach (Part part in recipeInfo.ingredient) {
+            foreach (Part part in recipeInfo.ingredient.SelectMany(i => i.Value)) {
                 ItemUsedInRecipe(part.item.internalName, recipeInfo);
             }
 
-            foreach (Part part in recipeInfo.result) {
+            foreach (Part part in recipeInfo.result.SelectMany(i => i.Value)) {
                 ItemObtainedInRecipe(part.item.internalName, recipeInfo);
             }
 
