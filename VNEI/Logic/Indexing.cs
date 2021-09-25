@@ -32,6 +32,8 @@ namespace VNEI.Logic {
 
             Log.LogInfo("Index prefabs");
 
+            AddItem(new Item("vnei_any_item", "$vnei_any_item", string.Empty, null, ItemType.Undefined, null));
+
             // m_prefabs first iteration: base indexing
             foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
                 if (!(bool)prefab) {
@@ -195,6 +197,20 @@ namespace VNEI.Logic {
                 if (prefab.TryGetComponent(out CookingStation cookingStation)) {
                     foreach (CookingStation.ItemConversion conversion in cookingStation.m_conversion) {
                         AddRecipeToItems(new RecipeInfo(conversion, cookingStation));
+                    }
+                }
+
+                if (prefab.TryGetComponent(out Incinerator incinerator)) {
+                    AddRecipeToItems(new RecipeInfo(incinerator));
+
+                    foreach (Incinerator.IncineratorConversion conversion in incinerator.m_conversions) {
+                        if (conversion.m_requireOnlyOneIngredient) {
+                            foreach (Incinerator.Requirement requirement in conversion.m_requirements) {
+                                AddRecipeToItems(new RecipeInfo(conversion, requirement, incinerator));
+                            }
+                        } else {
+                            AddRecipeToItems(new RecipeInfo(conversion, incinerator));
+                        }
                     }
                 }
 

@@ -27,7 +27,10 @@ namespace VNEI.Logic {
             gameObject = prefab;
             isOnBlacklist = Plugin.ItemBlacklist.Contains(name) || Plugin.ItemBlacklist.Contains(Indexing.CleanupName(name));
             this.itemType = itemType;
-            mod = Indexing.GetModByPrefabName(prefab.name);
+
+            if (prefab != null) {
+                mod = Indexing.GetModByPrefabName(prefab.name);
+            }
 
             if (icon != null) {
                 SetIcon(icon);

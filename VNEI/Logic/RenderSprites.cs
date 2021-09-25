@@ -53,7 +53,7 @@ namespace VNEI.Logic {
             while (Indexing.ToRenderSprite.Count > 0) {
                 string prefabName = Indexing.ToRenderSprite.Dequeue();
 
-                if (Indexing.GetItem(prefabName)?.isActive != true) {
+                if (Indexing.GetItem(prefabName)?.isActive != true || Indexing.GetItem(prefabName).gameObject == null) {
                     continue;
                 }
 

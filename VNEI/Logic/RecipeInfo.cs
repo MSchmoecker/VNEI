@@ -114,6 +114,30 @@ namespace VNEI.Logic {
             CalculateIsOnBlacklist();
         }
 
+        public RecipeInfo(Incinerator incinerator) {
+            SetStation(incinerator, 1, i => i.name);
+            AddResult(incinerator.m_defaultResult, Amount.One, Amount.One, 1, i => i.name, incinerator.name);
+            AddIngredient("vnei_any_item", Amount.One, new Amount(incinerator.m_defaultCost), 1, i => i, incinerator.name);
+            CalculateIsOnBlacklist();
+        }
+
+        public RecipeInfo(Incinerator.IncineratorConversion conversion, Incinerator incinerator) {
+            SetStation(incinerator, 1, i => i.name);
+            AddResult(conversion.m_result, Amount.One, new Amount(conversion.m_resultAmount), 1, i => i.name, incinerator.name);
+            foreach (Incinerator.Requirement requirement in conversion.m_requirements) {
+                AddIngredient(requirement.m_resItem, Amount.One, new Amount(requirement.m_amount), 1, i => i.name, incinerator.name);
+            }
+
+            CalculateIsOnBlacklist();
+        }
+
+        public RecipeInfo(Incinerator.IncineratorConversion conversion, Incinerator.Requirement requirement, Incinerator incinerator) {
+            SetStation(incinerator, 1, i => i.name);
+            AddResult(conversion.m_result, Amount.One, new Amount(conversion.m_resultAmount), 1, i => i.name, incinerator.name);
+            AddIngredient(requirement.m_resItem, Amount.One, new Amount(requirement.m_amount), 1, i => i.name, incinerator.name);
+            CalculateIsOnBlacklist();
+        }
+
         public RecipeInfo(Character character, List<CharacterDrop.Drop> characterDrops) {
             AddIngredient(character, Amount.One, Amount.One, 1, i => i.name, character.name);
 
@@ -188,6 +212,7 @@ namespace VNEI.Logic {
             SetStation(trader, 1, i => i.name);
             AddIngredient(StoreGui.instance.m_coinPrefab, Amount.One, new Amount(tradeItem.m_price), 1, i => i.name, trader.name);
             AddResult(tradeItem.m_prefab, Amount.One, new Amount(tradeItem.m_stack), 1, i => i.name, trader.name);
+            CalculateIsOnBlacklist();
         }
 
         private void AddDropTable(GameObject from, DropTable dropTable) {
