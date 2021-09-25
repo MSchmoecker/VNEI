@@ -114,6 +114,10 @@ namespace VNEI.Logic {
                 if (prefab.TryGetComponent(out TreeBase treeBase)) {
                     AddItem(new Item(prefab.name, fallbackLocalizedName, string.Empty, null, ItemType.Undefined, prefab));
                 }
+
+                if (prefab.TryGetComponent(out Trader trader)) {
+                    AddItem(new Item(prefab.name, trader.m_name, string.Empty, null, ItemType.Undefined, prefab));
+                }
             }
 
             // m_prefabs second iteration: disable prefabs
@@ -248,6 +252,12 @@ namespace VNEI.Logic {
 
                 if (prefab.TryGetComponent(out TreeBase treeBase)) {
                     AddRecipeToItems(new RecipeInfo(treeBase));
+                }
+
+                if (prefab.TryGetComponent(out Trader trader)) {
+                    foreach (Trader.TradeItem tradeItem in trader.m_items) {
+                        AddRecipeToItems(new RecipeInfo(trader, tradeItem));
+                    }
                 }
             }
 

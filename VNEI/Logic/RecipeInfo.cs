@@ -184,6 +184,12 @@ namespace VNEI.Logic {
             CalculateIsOnBlacklist();
         }
 
+        public RecipeInfo(Trader trader, Trader.TradeItem tradeItem) {
+            SetStation(trader, 1, i => i.name);
+            AddIngredient(StoreGui.instance.m_coinPrefab, Amount.One, new Amount(tradeItem.m_price), 1, i => i.name, trader.name);
+            AddResult(tradeItem.m_prefab, Amount.One, new Amount(tradeItem.m_stack), 1, i => i.name, trader.name);
+        }
+
         private void AddDropTable(GameObject from, DropTable dropTable) {
             Amount tableCount = new Amount(dropTable.m_dropMin, dropTable.m_dropMax, dropTable.m_dropChance);
             AddIngredient(from, Amount.One, Amount.One, 1, i => i.name, from.name);
