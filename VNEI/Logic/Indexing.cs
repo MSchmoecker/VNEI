@@ -65,7 +65,28 @@ namespace VNEI.Logic {
                         Log.LogWarning($"fixed m_damageModifiers is null for '{prefab.name}'");
                     }
 
-                    AddItem(new Item(prefab.name, itemData.m_shared.m_name, itemData.m_shared.m_description, icon, ItemType.Item, prefab));
+                    ItemType type = ItemType.Item;
+
+                    switch (itemData.m_shared.m_itemType) {
+                        case ItemDrop.ItemData.ItemType.Consumable:
+                            type = ItemType.Food;
+                            break;
+                        case ItemDrop.ItemData.ItemType.Chest:
+                        case ItemDrop.ItemData.ItemType.Hands:
+                        case ItemDrop.ItemData.ItemType.Helmet:
+                        case ItemDrop.ItemData.ItemType.Legs:
+                        case ItemDrop.ItemData.ItemType.Shoulder:
+                            type = ItemType.Armor;
+                            break;
+                        case ItemDrop.ItemData.ItemType.OneHandedWeapon:
+                        case ItemDrop.ItemData.ItemType.TwoHandedWeapon:
+                        case ItemDrop.ItemData.ItemType.Bow:
+                        case ItemDrop.ItemData.ItemType.Shield:
+                            type = ItemType.Weapon;
+                            break;
+                    }
+
+                    AddItem(new Item(prefab.name, itemData.m_shared.m_name, itemData.m_shared.m_description, icon, type, prefab));
 
                     // add pieces here as it is guaranteed they are buildable
                     if ((bool)itemData.m_shared.m_buildPieces) {

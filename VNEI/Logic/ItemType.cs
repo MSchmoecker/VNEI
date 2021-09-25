@@ -4,5 +4,8 @@
         Creature,
         Piece,
         Item,
+        Food,
+        Armor,
+        Weapon,
     }
 }

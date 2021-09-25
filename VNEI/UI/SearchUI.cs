@@ -14,11 +14,6 @@ namespace VNEI.UI {
         [SerializeField] public InputField searchField;
         [SerializeField] public Text pageText;
 
-        [SerializeField] public TypeToggle showUndefined;
-        [SerializeField] public TypeToggle showCreatures;
-        [SerializeField] public TypeToggle showPieces;
-        [SerializeField] public TypeToggle showItems;
-
         private readonly List<ListItem> listItems = new List<ListItem>();
         private readonly List<DisplayItem> displayItems = new List<DisplayItem>();
         private bool hasInit;
@@ -61,10 +56,33 @@ namespace VNEI.UI {
 
             searchField.onValueChanged.AddListener((_) => UpdateSearch(true));
 
-            showUndefined.image.sprite = RecipeUI.Instance.noSprite;
-            showCreatures.image.sprite = GUIManager.Instance.GetSprite("texts_button");
-            showPieces.image.sprite = GUIManager.Instance.GetSprite("mapicon_bed");
-            showItems.image.sprite = GUIManager.Instance.GetSprite("mapicon_trader");
+            foreach (TypeToggle typeToggle in TypeToggle.typeToggles) {
+                switch (typeToggle.itemType) {
+                    case ItemType.Undefined:
+                        typeToggle.image.sprite = RecipeUI.Instance.noSprite;
+                        break;
+                    case ItemType.Creature:
+                        typeToggle.image.sprite = GUIManager.Instance.GetSprite("texts_button");
+                        break;
+                    case ItemType.Piece:
+                        typeToggle.image.sprite = GUIManager.Instance.GetSprite("mapicon_bed");
+                        break;
+                    case ItemType.Item:
+                        typeToggle.image.sprite = GUIManager.Instance.GetSprite("mapicon_trader");
+                        break;
+                    case ItemType.Food:
+                        typeToggle.image.sprite = GUIManager.Instance.GetSprite("food_icon");
+                        break;
+                    case ItemType.Weapon:
+                        typeToggle.image.sprite = GUIManager.Instance.GetSprite("pvp_on");
+                        break;
+                    case ItemType.Armor:
+                        typeToggle.image.sprite = GUIManager.Instance.GetSprite("ac_bkg");
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
 
             UpdateSearch(true);
         }
@@ -129,19 +147,7 @@ namespace VNEI.UI {
                 return false;
             }
 
-            if (item.itemType == ItemType.Undefined && !showUndefined.isOn) {
-                return false;
-            }
-
-            if (item.itemType == ItemType.Creature && !showCreatures.isOn) {
-                return false;
-            }
-
-            if (item.itemType == ItemType.Piece && !showPieces.isOn) {
-                return false;
-            }
-
-            if (item.itemType == ItemType.Item && !showItems.isOn) {
+            if (TypeToggle.typeToggles.Any(typeToggle => item.itemType == typeToggle.itemType && !typeToggle.isOn)) {
                 return false;
             }
 

@@ -4,14 +4,18 @@ using Jotunn.Managers;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using VNEI.Logic;
 
 namespace VNEI.UI {
     public class TypeToggle : MonoBehaviour, IPointerDownHandler {
+        public static event Action OnChange;
+
         public Image image;
         public Image background;
-        public static event Action OnChange;
         public bool isOn = true;
-        private static List<TypeToggle> typeToggles = new List<TypeToggle>();
+        public ItemType itemType;
+
+        public static List<TypeToggle> typeToggles = new List<TypeToggle>();
 
         private void Awake() {
             typeToggles.Add(this);
