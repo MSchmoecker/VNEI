@@ -30,6 +30,7 @@ namespace VNEI {
         public static ConfigEntry<bool> invertScroll;
         public static ConfigEntry<int> rowCount;
         public static ConfigEntry<int> columnCount;
+        public static ConfigEntry<int> transparency;
         public static ConfigEntry<KeyboardShortcut> openHotkey;
 
         public static bool isUiOpen = true;
@@ -42,6 +43,8 @@ namespace VNEI {
             Instance = this;
             Log.Init(Logger);
             AcceptableValueRange<int> rowRange = new AcceptableValueRange<int>(1, 25);
+
+            AcceptableValueRange<int> percentRange = new AcceptableValueRange<int>(0, 100);
 
             const string fixPlantsDescription = "This combines plants which are stored as two separate objects to one, " +
                                                 "as one is used for seeds and the other for the real plant. " +
@@ -64,6 +67,10 @@ namespace VNEI {
 
             const string rowDescription = "Count of visible vertical items. Determines the height of the UI";
             rowCount = Config.Bind("UI", "Items Vertical", 6, new ConfigDescription(rowDescription, rowRange));
+
+            const string transparentDescription = "Transparency of the background image. Values in percent, 0 = full visible, " +
+                                                   "100 = completely transparent";
+            transparency = Config.Bind("Visual", "Background Transparency", 0, new ConfigDescription(transparentDescription, percentRange));
 
             harmony = new Harmony(ModGuid);
             harmony.PatchAll();

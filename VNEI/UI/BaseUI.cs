@@ -54,6 +54,8 @@ namespace VNEI.UI {
 
             Styling.ApplyAllComponents(root);
             GUIManager.Instance.ApplyWoodpanelStyle(dragHandler);
+            UpdateTransparency(null, EventArgs.Empty);
+            Plugin.transparency.SettingChanged += UpdateTransparency;
 
             if ((bool) InventoryGui.instance) {
                 transform.SetParent(InventoryGui.instance.m_player);
@@ -183,6 +185,7 @@ namespace VNEI.UI {
         private void OnDestroy() {
             recipeUi.OnSetItem -= AddItemToLastViewedQueue;
             Plugin.OnOpenHotkey -= UpdateVisibility;
+            Plugin.transparency.SettingChanged -= UpdateTransparency;
         }
 
         public void SetSize(bool usePluginSize, int itemsX, int itemsY) {
@@ -203,6 +206,10 @@ namespace VNEI.UI {
                 root.gameObject.SetActive(true);
                 dragHandler.gameObject.SetActive(true);
             }
+        }
+
+        private void UpdateTransparency(object sender, EventArgs args) {
+            dragHandler.GetComponent<Image>().color = new Color(1f, 1f, 1f, 1f - Plugin.transparency.Value / 100f);
         }
     }
 }
