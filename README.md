@@ -47,6 +47,13 @@ Now you can run `Assets/Build AssetBundles` at the toolbar, this copies the asse
 
 
 ## Changelog
+0.2.3
+- added tree drops, trader and obliterator (incinerator) items
+- added more item categories (food, armor, weapon) and right click can invert selection
+- fixed mouse wheel scrolling not working sometimes
+- removed cheat button (was basically useless, cheats are enabled when devcommands are active)
+- item tooltip hover now shows immediately
+
 0.2.2
 - fixed incompatibility with H&H update
 
