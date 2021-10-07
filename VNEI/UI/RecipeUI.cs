@@ -18,6 +18,8 @@ namespace VNEI.UI {
         [SerializeField] public Text infoDescription;
         [SerializeField] public Sprite noSprite;
 
+        public static event Action<Item> OnSetItem;
+
         private Item currentItem;
         private List<RectTransform> obtainItems = new List<RectTransform>();
         private List<RectTransform> usingItems = new List<RectTransform>();
@@ -31,6 +33,7 @@ namespace VNEI.UI {
 
         public void SetItem(Item item) {
             currentItem = item;
+            OnSetItem?.Invoke(currentItem);
 
             foreach (RectTransform resultObject in obtainItems) {
                 Destroy(resultObject.gameObject);

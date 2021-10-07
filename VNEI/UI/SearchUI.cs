@@ -29,6 +29,10 @@ namespace VNEI.UI {
             hasInit = false;
             typeToggleOnChange = () => UpdateSearch(true);
             TypeToggle.OnChange += typeToggleOnChange;
+
+            for (int i = 0; i < spawnRect.childCount; i++) {
+                Destroy(spawnRect.GetChild(i).gameObject);
+            }
         }
 
         private void Update() {

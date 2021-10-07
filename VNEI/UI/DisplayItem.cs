@@ -23,11 +23,21 @@ namespace VNEI.UI {
 
         public void SetItem(Item target, int quality) {
             item = target;
-            image.sprite = item.GetIcon();
-            uiTooltip.Set(item.GetPrimaryName(), item.GetTooltip(quality));
+
+            if (item != null) {
+                image.sprite = item.GetIcon();
+                uiTooltip.Set(item.GetPrimaryName(), item.GetTooltip(quality));
+            } else {
+                image.sprite = RecipeUI.Instance.noSprite;
+                uiTooltip.Set("", "");
+            }
         }
 
         public void OnPointerClick(PointerEventData eventData) {
+            if (item == null) {
+                return;
+            }
+
             if (SearchUI.Instance.IsCheating() && eventData.button == PointerEventData.InputButton.Right) {
                 if (item.itemType == ItemType.Item && (bool)item.gameObject.GetComponent<ItemDrop>()) {
                     ItemDrop itemDrop = item.gameObject.GetComponent<ItemDrop>();

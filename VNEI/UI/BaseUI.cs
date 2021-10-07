@@ -18,6 +18,9 @@ namespace VNEI.UI {
         [SerializeField] public GameObject rowPrefab;
         [SerializeField] public GameObject recipeDroppedTextPrefab;
         [SerializeField] public GameObject arrowPrefab;
+        [SerializeField] public DisplayItem[] lastViewedDisplayItems;
+
+        private List<Item> lastViewedItems = new List<Item>();
         private bool blockInput;
 
         public static void Create() {
@@ -41,6 +44,8 @@ namespace VNEI.UI {
                 root.gameObject.SetActive(false);
                 dragHandler.gameObject.SetActive(false);
             }
+
+            RecipeUI.OnSetItem += AddItemToLastViewedQueue;
         }
 
         private void Update() {
@@ -70,6 +75,37 @@ namespace VNEI.UI {
         public void ShowRecipe() {
             HideAll();
             RecipeUI.Instance.gameObject.SetActive(true);
+        }
+
+        private void AddItemToLastViewedQueue(Item item) {
+            // add new item at start
+            lastViewedItems.Insert(0, item);
+
+            // remove duplicate items
+            for (int i = 1; i < lastViewedItems.Count; i++) {
+                if (lastViewedItems[i] == item) {
+                    lastViewedItems.RemoveAt(i);
+                }
+            }
+
+            // remove overflowing items
+            if (lastViewedItems.Count > lastViewedDisplayItems.Length) {
+                lastViewedItems.RemoveAt(lastViewedItems.Count - 1);
+            }
+
+            // display items at corresponding slots
+            for (int i = 0; i < lastViewedDisplayItems.Length; i++) {
+                if (i >= lastViewedItems.Count) {
+                    lastViewedDisplayItems[i].SetItem(null, 1);
+                    continue;
+                }
+
+                lastViewedDisplayItems[i].SetItem(lastViewedItems[i], 1);
+            }
+        }
+
+        private void OnDestroy() {
+            RecipeUI.OnSetItem -= AddItemToLastViewedQueue;
         }
     }
 }
