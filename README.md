@@ -37,6 +37,8 @@ If you use r2modman/Tunderstore Mod Manager you can set the path too, but this i
     </PropertyGroup>
 </Project>
 ```
+This project requires the publicized Valheim dlls present at `VALHEIM_INSTALL\valheim_Data\Managed\publicized_assemblies\assembly_[assembly]_publicized.dll`.
+Use any publicizer, see here for example: https://github.com/CabbageCrow/AssemblyPublicizer
 
 If the paths are set correctly, all assemblies are loaded and the project can be build.
 Now you can run `deploy.sh`, this will copy the mod to your BepInEx plugin folder as you setup in `Environment.props`.
