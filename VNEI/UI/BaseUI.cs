@@ -22,6 +22,7 @@ namespace VNEI.UI {
 
         private List<Item> lastViewedItems = new List<Item>();
         private bool blockInput;
+        private bool sizeDirty;
 
         public static void Create() {
             GameObject prefab = Plugin.AssetBundle.LoadAsset<GameObject>("VNEI");
@@ -46,6 +47,18 @@ namespace VNEI.UI {
             }
 
             RecipeUI.OnSetItem += AddItemToLastViewedQueue;
+            Plugin.columnCount.SettingChanged += RebuildSizeEvent;
+            Plugin.rowCount.SettingChanged += RebuildSizeEvent;
+
+            RebuildSize();
+        }
+
+        private void RebuildSizeEvent(object sender, EventArgs e) => sizeDirty = true;
+
+        private void RebuildSize() {
+            root.sizeDelta = new Vector2(Plugin.columnCount.Value * 50f + 20f,
+                Plugin.rowCount.Value * 50f + 110f);
+            dragHandler.sizeDelta = root.sizeDelta + new Vector2(10f, 10f);
         }
 
         private void Update() {
@@ -55,6 +68,11 @@ namespace VNEI.UI {
             } else if (!SearchUI.Instance.searchField.isFocused && blockInput) {
                 GUIManager.BlockInput(false);
                 blockInput = false;
+            }
+
+            if (sizeDirty) {
+                sizeDirty = false;
+                RebuildSize();
             }
         }
 

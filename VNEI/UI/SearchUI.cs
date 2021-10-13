@@ -17,8 +17,6 @@ namespace VNEI.UI {
         private readonly List<ListItem> listItems = new List<ListItem>();
         private readonly List<DisplayItem> displayItems = new List<DisplayItem>();
         private bool hasInit;
-        private const int RowCount = 6;
-        private const int ItemsInRow = 12;
         private readonly Vector2 itemSpacing = new Vector2(50f, 50f);
         private Action typeToggleOnChange;
         private int currentPage;
@@ -29,10 +27,32 @@ namespace VNEI.UI {
             hasInit = false;
             typeToggleOnChange = () => UpdateSearch(true);
             TypeToggle.OnChange += typeToggleOnChange;
+            Plugin.columnCount.SettingChanged += RebuildCellsEvent;
+            Plugin.rowCount.SettingChanged += RebuildCellsEvent;
 
             for (int i = 0; i < spawnRect.childCount; i++) {
                 Destroy(spawnRect.GetChild(i).gameObject);
             }
+        }
+
+        private void RebuildCellsEvent(object sender, EventArgs e) => RebuildCells();
+
+        private void RebuildCells() {
+            foreach (DisplayItem displayItem in displayItems) {
+                Destroy(displayItem.gameObject);
+            }
+
+            displayItems.Clear();
+
+            for (int i = 0; i < Plugin.rowCount.Value; i++) {
+                for (int j = 0; j < Plugin.columnCount.Value; j++) {
+                    GameObject sprite = Instantiate(BaseUI.Instance.itemPrefab, spawnRect);
+                    sprite.SetActive(false);
+                    displayItems.Add(sprite.GetComponent<DisplayItem>());
+                }
+            }
+
+            UpdateSearch(false);
         }
 
         private void Update() {
@@ -49,14 +69,7 @@ namespace VNEI.UI {
             }
 
             listItems.Sort(ListItem.Comparer);
-
-            for (int i = 0; i < RowCount; i++) {
-                for (int j = 0; j < ItemsInRow; j++) {
-                    GameObject sprite = Instantiate(BaseUI.Instance.itemPrefab, spawnRect);
-                    sprite.SetActive(false);
-                    displayItems.Add(sprite.GetComponent<DisplayItem>());
-                }
-            }
+            RebuildCells();
 
             searchField.onValueChanged.AddListener((_) => UpdateSearch(true));
 
@@ -91,34 +104,34 @@ namespace VNEI.UI {
             UpdateSearch(true);
         }
 
-        public void UpdateSearch(bool recalculateLayout) {
+        public void UpdateSearch(bool recalculateActive) {
             BaseUI.Instance.ShowSearch();
             bool useBlacklist = Plugin.useBlacklist.Value;
 
             string[] searchKeys = searchField.text.Split();
 
-            if (recalculateLayout) {
+            if (recalculateActive) {
                 Parallel.ForEach(listItems, i => { i.isActive = CalculateActive(i.item, useBlacklist, searchKeys); });
             }
 
             int totalActive = listItems.Count(i => i.isActive);
-            maxPages = Mathf.Max(Mathf.CeilToInt((float)totalActive / (RowCount * ItemsInRow)) - 1, 0);
+            maxPages = Mathf.Max(Mathf.CeilToInt((float) totalActive / displayItems.Count) - 1, 0);
             int displayPage = Mathf.Min(currentPage, maxPages);
             List<ListItem> activeDisplayItems = listItems.Where(i => i.isActive)
-                                                         .Skip(displayPage * RowCount * ItemsInRow)
-                                                         .Take(RowCount * ItemsInRow).ToList();
+                                                         .Skip(displayPage * displayItems.Count)
+                                                         .Take(displayItems.Count).ToList();
             pageText.text = $"{displayPage + 1}/{maxPages + 1}";
 
-            for (int i = 0; i < RowCount * ItemsInRow; i++) {
+            for (int i = 0; i < displayItems.Count; i++) {
                 if (i < activeDisplayItems.Count) {
                     displayItems[i].gameObject.SetActive(true);
                     displayItems[i].SetItem(activeDisplayItems[i].item, 1);
-                    RectTransform rectTransform = (RectTransform)displayItems[i].transform;
+                    RectTransform rectTransform = (RectTransform) displayItems[i].transform;
 
                     rectTransform.anchorMin = new Vector2(0f, 1f);
                     rectTransform.anchorMax = new Vector2(0f, 1f);
-                    int row = i % ItemsInRow;
-                    int column = i / ItemsInRow;
+                    int row = i % Plugin.columnCount.Value;
+                    int column = i / Plugin.columnCount.Value;
                     rectTransform.anchoredPosition = new Vector2(row + 0.5f, -column - 0.5f) * itemSpacing;
                 } else {
                     displayItems[i].gameObject.SetActive(false);
@@ -183,6 +196,8 @@ namespace VNEI.UI {
 
         private void OnDestroy() {
             TypeToggle.OnChange -= typeToggleOnChange;
+            Plugin.columnCount.SettingChanged -= RebuildCellsEvent;
+            Plugin.rowCount.SettingChanged -= RebuildCellsEvent;
         }
 
         private class ListItem {

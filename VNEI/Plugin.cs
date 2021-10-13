@@ -27,12 +27,15 @@ namespace VNEI {
         public static ConfigEntry<bool> fixPlants;
         public static ConfigEntry<bool> useBlacklist;
         public static ConfigEntry<bool> invertScroll;
+        public static ConfigEntry<int> rowCount;
+        public static ConfigEntry<int> columnCount;
 
         private Harmony harmony;
 
         private void Awake() {
             Instance = this;
             Log.Init(Logger);
+            AcceptableValueRange<int> rowRange = new AcceptableValueRange<int>(1, 25);
 
             const string fixPlantsDescription = "This combines plants which are stored as two separate objects to one, " +
                                                 "as one is used for seeds and the other for the real plant. " +
@@ -46,6 +49,12 @@ namespace VNEI {
 
             const string invertScrollDescription = "Inverts scrolling for page switching";
             invertScroll = Config.Bind("General", "Invert Scroll", false, new ConfigDescription(invertScrollDescription));
+
+            const string columnDescription = "Count of visible horizontal items. Determines the width of the UI";
+            columnCount = Config.Bind("UI", "Items Horizontal", 12, new ConfigDescription(columnDescription, rowRange));
+
+            const string rowDescription = "Count of visible vertical items. Determines the height of the UI";
+            rowCount = Config.Bind("UI", "Items Vertical", 6, new ConfigDescription(rowDescription, rowRange));
 
             harmony = new Harmony(ModGuid);
             harmony.PatchAll();
