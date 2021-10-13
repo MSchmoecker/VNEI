@@ -18,8 +18,9 @@ namespace VNEI.UI {
         [SerializeField] public GameObject rowPrefab;
         [SerializeField] public GameObject recipeDroppedTextPrefab;
         [SerializeField] public GameObject arrowPrefab;
-        [SerializeField] public DisplayItem[] lastViewedDisplayItems;
+        [SerializeField] public Transform lastViewItemsParent;
 
+        private List<DisplayItem> lastViewedDisplayItems = new List<DisplayItem>();
         private List<Item> lastViewedItems = new List<Item>();
         private bool blockInput;
         private bool sizeDirty;
@@ -38,9 +39,9 @@ namespace VNEI.UI {
             Styling.ApplyAllComponents(root);
             GUIManager.Instance.ApplyWoodpanelStyle(dragHandler);
 
-            if ((bool)InventoryGui.instance) {
+            if ((bool) InventoryGui.instance) {
                 transform.SetParent(InventoryGui.instance.m_player);
-                ((RectTransform)transform).anchoredPosition = new Vector2(665, -45);
+                ((RectTransform) transform).anchoredPosition = new Vector2(665, -45);
             } else {
                 root.gameObject.SetActive(false);
                 dragHandler.gameObject.SetActive(false);
@@ -51,6 +52,7 @@ namespace VNEI.UI {
             Plugin.rowCount.SettingChanged += RebuildSizeEvent;
 
             RebuildSize();
+            RebuildLastViewedDisplayItems();
         }
 
         private void RebuildSizeEvent(object sender, EventArgs e) => sizeDirty = true;
@@ -73,7 +75,30 @@ namespace VNEI.UI {
             if (sizeDirty) {
                 sizeDirty = false;
                 RebuildSize();
+                RebuildLastViewedDisplayItems();
             }
+        }
+
+        private void RebuildLastViewedDisplayItems() {
+            foreach (DisplayItem displayItem in lastViewedDisplayItems) {
+                Destroy(displayItem.gameObject);
+            }
+
+            lastViewedDisplayItems.Clear();
+
+            int lastViewCount = Mathf.Max(Plugin.columnCount.Value - 5, 0);
+
+            RectTransform parentRectTransform = ((RectTransform) lastViewItemsParent.transform);
+            parentRectTransform.anchoredPosition = new Vector2((lastViewCount * 50f) / 2f + 5f, -25f);
+            parentRectTransform.sizeDelta = new Vector2(lastViewCount * 50f, 50f);
+
+            for (int i = 0; i < lastViewCount; i++) {
+                GameObject sprite = Instantiate(itemPrefab, lastViewItemsParent);
+                ((RectTransform) sprite.transform).anchoredPosition = new Vector2(25f + i * 50, -25f);
+                lastViewedDisplayItems.Add(sprite.GetComponent<DisplayItem>());
+            }
+
+            UpdateLastViewDisplayItems();
         }
 
         private void LateUpdate() {
@@ -107,12 +132,16 @@ namespace VNEI.UI {
             }
 
             // remove overflowing items
-            if (lastViewedItems.Count > lastViewedDisplayItems.Length) {
+            if (lastViewedItems.Count > 25) {
                 lastViewedItems.RemoveAt(lastViewedItems.Count - 1);
             }
 
             // display items at corresponding slots
-            for (int i = 0; i < lastViewedDisplayItems.Length; i++) {
+            UpdateLastViewDisplayItems();
+        }
+
+        private void UpdateLastViewDisplayItems() {
+            for (int i = 0; i < lastViewedDisplayItems.Count; i++) {
                 if (i >= lastViewedItems.Count) {
                     lastViewedDisplayItems[i].SetItem(null, 1);
                     continue;
