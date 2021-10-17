@@ -28,15 +28,25 @@ namespace VNEI.UI {
         private bool sizeDirty;
         public List<TypeToggle> typeToggles = new List<TypeToggle>();
 
-        public static void Create() {
+        public int ItemSizeX { get; private set; }
+        public int ItemSizeY { get; private set; }
+        public event Action RebuildedSize;
+        private bool usePluginSize = true;
+
+        private static BaseUI CreateBaseUI() {
             GameObject prefab = Plugin.AssetBundle.LoadAsset<GameObject>("VNEI");
-            Instantiate(prefab, GUIManager.CustomGUIFront.transform);
+            GameObject spawn = Instantiate(prefab, GUIManager.CustomGUIFront.transform);
+            return spawn.GetComponent<BaseUI>();
+        }
+
+        public static void CreateDefault() {
+            BaseUI baseUI = CreateBaseUI();
+
+            Plugin.columnCount.SettingChanged += baseUI.RebuildSizeEvent;
+            Plugin.rowCount.SettingChanged += baseUI.RebuildSizeEvent;
         }
 
         private void Awake() {
-            searchUi.baseUI = this;
-            recipeUi.baseUI = this;
-
             dragHandler.gameObject.AddComponent<DragWindowCntrl>();
             ShowSearch();
 
@@ -52,8 +62,6 @@ namespace VNEI.UI {
             }
 
             recipeUi.OnSetItem += AddItemToLastViewedQueue;
-            Plugin.columnCount.SettingChanged += RebuildSizeEvent;
-            Plugin.rowCount.SettingChanged += RebuildSizeEvent;
 
             RebuildSize();
             RebuildLastViewedDisplayItems();
@@ -62,9 +70,15 @@ namespace VNEI.UI {
         private void RebuildSizeEvent(object sender, EventArgs e) => sizeDirty = true;
 
         private void RebuildSize() {
-            root.sizeDelta = new Vector2(Plugin.columnCount.Value * 50f + 20f,
-                Plugin.rowCount.Value * 50f + 110f);
+            if (usePluginSize) {
+                ItemSizeX = Plugin.columnCount.Value;
+                ItemSizeY = Plugin.rowCount.Value;
+            }
+
+            root.sizeDelta = new Vector2(ItemSizeX * 50f + 20f, ItemSizeY * 50f + 110f);
             dragHandler.sizeDelta = root.sizeDelta + new Vector2(10f, 10f);
+
+            RebuildedSize?.Invoke();
         }
 
         private void Update() {
@@ -90,7 +104,7 @@ namespace VNEI.UI {
 
             lastViewedDisplayItems.Clear();
 
-            int lastViewCount = Mathf.Max(Plugin.columnCount.Value - 5, 0);
+            int lastViewCount = Mathf.Max(ItemSizeX - 5, 0);
 
             RectTransform parentRectTransform = ((RectTransform) lastViewItemsParent.transform);
             parentRectTransform.anchoredPosition = new Vector2((lastViewCount * 50f) / 2f + 5f, -25f);

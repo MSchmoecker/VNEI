@@ -3411,7 +3411,7 @@ MonoBehaviour:
     type: 3}
   arrowPrefab: {fileID: 2636329705550010785, guid: d26ccce4c714a5b44a57e5ba20aa42ee,
     type: 3}
-  noIconSprite: {fileID: 21300000, guid: 58b6785b0f1b3ca45adf5e61dc930229, type: 3}
+  typeToggles: []
 --- !u!114 &409791059357426324
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3789,6 +3789,7 @@ MonoBehaviour:
   spawnRect: {fileID: 5725692171589735732}
   searchField: {fileID: 4515171713434292545}
   pageText: {fileID: 9120909620535790600}
+  baseUI: {fileID: 1812281494192956357}
 --- !u!1 &4850004599705205537
 GameObject:
   m_ObjectHideFlags: 0
@@ -5400,6 +5401,7 @@ MonoBehaviour:
   infoName: {fileID: 3396229388112721916}
   infoNameContext: {fileID: 4197511138072552182}
   infoDescription: {fileID: 7641974358608350990}
+  baseUI: {fileID: 1812281494192956357}
 --- !u!1 &8762189938974519178
 GameObject:
   m_ObjectHideFlags: 0

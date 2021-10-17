@@ -73,7 +73,7 @@ namespace VNEI {
             ItemBlacklist = SimpleJson.SimpleJson.DeserializeObject<List<string>>(blacklistJson).ToHashSet();
 
             noIconSprite = AssetBundle.LoadAsset<Sprite>("NoSprite.png");
-            GUIManager.OnCustomGUIAvailable += BaseUI.Create;
+            GUIManager.OnCustomGUIAvailable += BaseUI.CreateDefault;
         }
 
         private void OnDestroy() {

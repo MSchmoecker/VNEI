@@ -27,15 +27,12 @@ namespace VNEI.UI {
             hasInit = false;
             typeToggleOnChange = () => UpdateSearch(true);
             TypeToggle.OnChange += typeToggleOnChange;
-            Plugin.columnCount.SettingChanged += RebuildCellsEvent;
-            Plugin.rowCount.SettingChanged += RebuildCellsEvent;
+            baseUI.RebuildedSize += RebuildCells;
 
             for (int i = 0; i < spawnRect.childCount; i++) {
                 Destroy(spawnRect.GetChild(i).gameObject);
             }
         }
-
-        private void RebuildCellsEvent(object sender, EventArgs e) => RebuildCells();
 
         private void RebuildCells() {
             foreach (DisplayItem displayItem in displayItems) {
@@ -44,8 +41,8 @@ namespace VNEI.UI {
 
             displayItems.Clear();
 
-            for (int i = 0; i < Plugin.rowCount.Value; i++) {
-                for (int j = 0; j < Plugin.columnCount.Value; j++) {
+            for (int i = 0; i < baseUI.ItemSizeX; i++) {
+                for (int j = 0; j < baseUI.ItemSizeY; j++) {
                     GameObject sprite = Instantiate(baseUI.itemPrefab, spawnRect);
                     sprite.SetActive(false);
                     DisplayItem displayItem = sprite.GetComponent<DisplayItem>();
@@ -132,8 +129,8 @@ namespace VNEI.UI {
 
                     rectTransform.anchorMin = new Vector2(0f, 1f);
                     rectTransform.anchorMax = new Vector2(0f, 1f);
-                    int row = i % Plugin.columnCount.Value;
-                    int column = i / Plugin.columnCount.Value;
+                    int row = i % baseUI.ItemSizeX;
+                    int column = i / baseUI.ItemSizeX;
                     rectTransform.anchoredPosition = new Vector2(row + 0.5f, -column - 0.5f) * itemSpacing;
                 } else {
                     displayItems[i].gameObject.SetActive(false);
@@ -194,8 +191,7 @@ namespace VNEI.UI {
 
         private void OnDestroy() {
             TypeToggle.OnChange -= typeToggleOnChange;
-            Plugin.columnCount.SettingChanged -= RebuildCellsEvent;
-            Plugin.rowCount.SettingChanged -= RebuildCellsEvent;
+            baseUI.RebuildedSize -= RebuildCells;
         }
 
         private class ListItem {

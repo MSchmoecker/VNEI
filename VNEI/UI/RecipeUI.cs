@@ -26,9 +26,6 @@ namespace VNEI.UI {
         private void Awake() {
             obtainingScroll.onValueChanged.AddListener((_) => UpdateObtainingHidden());
             usingScroll.onValueChanged.AddListener((_) => UpdateUseHidden());
-        }
-
-        private void Start() {
             infoIcon.Init(baseUI);
         }
 
