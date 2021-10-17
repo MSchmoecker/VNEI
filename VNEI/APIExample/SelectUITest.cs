@@ -31,8 +31,9 @@ namespace VNEI.UI {
         private void Start() {
             select.onClick.AddListener(() => {
                 if (!selection) {
-                    selection = SelectUI.CreateSelection(GUIManager.CustomGUIFront.transform,
-                        prefabName => text.text = prefabName, Vector2.zero, new[] { ItemType.Piece, ItemType.Item });
+                    Action<string> onSelect = prefabName => text.text = prefabName;
+                    selection = SelectUI.CreateSelection(GUIManager.CustomGUIFront.transform, onSelect, Vector2.zero,
+                        new[] { ItemType.Piece, ItemType.Item });
                 }
             });
         }

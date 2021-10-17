@@ -94,6 +94,7 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="APIExample\SelectUITest.cs" />
         <Compile Include="Log.cs" />
         <Compile Include="Logic\Amount.cs" />
         <Compile Include="Logic\Indexing.cs" />
@@ -111,7 +112,6 @@
         <Compile Include="UI\ScrollHandler.cs" />
         <Compile Include="UI\SearchUI.cs" />
         <Compile Include="UI\SelectUI.cs" />
-        <Compile Include="UI\SelectUITest.cs" />
         <Compile Include="UI\TypeToggle.cs" />
         <Compile Include="UI\Styling.cs" />
     </ItemGroup>

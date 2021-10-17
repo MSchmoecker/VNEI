@@ -48,6 +48,23 @@ Because VNEI.dll, Jotunn.dll and dependencies must be present inside Unity, `dep
 Now you can run `Assets/Build AssetBundles` at the toolbar, this copies the asset bundle back to the C# project.
 
 
+## API
+You can use VNEI to open an item selection popup.
+```cs
+Action<string> onSelect = (prefabName) => {
+    // called after selection
+};
+SelectUI selectUI = SelectUI.CreateSelection(parent, onSelect, Vector2.zero);
+```
+Type `vnei_toggle_select_test` inside the game console to open the example of `VNEI/APIExample/SelectUITest.cs`
+
+
+## Links
+- Thunderstore: https://valheim.thunderstore.io/package/MSchmoecker/VNEI/
+- Nexus: https://www.nexusmods.com/valheim/mods/1457
+- Github: https://github.com/MSchmoecker/VNEI
+- Discord: Margmas#9562
+
 ## Changelog
 0.2.3
 - added tree drops, trader and obliterator (incinerator) items
