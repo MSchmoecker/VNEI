@@ -8,17 +8,18 @@ using VNEI.Logic;
 
 namespace VNEI.UI {
     public class TypeToggle : MonoBehaviour, IPointerDownHandler {
-        public static event Action OnChange;
+        public static event Action OnChange; // TODO remove static?
 
         public Image image;
         public Image background;
         public bool isOn = true;
         public ItemType itemType;
 
-        public static List<TypeToggle> typeToggles = new List<TypeToggle>();
+        private BaseUI baseUI;
 
         private void Awake() {
-            typeToggles.Add(this);
+            baseUI = GetComponentInParent<BaseUI>();
+            baseUI.typeToggles.Add(this);
             GetComponent<UITooltip>().m_tooltipPrefab = PrefabManager.Instance.GetPrefab("InventoryTooltip");
             GetComponent<UITooltip>().m_gamepadFocusObject = PrefabManager.Instance.GetPrefab("selected");
             background.sprite = GUIManager.Instance.GetSprite("checkbox");
@@ -32,17 +33,17 @@ namespace VNEI.UI {
         }
 
         private void OnDestroy() {
-            typeToggles.Remove(this);
+            baseUI.typeToggles.Remove(this);
         }
 
         public void OnPointerDown(PointerEventData eventData) {
             if (eventData.button == PointerEventData.InputButton.Right) {
-                bool turnOthersOn = isOn && typeToggles.TrueForAll(i => !i.isOn || i == this);
+                bool turnOthersOn = isOn && baseUI.typeToggles.TrueForAll(i => !i.isOn || i == this);
 
                 isOn = true;
                 UpdateToggle();
 
-                foreach (TypeToggle toggle in typeToggles) {
+                foreach (TypeToggle toggle in baseUI.typeToggles) {
                     if (toggle == this) {
                         continue;
                     }

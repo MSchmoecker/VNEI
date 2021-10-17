@@ -9,10 +9,11 @@ using VNEI.Logic;
 
 namespace VNEI.UI {
     public class SearchUI : MonoBehaviour {
-        public static SearchUI Instance { get; private set; }
-        [SerializeField] private Transform spawnRect;
-        [SerializeField] public InputField searchField;
-        [SerializeField] public Text pageText;
+        public Transform spawnRect;
+        public InputField searchField;
+        public Text pageText;
+
+        public BaseUI baseUI;
 
         private readonly List<ListItem> listItems = new List<ListItem>();
         private readonly List<DisplayItem> displayItems = new List<DisplayItem>();
@@ -23,7 +24,6 @@ namespace VNEI.UI {
         private int maxPages;
 
         public void Awake() {
-            Instance = this;
             hasInit = false;
             typeToggleOnChange = () => UpdateSearch(true);
             TypeToggle.OnChange += typeToggleOnChange;
@@ -46,9 +46,11 @@ namespace VNEI.UI {
 
             for (int i = 0; i < Plugin.rowCount.Value; i++) {
                 for (int j = 0; j < Plugin.columnCount.Value; j++) {
-                    GameObject sprite = Instantiate(BaseUI.Instance.itemPrefab, spawnRect);
+                    GameObject sprite = Instantiate(baseUI.itemPrefab, spawnRect);
                     sprite.SetActive(false);
-                    displayItems.Add(sprite.GetComponent<DisplayItem>());
+                    DisplayItem displayItem = sprite.GetComponent<DisplayItem>();
+                    displayItem.Init(baseUI);
+                    displayItems.Add(displayItem);
                 }
             }
 
@@ -73,10 +75,10 @@ namespace VNEI.UI {
 
             searchField.onValueChanged.AddListener((_) => UpdateSearch(true));
 
-            foreach (TypeToggle typeToggle in TypeToggle.typeToggles) {
+            foreach (TypeToggle typeToggle in baseUI.typeToggles) {
                 switch (typeToggle.itemType) {
                     case ItemType.Undefined:
-                        typeToggle.image.sprite = RecipeUI.Instance.noSprite;
+                        typeToggle.image.sprite = Plugin.Instance.noIconSprite;
                         break;
                     case ItemType.Creature:
                         typeToggle.image.sprite = GUIManager.Instance.GetSprite("texts_button");
@@ -105,7 +107,7 @@ namespace VNEI.UI {
         }
 
         public void UpdateSearch(bool recalculateActive) {
-            BaseUI.Instance.ShowSearch();
+            baseUI.ShowSearch();
             bool useBlacklist = Plugin.useBlacklist.Value;
 
             string[] searchKeys = searchField.text.Split();
@@ -164,7 +166,7 @@ namespace VNEI.UI {
                 return false;
             }
 
-            if (TypeToggle.typeToggles.Any(typeToggle => item.itemType == typeToggle.itemType && !typeToggle.isOn)) {
+            if (baseUI.typeToggles.Any(typeToggle => item.itemType == typeToggle.itemType && !typeToggle.isOn)) {
                 return false;
             }
 
@@ -188,10 +190,6 @@ namespace VNEI.UI {
             }
 
             return true;
-        }
-
-        public bool IsCheating() {
-            return Player.m_localPlayer != null && Terminal.m_cheat;
         }
 
         private void OnDestroy() {

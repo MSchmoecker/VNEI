@@ -6,7 +6,7 @@ namespace VNEI.UI {
     public class Styling {
         public static void ApplyAllComponents(Transform root) {
             foreach (Text text in root.GetComponentsInChildren<Text>(true)) {
-                if (text == RecipeUI.Instance.infoName) {
+                if (text.name == "__Name_Text_Field__") {
                     ApplyText(text, GUIManager.Instance.AveriaSerifBold, GUIManager.Instance.ValheimOrange, 14);
                 } else {
                     ApplyText(text, GUIManager.Instance.AveriaSerif, Color.white, 14);

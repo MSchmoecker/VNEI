@@ -30,6 +30,8 @@ namespace VNEI {
         public static ConfigEntry<int> rowCount;
         public static ConfigEntry<int> columnCount;
 
+        public Sprite noIconSprite;
+
         private Harmony harmony;
 
         private void Awake() {
@@ -70,6 +72,7 @@ namespace VNEI {
             string blacklistJson = AssetUtils.LoadTextFromResources("ItemBlacklist.json", Assembly.GetExecutingAssembly());
             ItemBlacklist = SimpleJson.SimpleJson.DeserializeObject<List<string>>(blacklistJson).ToHashSet();
 
+            noIconSprite = AssetBundle.LoadAsset<Sprite>("NoSprite.png");
             GUIManager.OnCustomGUIAvailable += BaseUI.Create;
         }
 

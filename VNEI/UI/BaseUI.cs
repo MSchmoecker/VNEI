@@ -10,20 +10,23 @@ using VNEI.Logic;
 namespace VNEI.UI {
     [DefaultExecutionOrder(5)]
     public class BaseUI : MonoBehaviour {
-        public static BaseUI Instance { get; private set; }
+        [Header("Local References")] public RectTransform root;
+        public RectTransform dragHandler;
+        public Transform lastViewItemsParent;
 
-        [SerializeField] private RectTransform root;
-        [SerializeField] private RectTransform dragHandler;
-        [SerializeField] public GameObject itemPrefab;
-        [SerializeField] public GameObject rowPrefab;
-        [SerializeField] public GameObject recipeDroppedTextPrefab;
-        [SerializeField] public GameObject arrowPrefab;
-        [SerializeField] public Transform lastViewItemsParent;
+        public SearchUI searchUi;
+        public RecipeUI recipeUi;
+
+        [Header("Prefabs")] public GameObject itemPrefab;
+        public GameObject rowPrefab;
+        public GameObject recipeDroppedTextPrefab;
+        public GameObject arrowPrefab;
 
         private List<DisplayItem> lastViewedDisplayItems = new List<DisplayItem>();
         private List<Item> lastViewedItems = new List<Item>();
         private bool blockInput;
         private bool sizeDirty;
+        public List<TypeToggle> typeToggles = new List<TypeToggle>();
 
         public static void Create() {
             GameObject prefab = Plugin.AssetBundle.LoadAsset<GameObject>("VNEI");
@@ -31,9 +34,10 @@ namespace VNEI.UI {
         }
 
         private void Awake() {
-            Instance = this;
+            searchUi.baseUI = this;
+            recipeUi.baseUI = this;
+
             dragHandler.gameObject.AddComponent<DragWindowCntrl>();
-            gameObject.AddComponent<ScrollHandler>();
             ShowSearch();
 
             Styling.ApplyAllComponents(root);
@@ -47,7 +51,7 @@ namespace VNEI.UI {
                 dragHandler.gameObject.SetActive(false);
             }
 
-            RecipeUI.OnSetItem += AddItemToLastViewedQueue;
+            recipeUi.OnSetItem += AddItemToLastViewedQueue;
             Plugin.columnCount.SettingChanged += RebuildSizeEvent;
             Plugin.rowCount.SettingChanged += RebuildSizeEvent;
 
@@ -64,10 +68,10 @@ namespace VNEI.UI {
         }
 
         private void Update() {
-            if (SearchUI.Instance.searchField.isFocused && !blockInput) {
+            if (searchUi.searchField.isFocused && !blockInput) {
                 GUIManager.BlockInput(true);
                 blockInput = true;
-            } else if (!SearchUI.Instance.searchField.isFocused && blockInput) {
+            } else if (!searchUi.searchField.isFocused && blockInput) {
                 GUIManager.BlockInput(false);
                 blockInput = false;
             }
@@ -95,7 +99,9 @@ namespace VNEI.UI {
             for (int i = 0; i < lastViewCount; i++) {
                 GameObject sprite = Instantiate(itemPrefab, lastViewItemsParent);
                 ((RectTransform) sprite.transform).anchoredPosition = new Vector2(25f + i * 50, -25f);
-                lastViewedDisplayItems.Add(sprite.GetComponent<DisplayItem>());
+                DisplayItem displayItem = sprite.GetComponent<DisplayItem>();
+                displayItem.Init(this);
+                lastViewedDisplayItems.Add(displayItem);
             }
 
             UpdateLastViewDisplayItems();
@@ -106,18 +112,18 @@ namespace VNEI.UI {
         }
 
         private void HideAll() {
-            SearchUI.Instance.gameObject.SetActive(false);
-            RecipeUI.Instance.gameObject.SetActive(false);
+            searchUi.gameObject.SetActive(false);
+            recipeUi.gameObject.SetActive(false);
         }
 
         public void ShowSearch() {
             HideAll();
-            SearchUI.Instance.gameObject.SetActive(true);
+            searchUi.gameObject.SetActive(true);
         }
 
         public void ShowRecipe() {
             HideAll();
-            RecipeUI.Instance.gameObject.SetActive(true);
+            recipeUi.gameObject.SetActive(true);
         }
 
         private void AddItemToLastViewedQueue(Item item) {
@@ -152,7 +158,7 @@ namespace VNEI.UI {
         }
 
         private void OnDestroy() {
-            RecipeUI.OnSetItem -= AddItemToLastViewedQueue;
+            recipeUi.OnSetItem -= AddItemToLastViewedQueue;
         }
     }
 }

@@ -8,17 +8,15 @@ using VNEI.Logic;
 
 namespace VNEI.UI {
     public class RecipeUI : MonoBehaviour {
-        public static RecipeUI Instance { get; private set; }
+        public ScrollRect obtainingScroll;
+        public ScrollRect usingScroll;
+        public DisplayItem infoIcon;
+        public Text infoName;
+        public Text infoNameContext;
+        public Text infoDescription;
 
-        [SerializeField] public ScrollRect obtainingScroll;
-        [SerializeField] public ScrollRect usingScroll;
-        [SerializeField] public DisplayItem infoIcon;
-        [SerializeField] public Text infoName;
-        [SerializeField] public Text infoNameContext;
-        [SerializeField] public Text infoDescription;
-        [SerializeField] public Sprite noSprite;
-
-        public static event Action<Item> OnSetItem;
+        public BaseUI baseUI;
+        public event Action<Item> OnSetItem;
 
         private Item currentItem;
         private List<RectTransform> obtainItems = new List<RectTransform>();
@@ -26,9 +24,12 @@ namespace VNEI.UI {
         private const float rowHeight = 70f;
 
         private void Awake() {
-            Instance = this;
             obtainingScroll.onValueChanged.AddListener((_) => UpdateObtainingHidden());
             usingScroll.onValueChanged.AddListener((_) => UpdateUseHidden());
+        }
+
+        private void Start() {
+            infoIcon.Init(baseUI);
         }
 
         public void SetItem(Item item) {
@@ -113,7 +114,7 @@ namespace VNEI.UI {
         }
 
         public float SpawnRecipe(RecipeInfo recipe, RectTransform root, List<RectTransform> objects, float posY) {
-            RectTransform row = (RectTransform)Instantiate(BaseUI.Instance.rowPrefab, root).transform;
+            RectTransform row = (RectTransform)Instantiate(baseUI.rowPrefab, root).transform;
             row.anchoredPosition = new Vector2(25f, posY);
             objects.Add(row);
 
@@ -122,7 +123,7 @@ namespace VNEI.UI {
 
             foreach (KeyValuePair<Amount, List<Part>> pair in recipe.ingredient) {
                 if (recipe.ingredient.Count > 1 || pair.Key.min != 1 || pair.Key.max != 1 || Math.Abs(pair.Key.chance - 1f) > 0.01f) {
-                    RectTransform recipeDropped = SpawnRowElement(BaseUI.Instance.recipeDroppedTextPrefab, row, new Vector2(0, -25f),
+                    RectTransform recipeDropped = SpawnRowElement(baseUI.recipeDroppedTextPrefab, row, new Vector2(0, -25f),
                                                                   ref sizeX, out deltaX);
                     Text recipeDroppedText = recipeDropped.GetComponent<Text>();
                     recipeDroppedText.text = pair.Key.ToString();
@@ -135,21 +136,23 @@ namespace VNEI.UI {
             }
 
             if (recipe.station == null) {
-                SpawnRowElement(BaseUI.Instance.arrowPrefab, row, new Vector2(-15f, -25f), ref sizeX, out deltaX);
+                SpawnRowElement(baseUI.arrowPrefab, row, new Vector2(-15f, -25f), ref sizeX, out deltaX);
             } else {
                 float tmp = sizeX;
-                SpawnRowElement(BaseUI.Instance.arrowPrefab, row, new Vector2(-5f, -15f), ref tmp, out _);
+                SpawnRowElement(baseUI.arrowPrefab, row, new Vector2(-5f, -15f), ref tmp, out _);
                 tmp = sizeX;
-                RectTransform spawned = SpawnRowElement(BaseUI.Instance.itemPrefab, row, new Vector2(-5f, -40f), ref tmp, out _);
+                RectTransform spawned = SpawnRowElement(baseUI.itemPrefab, row, new Vector2(-5f, -40f), ref tmp, out _);
                 spawned.sizeDelta = new Vector2(30f, 30f);
                 deltaX = 40f;
                 sizeX += deltaX;
-                spawned.GetComponent<DisplayItem>().SetItem(recipe.station.item, recipe.station.quality);
+                DisplayItem displayItem = spawned.GetComponent<DisplayItem>();
+                displayItem.Init(baseUI);
+                displayItem.SetItem(recipe.station.item, recipe.station.quality);
             }
 
             foreach (KeyValuePair<Amount, List<Part>> pair in recipe.result) {
                 if (recipe.result.Count > 1 || pair.Key.min != 1 || pair.Key.max != 1 || Math.Abs(pair.Key.chance - 1f) > 0.01f) {
-                    RectTransform recipeDropped = SpawnRowElement(BaseUI.Instance.recipeDroppedTextPrefab, row, new Vector2(0, -25f),
+                    RectTransform recipeDropped = SpawnRowElement(baseUI.recipeDroppedTextPrefab, row, new Vector2(0, -25f),
                                                                   ref sizeX, out deltaX);
                     Text recipeDroppedText = recipeDropped.GetComponent<Text>();
                     recipeDroppedText.text = pair.Key.ToString();
@@ -164,10 +167,11 @@ namespace VNEI.UI {
             return sizeX - deltaX / 2f;
         }
 
-        private static void SpawnItem(Part part, Transform root, Vector2 relPos, ref float posX, out float deltaX) {
-            RectTransform spawned = SpawnRowElement(BaseUI.Instance.itemPrefab, root, relPos, ref posX, out deltaX);
+        private void SpawnItem(Part part, Transform root, Vector2 relPos, ref float posX, out float deltaX) {
+            RectTransform spawned = SpawnRowElement(baseUI.itemPrefab, root, relPos, ref posX, out deltaX);
 
             DisplayItem displayItem = spawned.GetComponent<DisplayItem>();
+            displayItem.Init(baseUI);
             displayItem.SetItem(part.item, part.quality);
             displayItem.SetCount(part.amount.ToString());
         }

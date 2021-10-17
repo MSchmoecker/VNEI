@@ -6,6 +6,8 @@ using VNEI.Logic;
 
 namespace VNEI.UI {
     public class DisplayItem : MonoBehaviour, IPointerClickHandler {
+        private BaseUI baseUI;
+
         public Image image;
         public UITooltip uiTooltip;
         public Text countText;
@@ -21,6 +23,10 @@ namespace VNEI.UI {
             uiTooltip.m_showTimer = 1;
         }
 
+        public void Init(BaseUI baseUI) {
+            this.baseUI = baseUI;
+        }
+
         public void SetItem(Item target, int quality) {
             item = target;
 
@@ -28,9 +34,13 @@ namespace VNEI.UI {
                 image.sprite = item.GetIcon();
                 uiTooltip.Set(item.GetPrimaryName(), item.GetTooltip(quality));
             } else {
-                image.sprite = RecipeUI.Instance.noSprite;
+                image.sprite = Plugin.Instance.noIconSprite;
                 uiTooltip.Set("", "");
             }
+        }
+
+        public static bool IsPlayerCheating() {
+            return Player.m_localPlayer != null && Terminal.m_cheat;
         }
 
         public void OnPointerClick(PointerEventData eventData) {
@@ -38,19 +48,20 @@ namespace VNEI.UI {
                 return;
             }
 
-            if (SearchUI.Instance.IsCheating() && eventData.button == PointerEventData.InputButton.Right) {
-                if (item.itemType == ItemType.Item && (bool)item.gameObject.GetComponent<ItemDrop>()) {
+            if (IsPlayerCheating() && eventData.button == PointerEventData.InputButton.Right) {
+                if (item.itemType == ItemType.Item && (bool) item.gameObject.GetComponent<ItemDrop>()) {
                     ItemDrop itemDrop = item.gameObject.GetComponent<ItemDrop>();
                     bool isShiftKeyDown = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
                     int stackSize = isShiftKeyDown ? itemDrop.m_itemData.m_shared.m_maxStackSize : 1;
                     Player.m_localPlayer.PickupPrefab(item.gameObject, stackSize);
                 } else {
                     Transform playerTransform = Player.m_localPlayer.transform;
-                    Instantiate(item.gameObject, playerTransform.position + playerTransform.forward * 2f, Quaternion.identity);
+                    Instantiate(item.gameObject, playerTransform.position + playerTransform.forward * 2f,
+                        Quaternion.identity);
                 }
             } else {
-                RecipeUI.Instance.SetItem(item);
-                BaseUI.Instance.ShowRecipe();
+                baseUI.recipeUi.SetItem(item);
+                baseUI.ShowRecipe();
             }
         }
 

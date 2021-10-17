@@ -69,7 +69,7 @@ namespace VNEI.Logic {
         }
 
         public Sprite GetIcon() {
-            return icon != null ? icon : RecipeUI.Instance.noSprite;
+            return icon ? icon : Plugin.Instance.noIconSprite;
         }
 
         public string GetPrimaryName() {

@@ -3,8 +3,10 @@ using UnityEngine.EventSystems;
 
 namespace VNEI.UI {
     public class ScrollHandler : MonoBehaviour, IScrollHandler {
+        public SearchUI searchUi;
+
         public void OnScroll(PointerEventData eventData) {
-            if (!SearchUI.Instance.gameObject.activeSelf) {
+            if (!searchUi.gameObject.activeSelf) {
                 return;
             }
 
@@ -12,7 +14,7 @@ namespace VNEI.UI {
             scroll *= Plugin.invertScroll.Value ? -1 : 1;
 
             if (scroll != 0) {
-                SearchUI.Instance.SwitchPage(scroll);
+                searchUi.SwitchPage(scroll);
             }
         }
     }
