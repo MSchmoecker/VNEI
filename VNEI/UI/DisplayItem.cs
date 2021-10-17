@@ -48,6 +48,11 @@ namespace VNEI.UI {
                 return;
             }
 
+            if (baseUI.TryGetComponent(out SelectUI selectUI)) {
+                selectUI.SelectItem(item);
+                return;
+            }
+
             if (IsPlayerCheating() && eventData.button == PointerEventData.InputButton.Right) {
                 if (item.itemType == ItemType.Item && (bool) item.gameObject.GetComponent<ItemDrop>()) {
                     ItemDrop itemDrop = item.gameObject.GetComponent<ItemDrop>();

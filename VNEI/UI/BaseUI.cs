@@ -26,14 +26,14 @@ namespace VNEI.UI {
         private List<Item> lastViewedItems = new List<Item>();
         private bool blockInput;
         private bool sizeDirty;
-        public List<TypeToggle> typeToggles = new List<TypeToggle>();
+        [HideInInspector] public List<TypeToggle> typeToggles = new List<TypeToggle>();
 
         public int ItemSizeX { get; private set; }
         public int ItemSizeY { get; private set; }
         public event Action RebuildedSize;
         private bool usePluginSize = true;
 
-        private static BaseUI CreateBaseUI() {
+        public static BaseUI CreateBaseUI() {
             GameObject prefab = Plugin.AssetBundle.LoadAsset<GameObject>("VNEI");
             GameObject spawn = Instantiate(prefab, GUIManager.CustomGUIFront.transform);
             return spawn.GetComponent<BaseUI>();
@@ -104,6 +104,11 @@ namespace VNEI.UI {
 
             lastViewedDisplayItems.Clear();
 
+            if (GetComponent<SelectUI>()) {
+                // TODO responsibility in SelectUI?
+                return;
+            }
+
             int lastViewCount = Mathf.Max(ItemSizeX - 5, 0);
 
             RectTransform parentRectTransform = ((RectTransform) lastViewItemsParent.transform);
@@ -173,6 +178,16 @@ namespace VNEI.UI {
 
         private void OnDestroy() {
             recipeUi.OnSetItem -= AddItemToLastViewedQueue;
+        }
+
+        public void SetSize(bool usePluginSize, int itemsX, int itemsY) {
+            this.usePluginSize = usePluginSize;
+            ItemSizeX = itemsX;
+            ItemSizeY = itemsY;
+
+            // don't use `sizeDirty = true` as it needs one frame to execute
+            RebuildSize();
+            RebuildLastViewedDisplayItems();
         }
     }
 }

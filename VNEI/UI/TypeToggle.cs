@@ -36,6 +36,11 @@ namespace VNEI.UI {
             baseUI.typeToggles.Remove(this);
         }
 
+        public void SetOn(bool on) {
+            isOn = on;
+            UpdateToggle();
+        }
+
         public void OnPointerDown(PointerEventData eventData) {
             if (eventData.button == PointerEventData.InputButton.Right) {
                 bool turnOthersOn = isOn && baseUI.typeToggles.TrueForAll(i => !i.isOn || i == this);

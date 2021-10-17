@@ -16,7 +16,7 @@ namespace VNEI.Logic {
         private static Dictionary<string, BepInPlugin> sourceMod = new Dictionary<string, BepInPlugin>();
 
         public static void IndexAll() {
-            if (Items.Count > 0) {
+            if (HasIndexed()) {
                 return;
             }
 
@@ -316,6 +316,8 @@ namespace VNEI.Logic {
 
             IndexFinished?.Invoke();
         }
+
+        public static bool HasIndexed() => Items.Count > 0;
 
         private static void DisableItem(string name, string context) {
             Item item = GetItem(name);
