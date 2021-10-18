@@ -61,7 +61,13 @@ namespace VNEI.Logic {
                     continue;
                 }
 
-                RenderObject renderObject = SpawnSafe(ZNetScene.instance.GetPrefab(prefabName), out bool hasMesh);
+                GameObject prefab = ZNetScene.instance.GetPrefab(prefabName);
+
+                if (prefab == null) {
+                    continue;
+                }
+
+                RenderObject renderObject = SpawnSafe(prefab, out bool hasMesh);
 
                 if (!hasMesh) {
                     continue;
