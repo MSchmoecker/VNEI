@@ -9,6 +9,10 @@ using UnityEngine;
 
 namespace VNEI.Logic {
     public static class Indexing {
+        public static event Action<GameObject> OnIndexingItems;
+        public static event Action<GameObject> OnDisableItems;
+        public static event Action<Recipe> OnIndexingRecipes;
+        public static event Action<GameObject> OnIndexingItemRecipes;
         public static event Action IndexFinished;
         public static readonly Queue<string> ToRenderSprite = new Queue<string>();
 
@@ -141,6 +145,8 @@ namespace VNEI.Logic {
                 if (prefab.TryGetComponent(out Trader trader)) {
                     AddItem(new Item(prefab.name, trader.m_name, string.Empty, null, ItemType.Undefined, prefab));
                 }
+
+                OnIndexingItems?.Invoke(prefab);
             }
 
             // m_prefabs second iteration: disable prefabs
@@ -181,6 +187,8 @@ namespace VNEI.Logic {
                         }
                     }
                 }
+
+                OnDisableItems?.Invoke(prefab);
             }
 
             Log.LogInfo($"Index recipes");
@@ -198,6 +206,8 @@ namespace VNEI.Logic {
                 for (int quality = 1; quality <= recipe.m_item.m_itemData.m_shared.m_maxQuality; quality++) {
                     AddRecipeToItems(new RecipeInfo(recipe, quality));
                 }
+
+                OnIndexingRecipes?.Invoke(recipe);
             }
 
             Log.LogInfo("Index prefabs recipes");
@@ -296,6 +306,8 @@ namespace VNEI.Logic {
                         AddRecipeToItems(new RecipeInfo(trader, tradeItem));
                     }
                 }
+
+                OnIndexingItemRecipes?.Invoke(prefab);
             }
 
             foreach (KeyValuePair<string, PieceTable> pair in pieceTables) {
@@ -328,7 +340,7 @@ namespace VNEI.Logic {
             }
         }
 
-        private static void AddItem(Item item) {
+        public static void AddItem(Item item) {
             if (Plugin.fixPlants.Value) {
                 if (item.internalName.ToLower().Contains("sapling_") && !item.internalName.ToLower().Contains("seed")) {
                     return;
@@ -375,20 +387,6 @@ namespace VNEI.Logic {
 
             if (recipeInfo.station != null) {
                 ItemUsedInRecipe(recipeInfo.station.item.internalName, recipeInfo);
-            }
-        }
-
-        public static void AddConversionRecipe(ItemDrop from, ItemDrop to, RecipeInfo recipeInfo, string name) {
-            if ((bool)from) {
-                ItemUsedInRecipe(from.name, recipeInfo);
-            } else {
-                Log.LogDebug($"conversion from is null: {name}");
-            }
-
-            if ((bool)to) {
-                ItemObtainedInRecipe(to.name, recipeInfo);
-            } else {
-                Log.LogDebug($"conversion to is null: {name}");
             }
         }
 
