@@ -62,6 +62,10 @@ namespace VNEI.Logic {
                 sourceMod[customPiece.PiecePrefab.name] = customPiece.SourceMod;
             }
 
+            foreach (CustomPrefab customPrefab in ModRegistry.GetPrefabs()) {
+                sourceMod[customPrefab.Prefab.name] = customPrefab.SourceMod;
+            }
+
             Dictionary<string, PieceTable> pieceTables = new Dictionary<string, PieceTable>();
 
             Log.LogInfo("Index prefabs");
