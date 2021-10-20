@@ -9,9 +9,39 @@ using UnityEngine;
 
 namespace VNEI.Logic {
     public static class Indexing {
+        /// <summary>
+        ///     Called when trying to index new prefab names.
+        ///     Usually use <see cref="AddItem"/> to register a new item.
+        ///     If two items have the same name only the first one is added.
+        /// </summary>
         public static event Action<GameObject> OnIndexingItems;
+        /// <summary>
+        ///     Called after added all items. Disabled items are not shown inside any UI.
+        ///     Usually use <see cref="DisableItem"/> to disable a given item.
+        /// </summary>
         public static event Action<GameObject> OnDisableItems;
+        /// <summary>
+        ///     Called after adding a Valheim <see cref="Recipe"/>.
+        /// </summary>
         public static event Action<Recipe> OnIndexingRecipes;
+        /// <summary>
+        ///     Called when adding specific item recipes (like conversions or drops).
+        ///     Usually use <see cref="AddRecipeToItems"/> with a new <see cref="RecipeInfo"/>, see a full example here
+        ///     <code>
+        ///     Indexing.OnIndexingItemRecipes += (prefab) => {
+        ///         if (prefab.TryGetComponent(out CookingStation cookingStation)) {
+        ///             foreach (CookingStation.ItemConversion conversion in cookingStation.m_conversion) {
+        ///                 RecipeInfo recipeInfo = new RecipeInfo();
+        ///                 recipeInfo.SetStation(cookingStation, 1);
+        ///                 recipeInfo.AddIngredient(conversion.m_from, Amount.One, Amount.One, 1, prefab.name);
+        ///                 recipeInfo.AddResult(conversion.m_to, Amount.One, Amount.One, 1, prefab.name);
+        ///                 recipeInfo.CalculateIsOnBlacklist();
+        ///                 Indexing.AddRecipeToItems(recipeInfo);
+        ///             }
+        ///         }
+        ///     };
+        ///     </code>
+        /// </summary>
         public static event Action<GameObject> OnIndexingItemRecipes;
         public static event Action IndexFinished;
         public static readonly Queue<string> ToRenderSprite = new Queue<string>();

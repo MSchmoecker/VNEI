@@ -65,6 +65,7 @@ cp "$ModName/obj/Debug/$ModName.dll" "$ModDir"
 cp README.md "$ModDir"
 cp manifest.json "$ModDir"
 cp icon.png "$ModDir"
+cp "$ModName/bin/Debug/$ModName.xml" "$ModDir"
 
 # make zip files
 cd "$ModDir" || exit
@@ -74,8 +75,9 @@ cd "$ModDir" || exit
 
 mkdir -p plugins
 cp "$ModName.dll" plugins
+cp "$ModName.xml" plugins
 
-zip "$ModName.zip" "$ModName.dll" README.md manifest.json icon.png
+zip "$ModName.zip" "$ModName.dll" README.md manifest.json icon.png "$ModName.xml"
 zip -r "$ModName-Nexus.zip" plugins
 
 rm -r plugins

@@ -67,7 +67,7 @@ namespace VNEI.Logic {
             }
         }
 
-        private void CalculateIsOnBlacklist() {
+        public void CalculateIsOnBlacklist() {
             if (ingredient.SelectMany(i => i.Value).Any(i => Plugin.ItemBlacklist.Contains(i.item.internalName))) {
                 isOnBlacklist = true;
                 return;
