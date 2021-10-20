@@ -176,7 +176,11 @@ namespace VNEI.Logic {
                     AddItem(new Item(prefab.name, trader.m_name, string.Empty, null, ItemType.Undefined, prefab));
                 }
 
-                OnIndexingItems?.Invoke(prefab);
+                try {
+                    OnIndexingItems?.Invoke(prefab);
+                } catch (Exception e) {
+                    Log.LogError(e);
+                }
             }
 
             // m_prefabs second iteration: disable prefabs
@@ -218,7 +222,11 @@ namespace VNEI.Logic {
                     }
                 }
 
-                OnDisableItems?.Invoke(prefab);
+                try {
+                    OnDisableItems?.Invoke(prefab);
+                } catch (Exception e) {
+                    Log.LogError(e);
+                }
             }
 
             Log.LogInfo($"Index recipes");
@@ -237,7 +245,11 @@ namespace VNEI.Logic {
                     AddRecipeToItems(new RecipeInfo(recipe, quality));
                 }
 
-                OnIndexingRecipes?.Invoke(recipe);
+                try {
+                    OnIndexingRecipes?.Invoke(recipe);
+                } catch (Exception e) {
+                    Log.LogError(e);
+                }
             }
 
             Log.LogInfo("Index prefabs recipes");
@@ -337,7 +349,11 @@ namespace VNEI.Logic {
                     }
                 }
 
-                OnIndexingItemRecipes?.Invoke(prefab);
+                try {
+                    OnIndexingItemRecipes?.Invoke(prefab);
+                } catch (Exception e) {
+                    Log.LogError(e);
+                }
             }
 
             foreach (KeyValuePair<string, PieceTable> pair in pieceTables) {
@@ -356,7 +372,11 @@ namespace VNEI.Logic {
 
             RenderSprites.instance.StartRender();
 
-            IndexFinished?.Invoke();
+            try {
+                IndexFinished?.Invoke();
+            } catch (Exception e) {
+                Log.LogError(e);
+            }
         }
 
         public static bool HasIndexed() => Items.Count > 0;
