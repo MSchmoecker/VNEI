@@ -54,7 +54,7 @@ namespace VNEI.UI {
             }
 
             if (IsPlayerCheating() && eventData.button == PointerEventData.InputButton.Right) {
-                if (item.itemType == ItemType.Item && (bool) item.gameObject.GetComponent<ItemDrop>()) {
+                if (item.gameObject.GetComponent<ItemDrop>()) {
                     ItemDrop itemDrop = item.gameObject.GetComponent<ItemDrop>();
                     bool isShiftKeyDown = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
                     int stackSize = isShiftKeyDown ? itemDrop.m_itemData.m_shared.m_maxStackSize : 1;
