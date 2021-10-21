@@ -76,7 +76,6 @@ Indexing.OnIndexingItemRecipes += (prefab) => {
             recipeInfo.SetStation(cookingStation, 1);
             recipeInfo.AddIngredient(conversion.m_from, Amount.One, Amount.One, 1, prefab.name);
             recipeInfo.AddResult(conversion.m_to, Amount.One, Amount.One, 1, prefab.name);
-            recipeInfo.CalculateIsOnBlacklist();
             Indexing.AddRecipeToItems(recipeInfo);
         }
     }

@@ -9,6 +9,8 @@ namespace VNEI.Logic {
         public Dictionary<Amount, List<Part>> ingredient = new Dictionary<Amount, List<Part>>();
         public Dictionary<Amount, List<Part>> result = new Dictionary<Amount, List<Part>>();
         public Part station;
+
+        public static Action OnCalculateIsOnBlacklist;
         public bool isOnBlacklist;
 
         public void AddIngredient(string name, Amount groupAmount, Amount count, int quality) {
@@ -79,6 +81,7 @@ namespace VNEI.Logic {
         }
 
         public RecipeInfo() {
+            OnCalculateIsOnBlacklist += CalculateIsOnBlacklist;
         }
 
         public RecipeInfo(Recipe recipe, int quality) {
@@ -101,7 +104,7 @@ namespace VNEI.Logic {
                 AddIngredient(resource.m_resItem, Amount.One, amount, quality, recipe.name);
             }
 
-            CalculateIsOnBlacklist();
+            OnCalculateIsOnBlacklist += CalculateIsOnBlacklist;
         }
 
         public RecipeInfo(Smelter.ItemConversion conversion, Smelter smelter) {
@@ -113,28 +116,28 @@ namespace VNEI.Logic {
             }
 
             AddResult(conversion.m_to, Amount.One, Amount.One, 1, smelter.name);
-            CalculateIsOnBlacklist();
+            OnCalculateIsOnBlacklist += CalculateIsOnBlacklist;
         }
 
         public RecipeInfo(Fermenter.ItemConversion conversion, Fermenter fermenter) {
             SetStation(fermenter, 1);
             AddIngredient(conversion.m_from, Amount.One, Amount.One, 1, fermenter.name);
             AddResult(conversion.m_to, Amount.One, new Amount(conversion.m_producedItems), 1, fermenter.name);
-            CalculateIsOnBlacklist();
+            OnCalculateIsOnBlacklist += CalculateIsOnBlacklist;
         }
 
         public RecipeInfo(CookingStation.ItemConversion conversion, CookingStation cookingStation) {
             SetStation(cookingStation, 1);
             AddIngredient(conversion.m_from, Amount.One, Amount.One, 1, cookingStation.name);
             AddResult(conversion.m_to, Amount.One, Amount.One, 1, cookingStation.name);
-            CalculateIsOnBlacklist();
+            OnCalculateIsOnBlacklist += CalculateIsOnBlacklist;
         }
 
         public RecipeInfo(Incinerator incinerator) {
             SetStation(incinerator, 1);
             AddResult(incinerator.m_defaultResult, Amount.One, Amount.One, 1, incinerator.name);
             AddIngredient("vnei_any_item", Amount.One, new Amount(incinerator.m_defaultCost), 1);
-            CalculateIsOnBlacklist();
+            OnCalculateIsOnBlacklist += CalculateIsOnBlacklist;
         }
 
         public RecipeInfo(Incinerator.IncineratorConversion conversion, Incinerator incinerator) {
@@ -144,14 +147,14 @@ namespace VNEI.Logic {
                 AddIngredient(requirement.m_resItem, Amount.One, new Amount(requirement.m_amount), 1, incinerator.name);
             }
 
-            CalculateIsOnBlacklist();
+            OnCalculateIsOnBlacklist += CalculateIsOnBlacklist;
         }
 
         public RecipeInfo(Incinerator.IncineratorConversion conversion, Incinerator.Requirement requirement, Incinerator incinerator) {
             SetStation(incinerator, 1);
             AddResult(conversion.m_result, Amount.One, new Amount(conversion.m_resultAmount), 1, incinerator.name);
             AddIngredient(requirement.m_resItem, Amount.One, new Amount(requirement.m_amount), 1, incinerator.name);
-            CalculateIsOnBlacklist();
+            OnCalculateIsOnBlacklist += CalculateIsOnBlacklist;
         }
 
         public RecipeInfo(Character character, List<CharacterDrop.Drop> characterDrops) {
@@ -162,7 +165,7 @@ namespace VNEI.Logic {
                 AddResult(drop.m_prefab, Amount.One, amount, 1, character.name);
             }
 
-            CalculateIsOnBlacklist();
+            OnCalculateIsOnBlacklist += CalculateIsOnBlacklist;
         }
 
         public RecipeInfo(GameObject prefab, Piece piece, Item crafter) {
@@ -173,7 +176,7 @@ namespace VNEI.Logic {
                 AddIngredient(requirement.m_resItem, Amount.One, new Amount(requirement.m_amount), 1, prefab.name);
             }
 
-            CalculateIsOnBlacklist();
+            OnCalculateIsOnBlacklist += CalculateIsOnBlacklist;
         }
 
         public RecipeInfo(GameObject piece, Pickable pickable) {
@@ -184,12 +187,12 @@ namespace VNEI.Logic {
                 AddDropTable(piece, pickable.m_extraDrops);
             }
 
-            CalculateIsOnBlacklist();
+            OnCalculateIsOnBlacklist += CalculateIsOnBlacklist;
         }
 
         public RecipeInfo(GameObject from, DropTable dropTable) {
             AddDropTable(from, dropTable);
-            CalculateIsOnBlacklist();
+            OnCalculateIsOnBlacklist += CalculateIsOnBlacklist;
         }
 
         public RecipeInfo(SpawnArea spawnArea) {
@@ -198,13 +201,13 @@ namespace VNEI.Logic {
                 AddResult(spawnData.m_prefab, Amount.One, new Amount(1, 1f / spawnArea.m_prefabs.Count), 1, spawnArea.name);
             }
 
-            CalculateIsOnBlacklist();
+            OnCalculateIsOnBlacklist += CalculateIsOnBlacklist;
         }
 
         public RecipeInfo(Destructible spawnArea) {
             AddIngredient(spawnArea, Amount.One, Amount.One, 1, spawnArea.name);
             AddResult(spawnArea.m_spawnWhenDestroyed, Amount.One, Amount.One, 1, spawnArea.name);
-            CalculateIsOnBlacklist();
+            OnCalculateIsOnBlacklist += CalculateIsOnBlacklist;
         }
 
         public RecipeInfo(TreeLog treeLog) {
@@ -214,21 +217,21 @@ namespace VNEI.Logic {
 
             AddDropTable(treeLog.gameObject, treeLog.m_dropWhenDestroyed);
 
-            CalculateIsOnBlacklist();
+            OnCalculateIsOnBlacklist += CalculateIsOnBlacklist;
         }
 
         public RecipeInfo(TreeBase treeBase) {
             AddResult(treeBase.m_stubPrefab, Amount.One, Amount.One, 1, treeBase.name);
             AddResult(treeBase.m_logPrefab, Amount.One, Amount.One, 1, treeBase.name);
             AddDropTable(treeBase.gameObject, treeBase.m_dropWhenDestroyed);
-            CalculateIsOnBlacklist();
+            OnCalculateIsOnBlacklist += CalculateIsOnBlacklist;
         }
 
         public RecipeInfo(Trader trader, Trader.TradeItem tradeItem) {
             SetStation(trader, 1);
             AddIngredient(StoreGui.instance.m_coinPrefab, Amount.One, new Amount(tradeItem.m_price), 1, trader.name);
             AddResult(tradeItem.m_prefab, Amount.One, new Amount(tradeItem.m_stack), 1, trader.name);
-            CalculateIsOnBlacklist();
+            OnCalculateIsOnBlacklist += CalculateIsOnBlacklist;
         }
 
         private void AddDropTable(GameObject from, DropTable dropTable) {
@@ -242,7 +245,7 @@ namespace VNEI.Logic {
                 AddResult(drop.m_item, tableCount, new Amount(drop.m_stackMin, drop.m_stackMax, chance), 1, from.name);
             }
 
-            CalculateIsOnBlacklist();
+            OnCalculateIsOnBlacklist += CalculateIsOnBlacklist;
         }
 
         public bool IngredientsAndResultSame() {
