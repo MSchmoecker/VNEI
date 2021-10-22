@@ -6,6 +6,7 @@ using System.Reflection;
 using BepInEx;
 using BepInEx.Configuration;
 using HarmonyLib;
+using Jotunn.Entities;
 using Jotunn.Utils;
 using Jotunn.Managers;
 using UnityEngine;
@@ -64,9 +65,13 @@ namespace VNEI {
             // load embedded asset bundle
             AssetBundle = AssetUtils.LoadAssetBundleFromResources("VNEI_AssetBundle", Assembly.GetExecutingAssembly());
 
+            CustomLocalization localization = new CustomLocalization();
+
             // load embedded localisation
             string englishJson = AssetUtils.LoadTextFromResources("Localization.English.json", Assembly.GetExecutingAssembly());
-            LocalizationManager.Instance.AddJson("English", englishJson);
+            localization.AddJsonFile("English", englishJson);
+
+            LocalizationManager.Instance.AddLocalization(localization);
 
             // load embedded blacklist
             string blacklistJson = AssetUtils.LoadTextFromResources("ItemBlacklist.json", Assembly.GetExecutingAssembly());
