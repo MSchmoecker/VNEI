@@ -6,7 +6,13 @@ namespace VNEI.Logic {
         public readonly int max;
         public readonly float chance;
 
+        /// <summary>
+        ///     min = 0, max = 0, chance = 0
+        /// </summary>
         public static Amount Zero { get; } = new Amount(0, 0, 0f);
+        /// <summary>
+        ///     min = 1, max = 1, chance = 1f
+        /// </summary>
         public static Amount One { get; } = new Amount(1);
 
         public Amount(int min, int max, float chance = 1f) {

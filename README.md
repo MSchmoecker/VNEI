@@ -50,11 +50,11 @@ Now you can run `Assets/Build AssetBundles` at the toolbar, this copies the asse
 
 ## API
 ### Indexing
-At first world loading, VNEI indexes all available items and recipes at `DungeonDB.Start` to allow other mods to add there prefabs before.
+At first world loading, VNEI indexes all available items and recipes at `DungeonDB.Start` to allow other mods to add their prefabs before.
 You can hook events at `Indexing` to add custom items and recipes that were not collected by VNEI.
-If these items are vanilla items instead, feel free to open a PR here.
+If these items/recipes use vanilla components instead of custom ones, feel free to open a PR here.
 
-The are called with every GameObject (or Recipe) so it can be tried to get a certain component or name.
+The events are called with every GameObject (or Recipe) so it can be tried to get a certain component or name.
 The events are called in the following order:
 
 - OnIndexingItems: `Action<GameObject>`
@@ -67,20 +67,28 @@ The events are called in the following order:
     - special recipes as item conversions (smelter, cooking station, ...) or drops are added here.
     Usually use `Indexing.AddRecipeToItems` with a new `RecipeInfo`.
 
-See OnIndexingItemRecipes as example:
+See OnIndexingItemRecipes as an example in your :
 ```
-Indexing.OnIndexingItemRecipes += (prefab) => {
-    if (prefab.TryGetComponent(out CookingStation cookingStation)) {
-        foreach (CookingStation.ItemConversion conversion in cookingStation.m_conversion) {
-            RecipeInfo recipeInfo = new RecipeInfo();
-            recipeInfo.SetStation(cookingStation, 1);
-            recipeInfo.AddIngredient(conversion.m_from, Amount.One, Amount.One, 1, prefab.name);
-            recipeInfo.AddResult(conversion.m_to, Amount.One, Amount.One, 1, prefab.name);
-            Indexing.AddRecipeToItems(recipeInfo);
+if (Chainloader.PluginInfos.ContainsKey("com.maxsch.valheim.vnei")) {
+    Indexing.OnIndexingItemRecipes += (prefab) => {
+        if (prefab.TryGetComponent(out CookingStation cookingStation)) {
+            foreach (CookingStation.ItemConversion conversion in cookingStation.m_conversion) {
+                RecipeInfo recipeInfo = new RecipeInfo();
+                recipeInfo.SetStation(cookingStation, 1);
+                recipeInfo.AddIngredient(conversion.m_from, Amount.One, Amount.One, 1, prefab.name);
+                recipeInfo.AddResult(conversion.m_to, Amount.One, Amount.One, 1, prefab.name);
+                Indexing.AddRecipeToItems(recipeInfo);
+            }
         }
-    }
-};
+    };
+}
 ```
+This gets every GameObject with a CookingStation component and adds the ItemConversions as a new RecipeInfo respectively.
+With `Indexing.AddRecipeToItems(recipeInfo)` the corresponding items (`conversion.m_from`, `conversion.m_to`, `cookingStation`)
+know the RecipeInfo and can show them in the UI.
+Notice these items are ItemDrops/Pieces and therefore already registered as Items by VNEI.
+If this is not the case with your prefabs, they have to be added at `Indexing.OnIndexingItems`.
+
 
 ### Selection Popup
 You can use VNEI to open an item selection popup.
