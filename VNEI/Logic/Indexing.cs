@@ -43,7 +43,6 @@ namespace VNEI.Logic {
         /// </summary>
         public static event Action<GameObject> OnIndexingItemRecipes;
         public static event Action IndexFinished;
-        public static readonly Queue<string> ToRenderSprite = new Queue<string>();
 
         private static Dictionary<int, Item> Items { get; } = new Dictionary<int, Item>();
         private static Dictionary<string, BepInPlugin> sourceMod = new Dictionary<string, BepInPlugin>();
@@ -370,12 +369,6 @@ namespace VNEI.Logic {
             RecipeInfo.OnCalculateIsOnBlacklist?.Invoke();
 
             Log.LogInfo($"Loaded {GetActiveItems().Count()} items");
-
-            if (!(bool)RenderSprites.instance) {
-                new GameObject("RenderSprites", typeof(RenderSprites));
-            }
-
-            RenderSprites.instance.StartRender();
 
             try {
                 IndexFinished?.Invoke();

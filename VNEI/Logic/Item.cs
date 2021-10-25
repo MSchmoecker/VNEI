@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using BepInEx;
+using Jotunn.Managers;
 using UnityEngine;
 using VNEI.UI;
 
@@ -35,7 +36,9 @@ namespace VNEI.Logic {
             if (icon != null) {
                 SetIcon(icon);
             } else {
-                Indexing.ToRenderSprite.Enqueue(name);
+                if (prefab) {
+                    RenderManager.Instance.EnqueueRender(prefab, SetIcon);
+                }
             }
         }
 

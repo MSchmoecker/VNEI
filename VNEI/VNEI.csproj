@@ -104,7 +104,6 @@
         <Compile Include="Logic\ItemType.cs" />
         <Compile Include="Logic\Part.cs" />
         <Compile Include="Logic\RecipeInfo.cs" />
-        <Compile Include="Logic\RenderSprites.cs" />
         <Compile Include="Patches\DungeonDBPatch.cs" />
         <Compile Include="Plugin.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
