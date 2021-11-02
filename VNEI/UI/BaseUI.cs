@@ -27,6 +27,7 @@ namespace VNEI.UI {
         private bool blockInput;
         private bool sizeDirty;
         [HideInInspector] public List<TypeToggle> typeToggles = new List<TypeToggle>();
+        private bool canBeHidden;
 
         public int ItemSizeX { get; private set; }
         public int ItemSizeY { get; private set; }
@@ -41,6 +42,7 @@ namespace VNEI.UI {
 
         public static void CreateDefault() {
             BaseUI baseUI = CreateBaseUI();
+            baseUI.canBeHidden = true;
 
             Plugin.columnCount.SettingChanged += baseUI.RebuildSizeEvent;
             Plugin.rowCount.SettingChanged += baseUI.RebuildSizeEvent;
@@ -56,12 +58,14 @@ namespace VNEI.UI {
             if ((bool) InventoryGui.instance) {
                 transform.SetParent(InventoryGui.instance.m_player);
                 ((RectTransform) transform).anchoredPosition = new Vector2(665, -45);
+                UpdateVisibility();
             } else {
                 root.gameObject.SetActive(false);
                 dragHandler.gameObject.SetActive(false);
             }
 
             recipeUi.OnSetItem += AddItemToLastViewedQueue;
+            Plugin.OnOpenHotkey += UpdateVisibility;
 
             RebuildSize();
             RebuildLastViewedDisplayItems();
@@ -178,6 +182,7 @@ namespace VNEI.UI {
 
         private void OnDestroy() {
             recipeUi.OnSetItem -= AddItemToLastViewedQueue;
+            Plugin.OnOpenHotkey -= UpdateVisibility;
         }
 
         public void SetSize(bool usePluginSize, int itemsX, int itemsY) {
@@ -188,6 +193,17 @@ namespace VNEI.UI {
             // don't use `sizeDirty = true` as it needs one frame to execute
             RebuildSize();
             RebuildLastViewedDisplayItems();
+        }
+
+        private void UpdateVisibility() {
+            if (canBeHidden && Player.m_localPlayer) {
+                bool visible = Player.m_localPlayer.m_nview.GetZDO().GetBool("vnei_ui_visible", true);
+                root.gameObject.SetActive(visible);
+                dragHandler.gameObject.SetActive(visible);
+            } else {
+                root.gameObject.SetActive(true);
+                dragHandler.gameObject.SetActive(true);
+            }
         }
     }
 }

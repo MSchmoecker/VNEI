@@ -30,7 +30,9 @@ namespace VNEI {
         public static ConfigEntry<bool> invertScroll;
         public static ConfigEntry<int> rowCount;
         public static ConfigEntry<int> columnCount;
+        public static ConfigEntry<KeyboardShortcut> openHotkey;
 
+        public static event Action OnOpenHotkey;
         public Sprite noIconSprite;
 
         private Harmony harmony;
@@ -52,6 +54,9 @@ namespace VNEI {
 
             const string invertScrollDescription = "Inverts scrolling for page switching";
             invertScroll = Config.Bind("General", "Invert Scroll", false, new ConfigDescription(invertScrollDescription));
+
+            const string openHotkeyDescription = "Hotkey to open and close the UI";
+            openHotkey = Config.Bind("Hotkeys", "Open UI Hotkey", new KeyboardShortcut(KeyCode.H, KeyCode.LeftAlt), openHotkeyDescription);
 
             const string columnDescription = "Count of visible horizontal items. Determines the width of the UI";
             columnCount = Config.Bind("UI", "Items Horizontal", 12, new ConfigDescription(columnDescription, rowRange));
@@ -80,6 +85,14 @@ namespace VNEI {
             noIconSprite = AssetBundle.LoadAsset<Sprite>("NoSprite.png");
             GUIManager.OnCustomGUIAvailable += BaseUI.CreateDefault;
             CommandManager.Instance.AddConsoleCommand(new SelectUITest.ToggleUIConsoleCommand());
+        }
+
+        private void Update() {
+            if (openHotkey.Value.IsDown() && Player.m_localPlayer) {
+                bool isVisible = Player.m_localPlayer.m_nview.GetZDO().GetBool("vnei_ui_visible", true);
+                Player.m_localPlayer.m_nview.GetZDO().Set("vnei_ui_visible", !isVisible);
+                OnOpenHotkey?.Invoke();
+            }
         }
 
         private void OnDestroy() {

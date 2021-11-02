@@ -146,6 +146,8 @@
       <Content Include="..\manifest.json">
         <Link>manifest.json</Link>
       </Content>
+    </ItemGroup>
+    <ItemGroup>
       <Content Include="..\README.md">
         <Link>README.md</Link>
       </Content>
