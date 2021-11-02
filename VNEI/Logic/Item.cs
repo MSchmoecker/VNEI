@@ -37,7 +37,10 @@ namespace VNEI.Logic {
                 SetIcon(icon);
             } else {
                 if (prefab) {
-                    RenderManager.Instance.EnqueueRender(prefab, SetIcon);
+                    RenderManager.RenderRequest renderRequest = new RenderManager.RenderRequest(prefab) {
+                        Rotation = Quaternion.Euler(0, -30, 0),
+                    };
+                    RenderManager.Instance.EnqueueRender(renderRequest, SetIcon);
                 }
             }
         }
