@@ -73,11 +73,12 @@ cd "$ModDir" || exit
 [ -f "$ModName.zip" ] && rm "$ModName.zip"
 [ -f "$ModName-Nexus.zip" ] && rm "$ModName-Nexus.zip"
 
-mkdir -p plugins
-cp "$ModName.dll" plugins
-cp "$ModName.xml" plugins
+mkdir -p plugins/$ModName
+cp "$ModName.dll" plugins/$ModName
+cp "$ModName.xml" plugins/$ModName
+cp README.md plugins/$ModName
 
 zip "$ModName.zip" "$ModName.dll" README.md manifest.json icon.png "$ModName.xml"
-zip -r "$ModName-Nexus.zip" plugins
+zip -r "$ModName-Nexus.zip" plugins/$ModName
 
 rm -r plugins

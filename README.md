@@ -14,6 +14,19 @@ Extract the content of `VNEI` into the `BepInEx/plugins` folder.
 This is a client side mod and not everyone has to use it if you are playing in multiplayer.
 If items or recipes from other mods are missing, please contact me.
 
+## Controls and settings
+The config file is generated at `BepInEx/config/com.maxsch.valheim.vnei.cfg` after the first launch, see there for detailed information.
+
+- Recipes
+  - Fix Cultivate Plants
+  - Use Item Blacklist
+- UI
+  - Invert Scroll
+  - Open UI Hotkey
+  - Items Horizontal
+  - Items Vertical
+  - Background Transparency
+
 ## Development
 BepInEx must be setup at manual or with r2modman/Thunderstore Mod Manager.
 Jötunn must be installed.
@@ -136,6 +149,19 @@ Type `vnei_toggle_select_test` inside the game console to open the example of `V
 - Discord: Margmas#9562
 
 ## Changelog
+0.3.0
+- added the last viewed items at top
+- added UI scale config for row and columns
+- added hotkey to open/close the UI (default LeftAlt + H)
+- added option to set the transparency of the UI
+- fixed that the tooltip was not shown sometimes
+- fixed mod names of CustomPrefabs were not collected
+- fixed spawning food, weapons and armor were not placed inside inventory when possible
+- fixed rendered icons not always having full color
+- added API
+    - added the ability to hook events at Indexing
+    - added a selection Popup where an item can be choosen
+
 0.2.3
 - added tree drops, trader and obliterator (incinerator) items
 - added more item categories (food, armor, weapon) and right click can invert selection
