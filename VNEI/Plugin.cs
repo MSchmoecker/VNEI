@@ -32,6 +32,7 @@ namespace VNEI {
         public static ConfigEntry<int> columnCount;
         public static ConfigEntry<KeyboardShortcut> openHotkey;
 
+        public static bool isUiOpen = true;
         public static event Action OnOpenHotkey;
         public Sprite noIconSprite;
 
@@ -88,9 +89,8 @@ namespace VNEI {
         }
 
         private void Update() {
-            if (openHotkey.Value.IsDown() && Player.m_localPlayer) {
-                bool isVisible = Player.m_localPlayer.m_nview.GetZDO().GetBool("vnei_ui_visible", true);
-                Player.m_localPlayer.m_nview.GetZDO().Set("vnei_ui_visible", !isVisible);
+            if (openHotkey.Value.IsDown()) {
+                isUiOpen = !isUiOpen;
                 OnOpenHotkey?.Invoke();
             }
         }

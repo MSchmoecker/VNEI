@@ -196,10 +196,9 @@ namespace VNEI.UI {
         }
 
         private void UpdateVisibility() {
-            if (canBeHidden && Player.m_localPlayer) {
-                bool visible = Player.m_localPlayer.m_nview.GetZDO().GetBool("vnei_ui_visible", true);
-                root.gameObject.SetActive(visible);
-                dragHandler.gameObject.SetActive(visible);
+            if (canBeHidden) {
+                root.gameObject.SetActive(Plugin.isUiOpen);
+                dragHandler.gameObject.SetActive(Plugin.isUiOpen);
             } else {
                 root.gameObject.SetActive(true);
                 dragHandler.gameObject.SetActive(true);
