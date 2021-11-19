@@ -122,7 +122,9 @@ namespace VNEI.Logic {
                             break;
                     }
 
-                    AddItem(new Item(prefab.name, itemData.m_shared.m_name, itemData.m_shared.m_description, icon, type, prefab));
+                    ItemDrop.ItemData.SharedData shared = itemData.m_shared;
+                    AddItem(new Item(prefab.name, shared.m_name, shared.m_description, icon, type, prefab,
+                        shared.m_maxQuality));
 
                     // add pieces here as it is guaranteed they are buildable
                     if ((bool)itemData.m_shared.m_buildPieces) {

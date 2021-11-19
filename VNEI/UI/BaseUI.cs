@@ -81,7 +81,7 @@ namespace VNEI.UI {
                 ItemSizeY = Plugin.rowCount.Value;
             }
 
-            root.sizeDelta = new Vector2(ItemSizeX * 50f + 20f, ItemSizeY * 50f + 110f);
+            root.sizeDelta = new Vector2(ItemSizeX * 50f + 10f, ItemSizeY * 50f + 100f);
             dragHandler.sizeDelta = root.sizeDelta + new Vector2(10f, 10f);
 
             RebuildedSize?.Invoke();

@@ -122,19 +122,21 @@ namespace VNEI.UI {
             pageText.text = $"{displayPage + 1}/{maxPages + 1}";
 
             for (int i = 0; i < displayItems.Count; i++) {
-                if (i < activeDisplayItems.Count) {
-                    displayItems[i].gameObject.SetActive(true);
-                    displayItems[i].SetItem(activeDisplayItems[i].item, 1);
-                    RectTransform rectTransform = (RectTransform) displayItems[i].transform;
+                displayItems[i].gameObject.SetActive(true);
 
-                    rectTransform.anchorMin = new Vector2(0f, 1f);
-                    rectTransform.anchorMax = new Vector2(0f, 1f);
-                    int row = i % baseUI.ItemSizeX;
-                    int column = i / baseUI.ItemSizeX;
-                    rectTransform.anchoredPosition = new Vector2(row + 0.5f, -column - 0.5f) * itemSpacing;
+                if (i < activeDisplayItems.Count) {
+                    displayItems[i].SetItem(activeDisplayItems[i].item, 1);
                 } else {
-                    displayItems[i].gameObject.SetActive(false);
+                    displayItems[i].SetItem(null, 1);
                 }
+
+                RectTransform rectTransform = (RectTransform) displayItems[i].transform;
+
+                rectTransform.anchorMin = new Vector2(0f, 1f);
+                rectTransform.anchorMax = new Vector2(0f, 1f);
+                int row = i % baseUI.ItemSizeX;
+                int column = i / baseUI.ItemSizeX;
+                rectTransform.anchoredPosition = new Vector2(row + 0.5f, -column - 0.5f) * itemSpacing;
             }
         }
 
