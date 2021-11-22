@@ -29,6 +29,7 @@ namespace VNEI.Logic
             if (Plugin.printItemListToFile.Value)
             {
                 PrintSimpleTextFile(Items);
+                PrintCSVFile(Items);
                 PrintCLLCItemConfigYaml(Items,
                     new List<string> { "RRR" },
                     new List<string> { "MonsterMobs" });
@@ -41,6 +42,18 @@ namespace VNEI.Logic
             Log.LogInfo($"Writing indexed items to file {file}");
             File.WriteAllLines(file,
                 Items.Select(x => x.Value.PrintItem()).ToArray());
+        }
+
+        private static void PrintCSVFile(Dictionary<int, Item> Items)
+        {
+            string file = buildFullFilePath("csv");
+            Log.LogInfo($"Writing indexed items to file {file}");
+            string[] itemsWithoutHeader = Items.Select(x => x.Value.PrintItemCSV()).ToArray();
+            string[] header = new string[] { Item.PrintCSVHeader() };
+            string[] itemsWithHEader = new string[itemsWithoutHeader.Length + 1];
+            header.CopyTo(itemsWithHEader, 0);
+            itemsWithoutHeader.CopyTo(itemsWithHEader, 1);
+            File.WriteAllLines(file, itemsWithHEader);
         }
 
         private static void PrintCLLCItemConfigYaml(

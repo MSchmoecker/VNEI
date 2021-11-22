@@ -87,13 +87,31 @@ namespace VNEI.Logic {
         {
             if (internalName == null) return " -- invalid item -- ";
             string modName = mod != null ? mod.Name : string.Empty;
-            string prefabName = gameObject != null ? gameObject.name : "invalid prefab";
             string descriptionOneLine = GetDescription().Replace('\n', ' ');
+            string mappedItemType = itemType.ToString();
             return $"InternalName='{internalName}'; " +
-                $"PrefabName='{prefabName}'; " +
                 $"PrimaryName='{GetPrimaryName()}'; " +
+                $"MappedItemType='{mappedItemType}'; " +
                 $"Description='{descriptionOneLine}'; " +
                 $"SourceMod='{modName}'";
+        }
+
+        public string PrintItemCSV()
+        {
+            if (internalName == null) return " -- invalid item -- ";
+            string modName = mod != null ? mod.Name : string.Empty;
+            string descriptionOneLine = GetDescription().Replace('\n', ' ');
+            string mappedItemType = itemType.ToString();
+            return $"{internalName};" +
+                $"{GetPrimaryName()};" +
+                $"{mappedItemType};" +
+                $"{descriptionOneLine};" +
+                $"{modName}";
+        }
+
+        public static string PrintCSVHeader()
+        {
+            return $"internalName;PrimaryName;MappedItemType;Description;SourceModName";
         }
     }
 }
