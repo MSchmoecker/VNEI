@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using BepInEx;
 using Jotunn.Managers;
 using UnityEngine;
@@ -80,6 +81,19 @@ namespace VNEI.Logic {
 
         public string GetPrimaryName() {
             return localizedName.Length > 0 ? localizedName : internalName;
+        }
+
+        public string PrintItem()
+        {
+            if (internalName == null) return " -- invalid item -- ";
+            string modName = mod != null ? mod.Name : string.Empty;
+            string prefabName = gameObject != null ? gameObject.name : "invalid prefab";
+            string descriptionOneLine = GetDescription().Replace('\n', ' ');
+            return $"InternalName='{internalName}'; " +
+                $"PrefabName='{prefabName}'; " +
+                $"PrimaryName='{GetPrimaryName()}'; " +
+                $"Description='{descriptionOneLine}'; " +
+                $"SourceMod='{modName}'";
         }
     }
 }

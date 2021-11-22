@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using BepInEx;
 using Jotunn.Entities;
 using Jotunn.Managers;
@@ -369,11 +370,25 @@ namespace VNEI.Logic {
             RecipeInfo.OnCalculateIsOnBlacklist?.Invoke();
 
             Log.LogInfo($"Loaded {GetActiveItems().Count()} items");
+            PrintToFile();
 
             try {
                 IndexFinished?.Invoke();
             } catch (Exception e) {
                 Log.LogError(e);
+            }
+        }
+
+        private static void PrintToFile()
+        {
+            string fileOutputPath = BepInEx.Paths.BepInExRootPath;
+            string fileName = "VNEI.indexed.items.txt";
+            string file = $"{fileOutputPath}{Path.DirectorySeparatorChar}{fileName}";
+            if (Plugin.printItemListToFile.Value)
+            {
+                Log.LogInfo($"Writing indexed {GetActiveItems().Count()} items to file {file}");
+                File.WriteAllLines(file,
+                    Items.Select(x => x.Value.PrintItem()).ToArray());
             }
         }
 

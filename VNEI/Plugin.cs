@@ -32,6 +32,7 @@ namespace VNEI {
         public static ConfigEntry<int> columnCount;
         public static ConfigEntry<int> transparency;
         public static ConfigEntry<KeyboardShortcut> openHotkey;
+        public static ConfigEntry<bool> printItemListToFile;
 
         public static bool isUiOpen = true;
         public static event Action OnOpenHotkey;
@@ -59,6 +60,11 @@ namespace VNEI {
             const string invertScrollDescription = "Inverts scrolling for page switching";
             invertScroll = Config.Bind("General", "Invert Scroll", false, new ConfigDescription(invertScrollDescription));
 
+            const string printItemListToFileDescription = "If set to true this will print all indexed items to file at the end of " +
+                                                          "indexing phase. The file will be stored to the root path of your " +
+                                                          "BepInEx installation.";
+            printItemListToFile = Config.Bind("General", "Print Indexed Items To File", false, new ConfigDescription(printItemListToFileDescription));
+
             const string openHotkeyDescription = "Hotkey to open and close the UI";
             openHotkey = Config.Bind("Hotkeys", "Open UI Hotkey", new KeyboardShortcut(KeyCode.H, KeyCode.LeftAlt), openHotkeyDescription);
 
@@ -71,7 +77,7 @@ namespace VNEI {
             const string transparentDescription = "Transparency of the background image. Values in percent, 0 = full visible, " +
                                                    "100 = completely transparent";
             transparency = Config.Bind("Visual", "Background Transparency", 0, new ConfigDescription(transparentDescription, percentRange));
-
+            
             harmony = new Harmony(ModGuid);
             harmony.PatchAll();
 
