@@ -143,13 +143,17 @@
       <EmbeddedResource Include="ItemBlacklist.json" />
     </ItemGroup>
     <ItemGroup>
-      <Content Include="..\manifest.json">
-        <Link>manifest.json</Link>
-      </Content>
-    </ItemGroup>
-    <ItemGroup>
       <Content Include="..\README.md">
         <Link>README.md</Link>
+      </Content>
+      <Content Include="..\API.md">
+        <Link>API.md</Link>
+      </Content>
+      <Content Include="..\CONTRIBUTING.md">
+        <Link>CONTRIBUTING.md</Link>
+      </Content>
+      <Content Include="..\manifest.json">
+        <Link>manifest.json</Link>
       </Content>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
