@@ -450,6 +450,17 @@ namespace VNEI.Logic {
             return name.ToLower();
         }
 
+        /// <summary>
+        ///     Register the mod of an item. Only needed if not using Jotunn.
+        /// </summary>
+        /// <param name="prefabName"></param>
+        /// <param name="mod"></param>
+        public static void SetModOfPrefab(string prefabName, BepInPlugin mod) {
+            if (!sourceMod.ContainsKey(prefabName)) {
+                sourceMod[prefabName] = mod;
+            }
+        }
+
         public static BepInPlugin GetModByPrefabName(string name) {
             if (sourceMod.ContainsKey(name)) {
                 return sourceMod[name];

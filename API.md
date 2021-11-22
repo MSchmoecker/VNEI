@@ -66,6 +66,16 @@ know the RecipeInfo and can show them in the UI.
 Notice these items are ItemDrops/Pieces and therefore already registered as Items by VNEI.
 If this is not the case with your prefabs, they have to be added at `Indexing.OnIndexingItems`.
 
+## Mod Name
+If you don't use Jotunn, the mod name cannot be collected automatically due to no common insertion time of prefabs.
+But this can be easily be done manual:
+```cs
+// Mod is your BaseUnityPlugin, with an static reference to it
+Indexing.SetModOfPrefab("my_prefab_id", Mod.Instance.Info.Metadata);
+
+// or inside your Mods Awake/Start
+Indexing.SetModOfPrefab("my_prefab_id", Info.Metadata);
+```
 
 ## Selection Popup
 You can use VNEI to open an item selection popup.
@@ -76,4 +86,3 @@ Action<string> onSelect = (prefabName) => {
 SelectUI selectUI = SelectUI.CreateSelection(parent, onSelect, Vector2.zero);
 ```
 Type `vnei_toggle_select_test` inside the game console to open the example of `VNEI/APIExample/SelectUITest.cs`
-
