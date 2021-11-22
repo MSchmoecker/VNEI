@@ -369,7 +369,6 @@ namespace VNEI.Logic {
             RecipeInfo.OnCalculateIsOnBlacklist?.Invoke();
 
             Log.LogInfo($"Loaded {GetActiveItems().Count()} items");
-            FileWriter.PrintToFile(Items);
 
             try {
                 IndexFinished?.Invoke();
