@@ -71,7 +71,7 @@ namespace VNEI {
             const string transparentDescription = "Transparency of the background image. Values in percent, 0 = full visible, " +
                                                    "100 = completely transparent";
             transparency = Config.Bind("Visual", "Background Transparency", 0, new ConfigDescription(transparentDescription, percentRange));
-            
+
             harmony = new Harmony(ModGuid);
             harmony.PatchAll();
 
