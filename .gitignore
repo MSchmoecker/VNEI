@@ -1,4 +1,5 @@
 .idea/
+.vs/
 *.DotSettings.user
 _ReSharper.Caches/
 riderModule.iml

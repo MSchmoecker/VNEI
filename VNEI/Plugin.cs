@@ -93,6 +93,7 @@ namespace VNEI {
             noIconSprite = AssetBundle.LoadAsset<Sprite>("NoSprite.png");
             GUIManager.OnCustomGUIAvailable += BaseUI.CreateDefault;
             CommandManager.Instance.AddConsoleCommand(new SelectUITest.ToggleUIConsoleCommand());
+            CommandManager.Instance.AddConsoleCommand(new FileWriterController());
         }
 
         private void Update() {

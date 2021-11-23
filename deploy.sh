@@ -61,7 +61,7 @@ echo Coping to: "$ModDir"
 
 # copy content
 mkdir -p "$ModDir"
-cp "$ModName/obj/Debug/$ModName.dll" "$ModDir"
+cp "$ModName/bin/Debug/$ModName.dll" "$ModDir"
 cp README.md "$ModDir"
 cp manifest.json "$ModDir"
 cp icon.png "$ModDir"

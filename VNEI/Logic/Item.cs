@@ -81,5 +81,36 @@ namespace VNEI.Logic {
         public string GetPrimaryName() {
             return localizedName.Length > 0 ? localizedName : internalName;
         }
+
+        public string PrintItem()
+        {
+            if (internalName == null) return " -- invalid item -- ";
+            string modName = mod != null ? mod.Name : string.Empty;
+            string descriptionOneLine = GetDescription().Replace('\n', ' ');
+            string mappedItemType = itemType.ToString();
+            return $"InternalName='{internalName}'; " +
+                $"PrimaryName='{GetPrimaryName()}'; " +
+                $"MappedItemType='{mappedItemType}'; " +
+                $"Description='{descriptionOneLine}'; " +
+                $"SourceMod='{modName}'";
+        }
+
+        public string PrintItemCSV()
+        {
+            if (internalName == null) return " -- invalid item -- ";
+            string modName = mod != null ? mod.Name : string.Empty;
+            string descriptionOneLine = GetDescription().Replace('\n', ' ');
+            string mappedItemType = itemType.ToString();
+            return $"{internalName};" +
+                $"{GetPrimaryName()};" +
+                $"{mappedItemType};" +
+                $"{descriptionOneLine};" +
+                $"{modName}";
+        }
+
+        public static string PrintCSVHeader()
+        {
+            return $"internalName;PrimaryName;MappedItemType;Description;SourceModName";
+        }
     }
 }
