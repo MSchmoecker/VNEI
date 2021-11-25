@@ -67,7 +67,9 @@ namespace VNEI.UI {
                 listItems.Add(new ListItem(item.Value));
             }
 
-            listItems.Sort(ListItem.Comparer);
+            // sort alphabetically
+            // listItems.Sort(ListItem.Comparer);
+
             RebuildCells();
 
             searchField.onValueChanged.AddListener((_) => UpdateSearch(true));
