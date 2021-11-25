@@ -85,8 +85,8 @@ namespace VNEI.Logic {
         }
 
         public RecipeInfo(Recipe recipe, int quality) {
-            if (recipe.m_craftingStation != null) {
-                SetStation(recipe.m_craftingStation, quality);
+            if (recipe.GetRequiredStation(quality) != null) {
+                SetStation(recipe.GetRequiredStation(quality), recipe.GetRequiredStationLevel(quality));
             }
 
             AddResult(recipe.m_item, Amount.One, new Amount(recipe.m_amount), quality, recipe.name);

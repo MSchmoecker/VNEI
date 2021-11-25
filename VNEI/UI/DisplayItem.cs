@@ -38,7 +38,7 @@ namespace VNEI.UI {
             if (item != null) {
                 image.sprite = item.GetIcon();
                 uiTooltip.Set(item.GetPrimaryName(), item.GetTooltip(quality));
-                qualityText.text = item.maxQuality > 1 ? $"{quality}" : "";
+                qualityText.text = item.maxQuality > 1 || quality > 1 ? $"{quality}" : "";
             } else {
                 uiTooltip.Set("", "");
                 qualityText.text = "";
