@@ -85,8 +85,8 @@ namespace VNEI.Logic {
         }
 
         public RecipeInfo(Recipe recipe, int quality) {
-            if (recipe.m_craftingStation != null) {
-                SetStation(recipe.m_craftingStation, quality);
+            if (recipe.GetRequiredStation(quality) != null) {
+                SetStation(recipe.GetRequiredStation(quality), recipe.GetRequiredStationLevel(quality));
             }
 
             AddResult(recipe.m_item, Amount.One, new Amount(recipe.m_amount), quality, recipe.name);
@@ -157,10 +157,10 @@ namespace VNEI.Logic {
             OnCalculateIsOnBlacklist += CalculateIsOnBlacklist;
         }
 
-        public RecipeInfo(Character character, List<CharacterDrop.Drop> characterDrops) {
+        public RecipeInfo(Character character, CharacterDrop characterDrop) {
             AddIngredient(character, Amount.One, Amount.One, 1, character.name);
 
-            foreach (CharacterDrop.Drop drop in characterDrops) {
+            foreach (CharacterDrop.Drop drop in characterDrop.m_drops) {
                 Amount amount = new Amount(drop.m_amountMin, drop.m_amountMax, drop.m_chance);
                 AddResult(drop.m_prefab, Amount.One, amount, 1, character.name);
             }

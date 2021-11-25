@@ -122,7 +122,9 @@ namespace VNEI.Logic {
                             break;
                     }
 
-                    AddItem(new Item(prefab.name, itemData.m_shared.m_name, itemData.m_shared.m_description, icon, type, prefab));
+                    ItemDrop.ItemData.SharedData shared = itemData.m_shared;
+                    AddItem(new Item(prefab.name, shared.m_name, shared.m_description, icon, type, prefab,
+                        shared.m_maxQuality));
 
                     // add pieces here as it is guaranteed they are buildable
                     if ((bool)itemData.m_shared.m_buildPieces) {
@@ -290,7 +292,7 @@ namespace VNEI.Logic {
                 }
 
                 if (prefab.TryGetComponent(out CharacterDrop characterDrop) && prefab.TryGetComponent(out Character character)) {
-                    AddRecipeToItems(new RecipeInfo(character, characterDrop.m_drops));
+                    AddRecipeToItems(new RecipeInfo(character, characterDrop));
                 }
 
                 if (prefab.TryGetComponent(out MineRock mineRock)) {
@@ -446,6 +448,17 @@ namespace VNEI.Logic {
             }
 
             return name.ToLower();
+        }
+
+        /// <summary>
+        ///     Register the mod of an item. Only needed if not using Jotunn.
+        /// </summary>
+        /// <param name="prefabName"></param>
+        /// <param name="mod"></param>
+        public static void SetModOfPrefab(string prefabName, BepInPlugin mod) {
+            if (!sourceMod.ContainsKey(prefabName)) {
+                sourceMod[prefabName] = mod;
+            }
         }
 
         public static BepInPlugin GetModByPrefabName(string name) {

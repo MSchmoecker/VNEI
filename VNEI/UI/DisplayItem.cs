@@ -9,14 +9,18 @@ namespace VNEI.UI {
         private BaseUI baseUI;
 
         public Image image;
+        public Image background;
         public UITooltip uiTooltip;
         public Text countText;
-        public Item item;
+        public Text qualityText;
+        private Item item;
 
         private void Awake() {
             uiTooltip.m_tooltipPrefab = PrefabManager.Instance.GetPrefab("InventoryTooltip");
             uiTooltip.m_gamepadFocusObject = PrefabManager.Instance.GetPrefab("selected");
+            background.sprite = GUIManager.Instance.GetSprite("item_background");
             Styling.ApplyText(countText, GUIManager.Instance.AveriaSerif, Color.white, 12);
+            qualityText.font = GUIManager.Instance.AveriaSerifBold;
         }
 
         public void Update() {
@@ -29,13 +33,15 @@ namespace VNEI.UI {
 
         public void SetItem(Item target, int quality) {
             item = target;
+            image.gameObject.SetActive(item != null);
 
             if (item != null) {
                 image.sprite = item.GetIcon();
                 uiTooltip.Set(item.GetPrimaryName(), item.GetTooltip(quality));
+                qualityText.text = item.maxQuality > 1 || quality > 1 ? $"{quality}" : "";
             } else {
-                image.sprite = Plugin.Instance.noIconSprite;
                 uiTooltip.Set("", "");
+                qualityText.text = "";
             }
         }
 

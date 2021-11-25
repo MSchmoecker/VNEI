@@ -15,19 +15,23 @@ namespace VNEI.Logic {
         public readonly ItemType itemType;
         public readonly BepInPlugin mod;
         public bool isActive = true;
+        public int maxQuality;
 
         public readonly List<RecipeInfo> result = new List<RecipeInfo>();
         public readonly List<RecipeInfo> ingredient = new List<RecipeInfo>();
 
         private Sprite icon;
 
-        public Item(string name, string localizeName, string description, Sprite icon, ItemType itemType, GameObject prefab) {
+        public Item(string name, string localizeName, string description, Sprite icon, ItemType itemType,
+            GameObject prefab, int maxQuality = 1) {
             internalName = name;
             localizedName = Localization.instance.Localize(localizeName);
             this.description = description;
             gameObject = prefab;
-            isOnBlacklist = Plugin.ItemBlacklist.Contains(name) || Plugin.ItemBlacklist.Contains(Indexing.CleanupName(name));
+            isOnBlacklist = Plugin.ItemBlacklist.Contains(name) ||
+                            Plugin.ItemBlacklist.Contains(Indexing.CleanupName(name));
             this.itemType = itemType;
+            this.maxQuality = maxQuality;
 
             if (prefab != null) {
                 mod = Indexing.GetModByPrefabName(prefab.name);
