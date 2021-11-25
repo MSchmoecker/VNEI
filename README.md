@@ -27,6 +27,17 @@ The config file is generated at `BepInEx/config/com.maxsch.valheim.vnei.cfg` aft
   - Items Vertical
   - Background Transparency
 
+## Ingame Commands
+Export all indexed items with `vnei_write_items_file [format]`
+
+format:
+- `csv` (default) -> csv can be used with excel or other tools
+- `yaml` -> yaml creates a CLLC ItemConfig.yml like file
+   yaml optional extra args (both provided as list, separated by ','):
+   - a. strings to scan item prefab names for and exclude them from results e.g. RRR,someotherfilter
+   - b. strings to scan mod names for and exclude them from results e.g. MonsterMobs,someothermod
+- `text` -> simple text
+
 ## Development
 See [contributing](https://github.com/MSchmoecker/VNEI/blob/master/CONTRIBUTING.md).
 

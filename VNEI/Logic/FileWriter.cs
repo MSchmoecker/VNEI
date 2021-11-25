@@ -130,12 +130,6 @@ namespace VNEI.Logic {
 
         public override string Name => "vnei_write_items_file";
 
-        public override string Help => "Writes (all) indexed items to file. Options:\n" +
-                                       "   1. csv (default) -> csv can be used with excel or other tools\n" +
-                                       "   2. yaml -> yaml creates a CLLC ItemConfig.yml like file\n" +
-                                       "      yaml optional extra args (both provided as list, separated by ','): \n" +
-                                       "      a. strings to scan item prefab names for and exclude them from results e.g. RRR,someotherfilter\n" +
-                                       "      b. strings to scan mod names for and exclude them from results e.g. MonsterMobs,someothermod\n" +
-                                       "   3. text -> simple text\n";
+        public override string Help => "[csv/yaml/text] - default is csv - Writes all indexed items to file";
     }
 }
