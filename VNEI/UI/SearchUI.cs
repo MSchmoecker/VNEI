@@ -55,10 +55,9 @@ namespace VNEI.UI {
         }
 
         private void Update() {
-            if (!hasInit && Player.m_localPlayer != null) {
-                Log.LogInfo("Init Search UI");
-                Init();
+            if (!hasInit && Indexing.HasIndexed() && Player.m_localPlayer) {
                 hasInit = true;
+                Init();
             }
         }
 

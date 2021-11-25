@@ -101,6 +101,10 @@ namespace VNEI {
                 isUiOpen = !isUiOpen;
                 OnOpenHotkey?.Invoke();
             }
+
+            if (!Indexing.HasIndexed() && Player.m_localPlayer) {
+                Indexing.IndexAll();
+            }
         }
 
         private void OnDestroy() {
