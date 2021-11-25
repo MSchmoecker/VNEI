@@ -292,7 +292,7 @@ namespace VNEI.Logic {
                 }
 
                 if (prefab.TryGetComponent(out CharacterDrop characterDrop) && prefab.TryGetComponent(out Character character)) {
-                    AddRecipeToItems(new RecipeInfo(character, characterDrop.m_drops));
+                    AddRecipeToItems(new RecipeInfo(character, characterDrop));
                 }
 
                 if (prefab.TryGetComponent(out MineRock mineRock)) {
