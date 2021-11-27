@@ -28,7 +28,7 @@ The config file is generated at `BepInEx/config/com.maxsch.valheim.vnei.cfg` aft
   - Background Transparency
 
 ## Ingame Commands
-Export all indexed items with `vnei_write_items_file [format]`
+Export all indexed items with `vnei_write_items_file [format]` as a file to the BepInEx root path
 
 format:
 - `csv` (default) -> csv can be used with excel or other tools
@@ -52,6 +52,13 @@ See more [here](https://github.com/MSchmoecker/VNEI/blob/master/API.md).
 - Discord: Margmas#9562
 
 ## Changelog
+0.4.0
+- added ingame command to export all prefab in the game to yaml, csv or text (thx @Flux)
+- UI style change, items now have a background like in the inventory
+- level of tool and needed crafting station are shown at the icon
+- make indexing event even later to let more time for mods to add new prefabs
+- removed alphabetically ordering of item, as it makes no sense with icons anyway
+
 0.3.0
 - added the last viewed items at top
 - added UI scale config for row and columns
