@@ -28,6 +28,7 @@ namespace VNEI {
         public static ConfigEntry<bool> fixPlants;
         public static ConfigEntry<bool> useBlacklist;
         public static ConfigEntry<bool> invertScroll;
+        public static ConfigEntry<bool> attachToCrafting;
         public static ConfigEntry<int> rowCount;
         public static ConfigEntry<int> columnCount;
         public static ConfigEntry<int> transparency;
@@ -72,6 +73,8 @@ namespace VNEI {
                                                    "100 = completely transparent";
             transparency = Config.Bind("Visual", "Background Transparency", 0, new ConfigDescription(transparentDescription, percentRange));
 
+            attachToCrafting = Config.Bind("UI", "Attach To Crafting", true);
+
             harmony = new Harmony(ModGuid);
             harmony.PatchAll();
 
@@ -91,7 +94,7 @@ namespace VNEI {
             ItemBlacklist = SimpleJson.SimpleJson.DeserializeObject<List<string>>(blacklistJson).ToHashSet();
 
             noIconSprite = AssetBundle.LoadAsset<Sprite>("NoSprite.png");
-            GUIManager.OnCustomGUIAvailable += BaseUI.CreateDefault;
+            GUIManager.OnCustomGUIAvailable += () => MainVneiHandler.Instance.GetOrCreateBaseUI();
             CommandManager.Instance.AddConsoleCommand(new SelectUITest.ToggleUIConsoleCommand());
             CommandManager.Instance.AddConsoleCommand(new FileWriterController());
         }

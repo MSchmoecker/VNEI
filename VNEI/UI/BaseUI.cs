@@ -34,22 +34,26 @@ namespace VNEI.UI {
         public event Action RebuildedSize;
         private bool usePluginSize = true;
 
-        public static BaseUI CreateBaseUI() {
+        public static BaseUI CreateBaseUI(bool canBeHidden = false, bool scaleWithPluginSetting = false, bool draggable = true) {
             GameObject prefab = Plugin.AssetBundle.LoadAsset<GameObject>("VNEI");
             GameObject spawn = Instantiate(prefab, GUIManager.CustomGUIFront.transform);
-            return spawn.GetComponent<BaseUI>();
-        }
+            BaseUI baseUI = spawn.GetComponent<BaseUI>();
+            baseUI.canBeHidden = canBeHidden;
+            baseUI.usePluginSize = scaleWithPluginSetting;
 
-        public static void CreateDefault() {
-            BaseUI baseUI = CreateBaseUI();
-            baseUI.canBeHidden = true;
+            if (baseUI.usePluginSize) {
+                Plugin.columnCount.SettingChanged += baseUI.RebuildSizeEvent;
+                Plugin.rowCount.SettingChanged += baseUI.RebuildSizeEvent;
+            }
 
-            Plugin.columnCount.SettingChanged += baseUI.RebuildSizeEvent;
-            Plugin.rowCount.SettingChanged += baseUI.RebuildSizeEvent;
+            if (draggable) {
+                baseUI.dragHandler.gameObject.AddComponent<DragWindowCntrl>();
+            }
+
+            return baseUI;
         }
 
         private void Awake() {
-            dragHandler.gameObject.AddComponent<DragWindowCntrl>();
             ShowSearch();
 
             Styling.ApplyAllComponents(root);
@@ -57,9 +61,9 @@ namespace VNEI.UI {
             UpdateTransparency(null, EventArgs.Empty);
             Plugin.transparency.SettingChanged += UpdateTransparency;
 
-            if ((bool) InventoryGui.instance) {
+            if ((bool)InventoryGui.instance) {
                 transform.SetParent(InventoryGui.instance.m_player);
-                ((RectTransform) transform).anchoredPosition = new Vector2(665, -45);
+                ((RectTransform)transform).anchoredPosition = new Vector2(665, -45);
                 UpdateVisibility();
             } else {
                 root.gameObject.SetActive(false);
@@ -117,13 +121,13 @@ namespace VNEI.UI {
 
             int lastViewCount = Mathf.Max(ItemSizeX - 5, 0);
 
-            RectTransform parentRectTransform = ((RectTransform) lastViewItemsParent.transform);
+            RectTransform parentRectTransform = ((RectTransform)lastViewItemsParent.transform);
             parentRectTransform.anchoredPosition = new Vector2((lastViewCount * 50f) / 2f + 5f, -25f);
             parentRectTransform.sizeDelta = new Vector2(lastViewCount * 50f, 50f);
 
             for (int i = 0; i < lastViewCount; i++) {
                 GameObject sprite = Instantiate(itemPrefab, lastViewItemsParent);
-                ((RectTransform) sprite.transform).anchoredPosition = new Vector2(25f + i * 50, -25f);
+                ((RectTransform)sprite.transform).anchoredPosition = new Vector2(25f + i * 50, -25f);
                 DisplayItem displayItem = sprite.GetComponent<DisplayItem>();
                 displayItem.Init(this);
                 lastViewedDisplayItems.Add(displayItem);

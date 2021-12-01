@@ -141,9 +141,11 @@
         <Compile Include="Logic\ItemType.cs" />
         <Compile Include="Logic\Part.cs" />
         <Compile Include="Logic\RecipeInfo.cs" />
+        <Compile Include="Patches\InventoryGuiPatch.cs" />
         <Compile Include="Plugin.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Include="UI\BaseUI.cs" />
+        <Compile Include="UI\MainVneiHandler.cs" />
         <Compile Include="UI\DisplayItem.cs" />
         <Compile Include="UI\RecipeUI.cs" />
         <Compile Include="UI\ScrollHandler.cs" />

@@ -67,8 +67,7 @@ namespace VNEI.UI {
                     Player.m_localPlayer.PickupPrefab(item.gameObject, stackSize);
                 } else {
                     Transform playerTransform = Player.m_localPlayer.transform;
-                    Instantiate(item.gameObject, playerTransform.position + playerTransform.forward * 2f,
-                        Quaternion.identity);
+                    Instantiate(item.gameObject, playerTransform.position + playerTransform.forward * 2f, Quaternion.identity);
                 }
             } else {
                 baseUI.recipeUi.SetItem(item);

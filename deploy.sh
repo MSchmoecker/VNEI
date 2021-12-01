@@ -34,7 +34,7 @@ ModDir="$PluginFolder/$ModName"
 mkdir -p "$ModNameUnity/Assets/Assemblies"
 mkdir -p "$ModNameUnity/AssetBundles/StandaloneWindows"
 
-cp "$ModName/obj/Debug/$ModName.dll" "$ModNameUnity/Assets/Assemblies"
+cp "$ModName/bin/Debug/$ModName.dll" "$ModNameUnity/Assets/Assemblies"
 
 cp "$BEPINEX_INSTALL/core/BepInEx.dll" "$ModNameUnity/Assets/Assemblies"
 cp "$BEPINEX_INSTALL/core/0Harmony.dll" "$ModNameUnity/Assets/Assemblies"
