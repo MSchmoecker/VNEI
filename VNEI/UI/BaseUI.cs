@@ -66,8 +66,7 @@ namespace VNEI.UI {
                 ((RectTransform)transform).anchoredPosition = new Vector2(665, -45);
                 UpdateVisibility();
             } else {
-                root.gameObject.SetActive(false);
-                dragHandler.gameObject.SetActive(false);
+                SetVisibility(false);
             }
 
             recipeUi.OnSetItem += AddItemToLastViewedQueue;
@@ -202,14 +201,13 @@ namespace VNEI.UI {
             RebuildLastViewedDisplayItems();
         }
 
+        public void SetVisibility(bool visible) {
+            root.gameObject.SetActive(visible);
+            dragHandler.gameObject.SetActive(visible);
+        }
+
         private void UpdateVisibility() {
-            if (canBeHidden) {
-                root.gameObject.SetActive(Plugin.isUiOpen);
-                dragHandler.gameObject.SetActive(Plugin.isUiOpen);
-            } else {
-                root.gameObject.SetActive(true);
-                dragHandler.gameObject.SetActive(true);
-            }
+            SetVisibility(!canBeHidden || Plugin.isUiOpen);
         }
 
         private void UpdateTransparency(object sender, EventArgs args) {

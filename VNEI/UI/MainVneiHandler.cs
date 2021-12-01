@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 namespace VNEI.UI {
     public class MainVneiHandler {
@@ -10,6 +11,13 @@ namespace VNEI.UI {
 
         public static MainVneiHandler Instance => instance ?? (instance = new MainVneiHandler());
 
+        private MainVneiHandler() {
+            Plugin.attachToCrafting.SettingChanged += (sender, e) => {
+                GetOrCreateVneiTabButton(true);
+                GetOrCreateBaseUI(true);
+            };
+        }
+
         public Button GetOrCreateVneiTabButton(bool forceRecreate = false) {
             if (!InventoryGui.instance) {
                 return null;
@@ -17,6 +25,7 @@ namespace VNEI.UI {
 
             if (vneiTab && forceRecreate) {
                 Object.Destroy(vneiTab.gameObject);
+                vneiTab = null;
             }
 
             if (!vneiTab) {
@@ -47,6 +56,7 @@ namespace VNEI.UI {
 
             if (baseUI && forceRecreate) {
                 Object.Destroy(baseUI.gameObject);
+                baseUI = null;
             }
 
             if (!baseUI) {
@@ -57,12 +67,14 @@ namespace VNEI.UI {
                     RectTransform baseUIRect = (RectTransform)baseUI.transform;
                     Vector2 craftingPanelSize = craftingPanel.sizeDelta;
 
-                    baseUIRect.parent = craftingPanel;
+                    baseUIRect.SetParent(craftingPanel);
                     const float topSpace = 160f;
                     baseUIRect.anchoredPosition = new Vector2(0, -topSpace / 2f + 30f);
                     baseUI.SetSize(false, (int)((craftingPanelSize.x - 10f) / 50f), (int)((craftingPanelSize.y - topSpace) / 50f));
 
                     baseUI.dragHandler.GetComponent<Image>().enabled = false;
+                } else {
+                    vneiTabActive = false;
                 }
             }
 
@@ -70,6 +82,12 @@ namespace VNEI.UI {
         }
 
         public void UpdateInventoryTab() {
+            if (!Plugin.attachToCrafting.Value) {
+                InventoryGui.instance.m_inventoryRoot.Find("Crafting/RecipeList").gameObject.SetActive(true);
+                InventoryGui.instance.m_inventoryRoot.Find("Crafting/Decription").gameObject.SetActive(true);
+                return;
+            }
+
             RectTransform vneiTabRect = (RectTransform)GetOrCreateVneiTabButton().transform;
             RectTransform lastActiveTab;
 
@@ -91,7 +109,7 @@ namespace VNEI.UI {
 
             InventoryGui.instance.m_inventoryRoot.Find("Crafting/RecipeList").gameObject.SetActive(!vneiTabActive);
             InventoryGui.instance.m_inventoryRoot.Find("Crafting/Decription").gameObject.SetActive(!vneiTabActive);
-            GetOrCreateBaseUI().gameObject.SetActive(vneiTabActive);
+            GetOrCreateBaseUI().SetVisibility(vneiTabActive);
         }
 
         public void SetVneiTabNotActive() {
