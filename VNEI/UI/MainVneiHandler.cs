@@ -23,6 +23,10 @@ namespace VNEI.UI {
                 return null;
             }
 
+            if (Plugin.Instance.IsAugaPresent()) {
+                return null;
+            }
+
             if (vneiTab && forceRecreate) {
                 Object.Destroy(vneiTab.gameObject);
                 vneiTab = null;
@@ -42,7 +46,7 @@ namespace VNEI.UI {
                 UpdateInventoryTab();
             }
 
-            if (!Plugin.attachToCrafting.Value) {
+            if (!Plugin.Instance.AttachToCrafting()) {
                 vneiTab.gameObject.SetActive(false);
             }
 
@@ -60,9 +64,9 @@ namespace VNEI.UI {
             }
 
             if (!baseUI) {
-                baseUI = BaseUI.CreateBaseUI(true, !Plugin.attachToCrafting.Value, !Plugin.attachToCrafting.Value);
+                baseUI = BaseUI.CreateBaseUI(true, !Plugin.Instance.AttachToCrafting(), !Plugin.Instance.AttachToCrafting());
 
-                if (Plugin.attachToCrafting.Value) {
+                if (Plugin.Instance.AttachToCrafting()) {
                     RectTransform craftingPanel = (RectTransform)InventoryGui.instance.m_inventoryRoot.Find("Crafting");
                     RectTransform baseUIRect = (RectTransform)baseUI.transform;
                     Vector2 craftingPanelSize = craftingPanel.sizeDelta;
@@ -82,7 +86,11 @@ namespace VNEI.UI {
         }
 
         public void UpdateInventoryTab() {
-            if (!Plugin.attachToCrafting.Value) {
+            if (!Plugin.Instance.AttachToCrafting()) {
+                if (Plugin.Instance.IsAugaPresent()) {
+                    return;
+                }
+
                 InventoryGui.instance.m_inventoryRoot.Find("Crafting/RecipeList").gameObject.SetActive(true);
                 InventoryGui.instance.m_inventoryRoot.Find("Crafting/Decription").gameObject.SetActive(true);
                 return;

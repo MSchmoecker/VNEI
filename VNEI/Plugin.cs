@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using BepInEx;
+using BepInEx.Bootstrap;
 using BepInEx.Configuration;
 using HarmonyLib;
 using Jotunn.Entities;
@@ -112,6 +113,14 @@ namespace VNEI {
 
         private void OnDestroy() {
             harmony?.UnpatchAll(ModGuid);
+        }
+
+        public bool IsAugaPresent() {
+            return Chainloader.PluginInfos.ContainsKey("randyknapp.mods.auga");
+        }
+
+        public bool AttachToCrafting() {
+            return attachToCrafting.Value && !IsAugaPresent();
         }
     }
 }
