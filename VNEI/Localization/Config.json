@@ -1,0 +1,11 @@
+{
+  "FixCultivatePlants": "This combines plants which are stored as two separate objects to one, as one is used for seeds and the other for the real plant. Turn this off if some other mod has problems with this.",
+  "UseItemBlacklist": "Disables items that are not used currently in the game. This doesn't include placeholder items but testing objects for the devs or not obtainable items/effects. This list is manual, so please contact me if an item is missing/not on the list.",
+  "InvertScroll": "Inverts scrolling for page switching.",
+  "OpenUIHotkey": "Hotkey to open and close the UI. Only active when 'Attach To Crafting' is false.",
+  "ItemsHorizontal": "Count of visible horizontal items. Determines the width of the UI. Only active when 'Attach To Crafting' is false. Can be changed while ingame.",
+  "ItemsVertical": "Count of visible vertical items. Determines the height of the UI. Only active when 'Attach To Crafting' is false. Can be changed while ingame.",
+  "Transparency": "Transparency of the background image. Values in percent, 0 = full visible, 100 = completely transparent. Only active when 'Attach To Crafting' is false. Can be changed while ingame.",
+  "AttachToCrafting": "Bind the UI to the crafting tab instead of floating free. Is always turned off when Auga is installed. Can be toggled while ingame.",
+  "HideGUIAtStart": "Hide the GUI at startup and use the Hotkey to open it. Only active when 'Attach To Crafting' is false."
+}

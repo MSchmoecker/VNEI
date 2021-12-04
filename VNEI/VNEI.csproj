@@ -180,6 +180,7 @@
       <Content Include="..\manifest.json">
         <Link>manifest.json</Link>
       </Content>
+      <EmbeddedResource Include="Localization\Config.json" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

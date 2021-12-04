@@ -30,6 +30,7 @@ namespace VNEI {
         public static ConfigEntry<bool> useBlacklist;
         public static ConfigEntry<bool> invertScroll;
         public static ConfigEntry<bool> attachToCrafting;
+        public static ConfigEntry<bool> hideUIAtStartup;
         public static ConfigEntry<int> rowCount;
         public static ConfigEntry<int> columnCount;
         public static ConfigEntry<int> transparency;
@@ -48,33 +49,27 @@ namespace VNEI {
 
             AcceptableValueRange<int> percentRange = new AcceptableValueRange<int>(0, 100);
 
-            const string fixPlantsDescription = "This combines plants which are stored as two separate objects to one, " +
-                                                "as one is used for seeds and the other for the real plant. " +
-                                                "Turn this off if some other mod has problems with this fix and provide a bug report, please";
-            fixPlants = Config.Bind("General", "Fix Cultivate Plants", true, new ConfigDescription(fixPlantsDescription));
+            string configText = AssetUtils.LoadTextFromResources("Localization.Config.json", Assembly.GetExecutingAssembly());
+            Dictionary<string, string> config = SimpleJson.SimpleJson.DeserializeObject<Dictionary<string, string>>(configText);
 
-            const string useBlacklistDescription = "Disables items that are not used currently in the game. This doesn't include " +
-                                                   "placeholder items but testing objects for the devs or not obtainable items/effects. " +
-                                                   "This list is manual, so please contact me if an item is missing/not on the list";
-            useBlacklist = Config.Bind("General", "Use Item Blacklist", true, new ConfigDescription(useBlacklistDescription));
+            // General
+            fixPlants = Config.Bind("General", "Fix Cultivate Plants", true, new ConfigDescription(config["FixCultivatePlants"]));
+            useBlacklist = Config.Bind("General", "Use Item Blacklist", true, new ConfigDescription(config["UseItemBlacklist"]));
+            invertScroll = Config.Bind("General", "Invert Scroll", false, new ConfigDescription(config["InvertScroll"]));
 
-            const string invertScrollDescription = "Inverts scrolling for page switching";
-            invertScroll = Config.Bind("General", "Invert Scroll", false, new ConfigDescription(invertScrollDescription));
+            // Hotkeys
+            openHotkey = Config.Bind("Hotkeys", "Open UI Hotkey", new KeyboardShortcut(KeyCode.H, KeyCode.LeftAlt), config["OpenUIHotkey"]);
 
-            const string openHotkeyDescription = "Hotkey to open and close the UI";
-            openHotkey = Config.Bind("Hotkeys", "Open UI Hotkey", new KeyboardShortcut(KeyCode.H, KeyCode.LeftAlt), openHotkeyDescription);
+            // UI
+            columnCount = Config.Bind("UI", "Items Horizontal", 12, new ConfigDescription(config["ItemsHorizontal"], rowRange));
+            rowCount = Config.Bind("UI", "Items Vertical", 6, new ConfigDescription(config["ItemsVertical"], rowRange));
+            attachToCrafting = Config.Bind("UI", "Attach To Crafting", true, new ConfigDescription(config["AttachToCrafting"]));
+            hideUIAtStartup = Config.Bind("UI", "Hide GUI At Start", false, new ConfigDescription(config["HideGUIAtStart"]));
 
-            const string columnDescription = "Count of visible horizontal items. Determines the width of the UI";
-            columnCount = Config.Bind("UI", "Items Horizontal", 12, new ConfigDescription(columnDescription, rowRange));
+            // Visual
+            transparency = Config.Bind("Visual", "Background Transparency", 0, new ConfigDescription(config["Transparency"], percentRange));
 
-            const string rowDescription = "Count of visible vertical items. Determines the height of the UI";
-            rowCount = Config.Bind("UI", "Items Vertical", 6, new ConfigDescription(rowDescription, rowRange));
-
-            const string transparentDescription = "Transparency of the background image. Values in percent, 0 = full visible, " +
-                                                   "100 = completely transparent";
-            transparency = Config.Bind("Visual", "Background Transparency", 0, new ConfigDescription(transparentDescription, percentRange));
-
-            attachToCrafting = Config.Bind("UI", "Attach To Crafting", true);
+            isUiOpen = !hideUIAtStartup.Value;
 
             harmony = new Harmony(ModGuid);
             harmony.PatchAll();
