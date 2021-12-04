@@ -27,6 +27,9 @@ The config file is generated at `BepInEx/config/com.maxsch.valheim.vnei.cfg` aft
   - Items Vertical
   - Background Transparency
 
+If devcommands are enabled, items can be right clicked to spawn them.
+Shift + RightClick spawns a whole stack.
+
 ## Ingame Commands
 Export all indexed items with `vnei_write_items_file [format]` as a file to the BepInEx root path
 
@@ -52,6 +55,13 @@ See more [here](https://github.com/MSchmoecker/VNEI/blob/master/API.md).
 - Discord: Margmas#9562
 
 ## Changelog
+0.5.0
+- attach VNEI window to crafting menu, instead of floating separately (default, configurable). This is deactivated when Auga is installed
+- added config option to hide the GUI at startup
+- fixed the hovering tooltip was not clamped inside the screen borders
+- API
+    - changed Indexing.DisableItem to public
+
 0.4.0
 - added ingame command to export all prefab in the game to yaml, csv or text (thx @Flux)
 - UI style change, items now have a background like in the inventory
