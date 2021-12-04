@@ -37,6 +37,7 @@ namespace VNEI.UI {
                 vneiTab = Object.Instantiate(upgradeTab, upgradeTab.transform.parent);
                 vneiTab.gameObject.SetActive(true);
                 vneiTab.transform.SetSiblingIndex(upgradeTab.transform.GetSiblingIndex() + 1);
+                vneiTab.name = "VNEI";
                 vneiTab.transform.Find("Text").GetComponent<Text>().text = "VNEI";
                 vneiTab.onClick.RemoveAllListeners();
                 vneiTab.onClick.AddListener(() => {

@@ -381,7 +381,7 @@ namespace VNEI.Logic {
 
         public static bool HasIndexed() => Items.Count > 0;
 
-        private static void DisableItem(string name, string context) {
+        public static void DisableItem(string name, string context) {
             Item item = GetItem(name);
 
             if (item != null) {
