@@ -16,7 +16,10 @@ namespace VNEI.UI {
         private Item item;
 
         private void Awake() {
-            uiTooltip.m_tooltipPrefab = PrefabManager.Instance.GetPrefab("InventoryTooltip");
+            Transform tooltipPrefab = PrefabManager.Instance.GetPrefab("InventoryTooltip").transform;
+            // fixed InventoryTooltip doesn't clamp inside screen, because the first child knows the size of it, not the base prefab
+            uiTooltip.m_tooltipPrefab = tooltipPrefab.childCount == 1 ? tooltipPrefab.GetChild(0).gameObject : tooltipPrefab.gameObject;
+
             uiTooltip.m_gamepadFocusObject = PrefabManager.Instance.GetPrefab("selected");
             background.sprite = GUIManager.Instance.GetSprite("item_background");
             Styling.ApplyText(countText, GUIManager.Instance.AveriaSerif, Color.white, 12);
