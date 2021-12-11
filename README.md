@@ -55,6 +55,9 @@ See more [here](https://github.com/MSchmoecker/VNEI/blob/master/API.md).
 - Discord: Margmas#9562
 
 ## Changelog
+0.5.1
+- fixed incompatibility with other mods on the crafting tab
+
 0.5.0
 - attach VNEI window to crafting menu, instead of floating separately (default, configurable). This is deactivated when Auga is installed
 - added config option to hide the GUI at startup
