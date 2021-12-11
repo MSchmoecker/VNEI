@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
@@ -8,8 +9,10 @@ namespace VNEI.UI {
         private BaseUI baseUI;
         private Button vneiTab;
         private bool vneiTabActive;
+        private readonly List<Button> otherButtons = new List<Button>();
 
         public static MainVneiHandler Instance => instance ?? (instance = new MainVneiHandler());
+        public bool VneiTabActive => vneiTabActive;
 
         private MainVneiHandler() {
             Plugin.attachToCrafting.SettingChanged += (sender, e) => {
@@ -40,15 +43,13 @@ namespace VNEI.UI {
                 vneiTab.name = "VNEI";
                 vneiTab.transform.Find("Text").GetComponent<Text>().text = "VNEI";
                 vneiTab.onClick.RemoveAllListeners();
-                vneiTab.onClick.AddListener(() => {
-                    vneiTabActive = true;
-                    UpdateInventoryTab();
-                });
-                UpdateInventoryTab();
+                vneiTab.onClick.AddListener(SetVneiTabActive);
+                SetVneiTabNotActive();
             }
 
             if (!Plugin.Instance.AttachToCrafting()) {
                 vneiTab.gameObject.SetActive(false);
+                SetVneiTabNotActive();
             }
 
             return vneiTab;
@@ -86,43 +87,43 @@ namespace VNEI.UI {
             return baseUI;
         }
 
-        public void UpdateInventoryTab() {
-            if (!Plugin.Instance.AttachToCrafting()) {
-                if (Plugin.Instance.IsAugaPresent()) {
-                    return;
+        public void UpdateOtherTabs() {
+            otherButtons.RemoveAll(i => i == null);
+
+            foreach (Button tab in InventoryGui.instance.m_tabCraft.transform.parent.GetComponentsInChildren<Button>()) {
+                if (tab == GetOrCreateVneiTabButton()) {
+                    continue;
                 }
 
-                InventoryGui.instance.m_inventoryRoot.Find("Crafting/RecipeList").gameObject.SetActive(true);
-                InventoryGui.instance.m_inventoryRoot.Find("Crafting/Decription").gameObject.SetActive(true);
-                return;
+                if (otherButtons.Contains(tab)) {
+                    continue;
+                }
+
+                tab.onClick.AddListener(SetVneiTabNotActive);
+                otherButtons.Add(tab);
             }
+        }
 
-            RectTransform vneiTabRect = (RectTransform)GetOrCreateVneiTabButton().transform;
-            RectTransform lastActiveTab;
+        public void SetVneiTabActive() {
+            vneiTabActive = true;
 
-            if (InventoryGui.instance.m_tabUpgrade.gameObject.activeSelf) {
-                lastActiveTab = (RectTransform)InventoryGui.instance.m_tabUpgrade.transform;
-            } else {
-                lastActiveTab = (RectTransform)InventoryGui.instance.m_tabCraft.transform;
+            GetOrCreateVneiTabButton().interactable = false;
+            InventoryGui.instance.m_inventoryRoot.Find("Crafting/RecipeList").gameObject.SetActive(false);
+            InventoryGui.instance.m_inventoryRoot.Find("Crafting/Decription").gameObject.SetActive(false);
+            GetOrCreateBaseUI().SetVisibility(true);
+
+            foreach (Button button in otherButtons) {
+                button.interactable = true;
             }
-
-            vneiTabRect.anchoredPosition = lastActiveTab.anchoredPosition + new Vector2(107f, 0);
-
-            if (vneiTabActive) {
-                InventoryGui.instance.m_tabCraft.interactable = true;
-                InventoryGui.instance.m_tabUpgrade.interactable = true;
-                GetOrCreateVneiTabButton().interactable = false;
-            } else {
-                GetOrCreateVneiTabButton().interactable = true;
-            }
-
-            InventoryGui.instance.m_inventoryRoot.Find("Crafting/RecipeList").gameObject.SetActive(!vneiTabActive);
-            InventoryGui.instance.m_inventoryRoot.Find("Crafting/Decription").gameObject.SetActive(!vneiTabActive);
-            GetOrCreateBaseUI().SetVisibility(vneiTabActive);
         }
 
         public void SetVneiTabNotActive() {
             vneiTabActive = false;
+
+            GetOrCreateVneiTabButton().interactable = true;
+            GetOrCreateBaseUI().SetVisibility(false);
+            InventoryGui.instance.m_inventoryRoot.Find("Crafting/RecipeList").gameObject.SetActive(true);
+            InventoryGui.instance.m_inventoryRoot.Find("Crafting/Decription").gameObject.SetActive(true);
         }
     }
 }
