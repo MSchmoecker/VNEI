@@ -29,6 +29,8 @@ namespace VNEI.Patches {
             if (MainVneiHandler.Instance.VneiTabActive) {
                 MainVneiHandler.Instance.SetVneiTabActive();
             }
+
+            MainVneiHandler.Instance.UpdateTabPosition();
         }
     }
 }

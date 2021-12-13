@@ -104,6 +104,20 @@ namespace VNEI.UI {
             }
         }
 
+        public void UpdateTabPosition() {
+            RectTransform tab = (RectTransform)GetOrCreateVneiTabButton().transform;
+
+            for (int i = tab.GetSiblingIndex() - 1; i >= 0; i--) {
+                if (!tab.parent.GetChild(i).gameObject.activeSelf) {
+                    continue;
+                }
+
+                Vector2 leftPos = ((RectTransform)tab.parent.GetChild(i)).anchoredPosition;
+                tab.anchoredPosition = leftPos + new Vector2(107f, 0);
+                break;
+            }
+        }
+
         public void SetVneiTabActive() {
             vneiTabActive = true;
 
@@ -115,6 +129,8 @@ namespace VNEI.UI {
             foreach (Button button in otherButtons) {
                 button.interactable = true;
             }
+
+            UpdateTabPosition();
         }
 
         public void SetVneiTabNotActive() {
