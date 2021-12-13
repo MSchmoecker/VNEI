@@ -111,10 +111,6 @@ namespace VNEI {
             }
         }
 
-        private void OnDestroy() {
-            harmony?.UnpatchAll(ModGuid);
-        }
-
         public bool IsAugaPresent() {
             return Chainloader.PluginInfos.ContainsKey("randyknapp.mods.auga");
         }
