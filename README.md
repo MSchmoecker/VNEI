@@ -55,6 +55,11 @@ See more [here](https://github.com/MSchmoecker/VNEI/blob/master/API.md).
 - Discord: Margmas#9562
 
 ## Changelog
+0.5.2
+- fixed VNEI has hidden the update tab
+- fixed incompatibility with Valheim Recycle on the crafting tab
+- removed unnecessary harmony self unpatch
+
 0.5.1
 - fixed incompatibility with other mods on the crafting tab
 
