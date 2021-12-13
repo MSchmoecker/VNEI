@@ -12,6 +12,7 @@ using Jotunn.Utils;
 using Jotunn.Managers;
 using UnityEngine;
 using VNEI.Logic;
+using VNEI.Patches;
 using VNEI.UI;
 
 namespace VNEI {
@@ -93,6 +94,10 @@ namespace VNEI {
             GUIManager.OnCustomGUIAvailable += () => MainVneiHandler.Instance.GetOrCreateBaseUI();
             CommandManager.Instance.AddConsoleCommand(new SelectUITest.ToggleUIConsoleCommand());
             CommandManager.Instance.AddConsoleCommand(new FileWriterController());
+        }
+
+        private void Start() {
+            ModCompat.Init(harmony);
         }
 
         private void Update() {

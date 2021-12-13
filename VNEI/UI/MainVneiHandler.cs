@@ -39,7 +39,7 @@ namespace VNEI.UI {
                 Button upgradeTab = InventoryGui.instance.m_tabUpgrade;
                 vneiTab = Object.Instantiate(upgradeTab, upgradeTab.transform.parent);
                 vneiTab.gameObject.SetActive(true);
-                vneiTab.transform.SetSiblingIndex(upgradeTab.transform.GetSiblingIndex() + 1);
+                vneiTab.transform.SetSiblingIndex(vneiTab.transform.parent.childCount - 2);
                 vneiTab.name = "VNEI";
                 vneiTab.transform.Find("Text").GetComponent<Text>().text = "VNEI";
                 vneiTab.onClick.RemoveAllListeners();
