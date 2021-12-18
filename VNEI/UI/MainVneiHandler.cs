@@ -87,6 +87,7 @@ namespace VNEI.UI {
                     baseUI.SetSize(false, (int)((craftingPanelSize.x - 10f) / 50f), (int)((craftingPanelSize.y - topSpace) / 50f));
 
                     baseUI.dragHandler.GetComponent<Image>().enabled = false;
+                    baseUI.SetVisibility(false);
                 } else {
                     vneiTabActive = false;
                 }
@@ -145,7 +146,10 @@ namespace VNEI.UI {
             vneiTabActive = false;
 
             GetOrCreateVneiTabButton().interactable = true;
-            GetOrCreateBaseUI().SetVisibility(false);
+            if (Plugin.Instance.AttachToCrafting()) {
+                GetOrCreateBaseUI().SetVisibility(false);
+            }
+
             InventoryGui.instance.m_inventoryRoot.Find("Crafting/RecipeList").gameObject.SetActive(true);
             InventoryGui.instance.m_inventoryRoot.Find("Crafting/Decription").gameObject.SetActive(true);
         }
