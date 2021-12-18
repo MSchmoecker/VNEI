@@ -30,9 +30,13 @@ namespace VNEI.UI {
                 return null;
             }
 
-            if (vneiTab && forceRecreate) {
-                Object.Destroy(vneiTab.gameObject);
-                vneiTab = null;
+            if (vneiTab) {
+                if (forceRecreate) {
+                    Object.Destroy(vneiTab.gameObject);
+                    vneiTab = null;
+                } else {
+                    return vneiTab;
+                }
             }
 
             if (!vneiTab) {
@@ -60,9 +64,13 @@ namespace VNEI.UI {
                 return null;
             }
 
-            if (baseUI && forceRecreate) {
-                Object.Destroy(baseUI.gameObject);
-                baseUI = null;
+            if (baseUI) {
+                if (forceRecreate) {
+                    Object.Destroy(baseUI.gameObject);
+                    baseUI = null;
+                } else {
+                    return baseUI;
+                }
             }
 
             if (!baseUI) {
