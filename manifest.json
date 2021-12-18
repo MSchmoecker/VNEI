@@ -1,10 +1,10 @@
 {
 	"name": "VNEI",
 	"description": "Valheim Not Enough Items. Displays all items and recipes inside a UI",
-	"version_number": "0.5.2",
+	"version_number": "0.5.3",
 	"website_url": "https://github.com/MSchmoecker/VNEI",
 	"dependencies": [
-		"denikson-BepInExPack_Valheim-5.4.1601",
-		"ValheimModding-Jotunn-2.4.1"
+		"denikson-BepInExPack_Valheim-5.4.1700",
+		"ValheimModding-Jotunn-2.4.4"
 	]
 }

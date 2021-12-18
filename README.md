@@ -55,6 +55,11 @@ See more [here](https://github.com/MSchmoecker/VNEI/blob/master/API.md).
 - Discord: Margmas#9562
 
 ## Changelog
+0.5.3
+- fixed crash when AttachToCrafting was set to false
+- fixed tooltip has not clamped inside screen with Valheim update
+- fixed bugs related to wrong hidden/visible UI at startup/changes to AttachToCrafting at runtime
+
 0.5.2
 - fixed VNEI has hidden the update tab
 - fixed incompatibility with Valheim Recycle on the crafting tab
