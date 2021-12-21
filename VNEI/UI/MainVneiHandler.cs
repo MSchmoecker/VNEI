@@ -135,9 +135,8 @@ namespace VNEI.UI {
             InventoryGui.instance.m_inventoryRoot.Find("Crafting/Decription").gameObject.SetActive(false);
             GetOrCreateBaseUI().SetVisibility(true);
 
-            foreach (Button button in otherButtons) {
-                button.interactable = true;
-            }
+            InventoryGui.instance.m_tabCraft.interactable = true;
+            InventoryGui.instance.m_tabUpgrade.interactable = true;
 
             UpdateTabPosition();
         }
