@@ -55,6 +55,9 @@ See more [here](https://github.com/MSchmoecker/VNEI/blob/master/API.md).
 - Discord: Margmas#9562
 
 ## Changelog
+0.5.4
+- fixed tabs from other mods sometimes needed to be clicked twice after VNEI tab was active, resulting in not correct active tabs
+
 0.5.3
 - fixed crash when AttachToCrafting was set to false
 - fixed tooltip has not clamped inside screen with Valheim update
