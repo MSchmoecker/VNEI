@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using BepInEx;
+using BepInEx.Bootstrap;
 using Jotunn.Entities;
 using Jotunn.Managers;
 using Jotunn.Utils;
 using UnityEngine;
+using VNEIPatcher;
 
 namespace VNEI.Logic {
     public static class Indexing {
@@ -15,15 +17,18 @@ namespace VNEI.Logic {
         ///     If two items have the same name only the first one is added.
         /// </summary>
         public static event Action<GameObject> OnIndexingItems;
+
         /// <summary>
         ///     Called after added all items. Disabled items are not shown inside any UI.
         ///     Usually use <see cref="DisableItem"/> to disable a given item.
         /// </summary>
         public static event Action<GameObject> OnDisableItems;
+
         /// <summary>
         ///     Called after adding a Valheim <see cref="Recipe"/>.
         /// </summary>
         public static event Action<Recipe> OnIndexingRecipes;
+
         /// <summary>
         ///     Called when adding specific item recipes (like conversions or drops).
         ///     Usually use <see cref="AddRecipeToItems"/> with a new <see cref="RecipeInfo"/>, see a full example here
@@ -42,6 +47,7 @@ namespace VNEI.Logic {
         ///     </code>
         /// </summary>
         public static event Action<GameObject> OnIndexingItemRecipes;
+
         public static event Action IndexFinished;
 
         private static Dictionary<int, Item> Items { get; } = new Dictionary<int, Item>();
@@ -53,15 +59,23 @@ namespace VNEI.Logic {
             }
 
             foreach (CustomItem customItem in ModRegistry.GetItems()) {
-                sourceMod[customItem.ItemPrefab.name] = customItem.SourceMod;
+                SetModOfPrefab(customItem.ItemPrefab.name, customItem.SourceMod);
             }
 
             foreach (CustomPiece customPiece in ModRegistry.GetPieces()) {
-                sourceMod[customPiece.PiecePrefab.name] = customPiece.SourceMod;
+                SetModOfPrefab(customPiece.PiecePrefab.name, customPiece.SourceMod);
             }
 
             foreach (CustomPrefab customPrefab in ModRegistry.GetPrefabs()) {
-                sourceMod[customPrefab.Prefab.name] = customPrefab.SourceMod;
+                SetModOfPrefab(customPrefab.Prefab.name, customPrefab.SourceMod);
+            }
+
+            foreach (KeyValuePair<string, Type> pair in VNEIPatcher.VNEIPatcher.sourceMod) {
+                Type pluginType = pair.Value.Assembly.DefinedTypes.FirstOrDefault(IsBaseUnityPlugin);
+
+                if (pluginType != null && Chainloader.ManagerObject.TryGetComponent(pluginType, out Component mod)) {
+                    SetModOfPrefab(pair.Key, ((BaseUnityPlugin)mod).Info.Metadata);
+                }
             }
 
             Dictionary<string, PieceTable> pieceTables = new Dictionary<string, PieceTable>();
@@ -482,6 +496,10 @@ namespace VNEI.Logic {
 
             Log.LogDebug($"cannot get item: '{CleanupName(name)}' is not indexed");
             return null;
+        }
+
+        private static bool IsBaseUnityPlugin(Type t) {
+            return t.IsClass && t.Assembly != typeof(Plugin).Assembly && typeof(BaseUnityPlugin).IsAssignableFrom(t);
         }
     }
 }

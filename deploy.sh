@@ -67,6 +67,8 @@ cp manifest.json "$ModDir"
 cp icon.png "$ModDir"
 cp "$ModName/bin/Debug/$ModName.xml" "$ModDir"
 
+cp "VNEIPatcher/bin/Debug/VNEIPatcher.dll" "$BEPINEX_INSTALL/patchers"
+
 # make zip files
 cd "$ModDir" || exit
 
