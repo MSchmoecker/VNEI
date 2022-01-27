@@ -98,8 +98,8 @@ namespace VNEI.Logic {
                 }
 
                 // Treasure Chests are the only none-buildable prefabs that needs to be indexed
-                if (prefab.TryGetComponent(out Piece piece) && prefab.name.StartsWith("TreasureChest")) {
-                    AddItem(new Item(prefab.name, piece.m_name, piece.m_description, piece.m_icon, ItemType.Piece, prefab));
+                if (prefab.name.StartsWith("TreasureChest")) {
+                    TryAddItem<Piece>(prefab, i => i.m_name, ItemType.Piece, i => i.m_description, i => i.m_icon);
                 }
 
                 if (prefab.TryGetComponent(out ItemDrop itemDrop)) {
@@ -137,62 +137,28 @@ namespace VNEI.Logic {
                     }
 
                     ItemDrop.ItemData.SharedData shared = itemData.m_shared;
-                    AddItem(new Item(prefab.name, shared.m_name, shared.m_description, icon, type, prefab,
-                        shared.m_maxQuality));
+                    AddItem(new Item(prefab.name, shared.m_name, shared.m_description, icon, type, prefab, shared.m_maxQuality));
 
                     // add pieces here as it is guaranteed they are buildable
                     if ((bool)itemData.m_shared.m_buildPieces) {
                         pieceTables.Add(CleanupName(prefab.name), itemData.m_shared.m_buildPieces);
 
                         foreach (GameObject buildPiece in itemData.m_shared.m_buildPieces.m_pieces) {
-                            if (!buildPiece.TryGetComponent(out Piece p)) {
-                                continue;
-                            }
-
-                            AddItem(new Item(buildPiece.name, p.m_name, p.m_description, p.m_icon, ItemType.Piece, buildPiece));
+                            TryAddItem<Piece>(buildPiece, i => i.m_name, ItemType.Piece, i => i.m_description, i => i.m_icon);
                         }
                     }
                 }
 
-                if (prefab.TryGetComponent(out Character character)) {
-                    AddItem(new Item(prefab.name, character.m_name, string.Empty, null, ItemType.Creature, prefab));
-                }
-
-                if (prefab.TryGetComponent(out MineRock mineRock)) {
-                    AddItem(new Item(prefab.name, mineRock.m_name, string.Empty, null, ItemType.Undefined, prefab));
-                }
-
-                if (prefab.TryGetComponent(out MineRock5 mineRock5)) {
-                    AddItem(new Item(prefab.name, mineRock5.m_name, string.Empty, null, ItemType.Undefined, prefab));
-                }
-
-                if (prefab.TryGetComponent(out DropOnDestroyed dropOnDestroyed)) {
-                    AddItem(new Item(prefab.name, fallbackLocalizedName, string.Empty, null, ItemType.Undefined, prefab));
-                }
-
-                if (prefab.TryGetComponent(out Pickable pickable)) {
-                    AddItem(new Item(prefab.name, pickable.m_overrideName, string.Empty, null, ItemType.Undefined, prefab));
-                }
-
-                if (prefab.TryGetComponent(out SpawnArea spawnArea)) {
-                    AddItem(new Item(prefab.name, fallbackLocalizedName, string.Empty, null, ItemType.Creature, prefab));
-                }
-
-                if (prefab.TryGetComponent(out Destructible destructible)) {
-                    AddItem(new Item(prefab.name, fallbackLocalizedName, string.Empty, null, ItemType.Undefined, prefab));
-                }
-
-                if (prefab.TryGetComponent(out TreeLog treeLog)) {
-                    AddItem(new Item(prefab.name, fallbackLocalizedName, string.Empty, null, ItemType.Undefined, prefab));
-                }
-
-                if (prefab.TryGetComponent(out TreeBase treeBase)) {
-                    AddItem(new Item(prefab.name, fallbackLocalizedName, string.Empty, null, ItemType.Undefined, prefab));
-                }
-
-                if (prefab.TryGetComponent(out Trader trader)) {
-                    AddItem(new Item(prefab.name, trader.m_name, string.Empty, null, ItemType.Undefined, prefab));
-                }
+                TryAddItem<Character>(prefab, i => i.m_name, ItemType.Creature);
+                TryAddItem<MineRock>(prefab, i => i.m_name, ItemType.Undefined);
+                TryAddItem<MineRock5>(prefab, i => i.m_name, ItemType.Undefined);
+                TryAddItem<DropOnDestroyed>(prefab, i => fallbackLocalizedName, ItemType.Undefined);
+                TryAddItem<Pickable>(prefab, i => i.m_overrideName, ItemType.Undefined);
+                TryAddItem<SpawnArea>(prefab, i => fallbackLocalizedName, ItemType.Creature);
+                TryAddItem<Destructible>(prefab, i => fallbackLocalizedName, ItemType.Undefined);
+                TryAddItem<TreeLog>(prefab, i => fallbackLocalizedName, ItemType.Undefined);
+                TryAddItem<TreeBase>(prefab, i => fallbackLocalizedName, ItemType.Undefined);
+                TryAddItem<Trader>(prefab, i => i.m_name, ItemType.Undefined);
 
                 try {
                     OnIndexingItems?.Invoke(prefab);
@@ -390,6 +356,21 @@ namespace VNEI.Logic {
                 IndexFinished?.Invoke();
             } catch (Exception e) {
                 Log.LogError(e);
+            }
+        }
+
+        private static void TryAddItem<T>(GameObject target, Func<T, string> getName, ItemType itemType, Func<T, string> getDescription = null, Func<T, Sprite> getIcon = null) where T : Component {
+            if (!target.TryGetComponent(out T component)) {
+                return;
+            }
+
+            try {
+                string description = getDescription?.Invoke(component) ?? string.Empty;
+                Sprite icon = getIcon?.Invoke(component);
+                Item item = new Item(target.name, getName(component), description, icon, itemType, target);
+                AddItem(item);
+            } catch (Exception e) {
+                Log.LogError(target.name + Environment.NewLine + e);
             }
         }
 
