@@ -139,6 +139,7 @@
         <Compile Include="Logic\Indexing.cs" />
         <Compile Include="Logic\Item.cs" />
         <Compile Include="Logic\ItemType.cs" />
+        <Compile Include="Logic\ItemTypeHelper.cs" />
         <Compile Include="Logic\Part.cs" />
         <Compile Include="Logic\RecipeInfo.cs" />
         <Compile Include="Patches\InventoryGuiPatch.cs" />

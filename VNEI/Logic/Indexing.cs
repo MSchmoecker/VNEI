@@ -115,26 +115,7 @@ namespace VNEI.Logic {
                         Log.LogWarning($"fixed m_damageModifiers is null for '{prefab.name}'");
                     }
 
-                    ItemType type = ItemType.Item;
-
-                    switch (itemData.m_shared.m_itemType) {
-                        case ItemDrop.ItemData.ItemType.Consumable:
-                            type = ItemType.Food;
-                            break;
-                        case ItemDrop.ItemData.ItemType.Chest:
-                        case ItemDrop.ItemData.ItemType.Hands:
-                        case ItemDrop.ItemData.ItemType.Helmet:
-                        case ItemDrop.ItemData.ItemType.Legs:
-                        case ItemDrop.ItemData.ItemType.Shoulder:
-                            type = ItemType.Armor;
-                            break;
-                        case ItemDrop.ItemData.ItemType.OneHandedWeapon:
-                        case ItemDrop.ItemData.ItemType.TwoHandedWeapon:
-                        case ItemDrop.ItemData.ItemType.Bow:
-                        case ItemDrop.ItemData.ItemType.Shield:
-                            type = ItemType.Weapon;
-                            break;
-                    }
+                    ItemType type = ItemTypeHelper.GetItemType(itemData);
 
                     ItemDrop.ItemData.SharedData shared = itemData.m_shared;
                     AddItem(new Item(prefab.name, shared.m_name, shared.m_description, icon, type, prefab, shared.m_maxQuality));
