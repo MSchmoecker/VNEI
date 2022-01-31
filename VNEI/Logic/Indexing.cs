@@ -252,21 +252,10 @@ namespace VNEI.Logic {
                     }
                 }
 
-                if (prefab.TryGetComponent(out CharacterDrop characterDrop) && prefab.TryGetComponent(out Character character)) {
-                    AddRecipeToItems(new RecipeInfo(character, characterDrop));
-                }
-
-                if (prefab.TryGetComponent(out MineRock mineRock)) {
-                    AddRecipeToItems(new RecipeInfo(prefab, mineRock.m_dropItems));
-                }
-
-                if (prefab.TryGetComponent(out MineRock5 mineRock5)) {
-                    AddRecipeToItems(new RecipeInfo(prefab, mineRock5.m_dropItems));
-                }
-
-                if (prefab.TryGetComponent(out DropOnDestroyed dropOnDestroyed)) {
-                    AddRecipeToItems(new RecipeInfo(prefab, dropOnDestroyed.m_dropWhenDestroyed));
-                }
+                TryAddRecipeToItems<CharacterDrop>(prefab, i => new RecipeInfo(i));
+                TryAddRecipeToItems<MineRock>(prefab, i => new RecipeInfo(prefab, i.m_dropItems));
+                TryAddRecipeToItems<MineRock5>(prefab, i => new RecipeInfo(prefab, i.m_dropItems));
+                TryAddRecipeToItems<DropOnDestroyed>(prefab, i => new RecipeInfo(prefab, i.m_dropWhenDestroyed));
 
                 prefab.TryGetComponent(out Piece piece);
 
@@ -288,25 +277,15 @@ namespace VNEI.Logic {
                     }
                 }
 
-                if (prefab.TryGetComponent(out Pickable pickable)) {
-                    AddRecipeToItems(new RecipeInfo(prefab, pickable));
-                }
-
-                if (prefab.TryGetComponent(out SpawnArea spawnArea)) {
-                    AddRecipeToItems(new RecipeInfo(spawnArea));
-                }
+                TryAddRecipeToItems<Pickable>(prefab, i => new RecipeInfo(prefab, i));
+                TryAddRecipeToItems<SpawnArea>(prefab, i => new RecipeInfo(i));
 
                 if (prefab.TryGetComponent(out Destructible destructible) && destructible.m_spawnWhenDestroyed != null) {
                     AddRecipeToItems(new RecipeInfo(destructible));
                 }
 
-                if (prefab.TryGetComponent(out TreeLog treeLog)) {
-                    AddRecipeToItems(new RecipeInfo(treeLog));
-                }
-
-                if (prefab.TryGetComponent(out TreeBase treeBase)) {
-                    AddRecipeToItems(new RecipeInfo(treeBase));
-                }
+                TryAddRecipeToItems<TreeLog>(prefab, i => new RecipeInfo(i));
+                TryAddRecipeToItems<TreeBase>(prefab, i => new RecipeInfo(i));
 
                 if (prefab.TryGetComponent(out Trader trader)) {
                     foreach (Trader.TradeItem tradeItem in trader.m_items) {
@@ -350,6 +329,18 @@ namespace VNEI.Logic {
                 Sprite icon = getIcon?.Invoke(component);
                 Item item = new Item(target.name, getName(component), description, icon, itemType, target);
                 AddItem(item);
+            } catch (Exception e) {
+                Log.LogError(target.name + Environment.NewLine + e);
+            }
+        }
+
+        private static void TryAddRecipeToItems<T>(GameObject target, Func<T, RecipeInfo> getRecipe) where T : Component {
+            if (!target.TryGetComponent(out T component)) {
+                return;
+            }
+
+            try {
+                AddRecipeToItems(getRecipe(component));
             } catch (Exception e) {
                 Log.LogError(target.name + Environment.NewLine + e);
             }
