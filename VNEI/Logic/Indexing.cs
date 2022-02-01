@@ -4,10 +4,8 @@ using System.Linq;
 using BepInEx;
 using BepInEx.Bootstrap;
 using Jotunn.Entities;
-using Jotunn.Managers;
 using Jotunn.Utils;
 using UnityEngine;
-using VNEIPatcher;
 
 namespace VNEI.Logic {
     public static class Indexing {
@@ -220,23 +218,9 @@ namespace VNEI.Logic {
             Log.LogInfo("Index prefabs recipes");
             // m_prefabs third iteration: recipes
             foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
-                if (prefab.TryGetComponent(out Smelter smelter)) {
-                    foreach (Smelter.ItemConversion conversion in smelter.m_conversion) {
-                        AddRecipeToItems(new RecipeInfo(conversion, smelter));
-                    }
-                }
-
-                if (prefab.TryGetComponent(out Fermenter fermenter)) {
-                    foreach (Fermenter.ItemConversion conversion in fermenter.m_conversion) {
-                        AddRecipeToItems(new RecipeInfo(conversion, fermenter));
-                    }
-                }
-
-                if (prefab.TryGetComponent(out CookingStation cookingStation)) {
-                    foreach (CookingStation.ItemConversion conversion in cookingStation.m_conversion) {
-                        AddRecipeToItems(new RecipeInfo(conversion, cookingStation));
-                    }
-                }
+                TryAddRecipeToItemsForEach<Smelter, Smelter.ItemConversion>(prefab, i => i.m_conversion, (s, i) => new RecipeInfo(i, s));
+                TryAddRecipeToItemsForEach<Fermenter, Fermenter.ItemConversion>(prefab, i => i.m_conversion, (f, i) => new RecipeInfo(i, f));
+                TryAddRecipeToItemsForEach<CookingStation, CookingStation.ItemConversion>(prefab, i => i.m_conversion, (c, i) => new RecipeInfo(i, c));
 
                 if (prefab.TryGetComponent(out Incinerator incinerator)) {
                     AddRecipeToItems(new RecipeInfo(incinerator));
@@ -286,12 +270,7 @@ namespace VNEI.Logic {
 
                 TryAddRecipeToItems<TreeLog>(prefab, i => new RecipeInfo(i));
                 TryAddRecipeToItems<TreeBase>(prefab, i => new RecipeInfo(i));
-
-                if (prefab.TryGetComponent(out Trader trader)) {
-                    foreach (Trader.TradeItem tradeItem in trader.m_items) {
-                        AddRecipeToItems(new RecipeInfo(trader, tradeItem));
-                    }
-                }
+                TryAddRecipeToItemsForEach<Trader, Trader.TradeItem>(prefab, i => i.m_items, (t, i) => new RecipeInfo(t, i));
 
                 try {
                     OnIndexingItemRecipes?.Invoke(prefab);
@@ -343,6 +322,20 @@ namespace VNEI.Logic {
                 AddRecipeToItems(getRecipe(component));
             } catch (Exception e) {
                 Log.LogError(target.name + Environment.NewLine + e);
+            }
+        }
+
+        private static void TryAddRecipeToItemsForEach<T1, T2>(GameObject target, Func<T1, List<T2>> getArray, Func<T1, T2, RecipeInfo> getRecipe) where T1 : Component {
+            if (!target.TryGetComponent(out T1 component)) {
+                return;
+            }
+
+            foreach (T2 element in getArray(component)) {
+                try {
+                    AddRecipeToItems(getRecipe(component, element));
+                } catch (Exception e) {
+                    Log.LogError(target.name + Environment.NewLine + e);
+                }
             }
         }
 
