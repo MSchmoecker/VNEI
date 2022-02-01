@@ -158,11 +158,12 @@ namespace VNEI.Logic {
         }
 
         public RecipeInfo(CharacterDrop characterDrop) {
-            AddIngredient(characterDrop.m_character, Amount.One, Amount.One, 1, characterDrop.m_character.name);
+            Character character = characterDrop.GetComponent<Character>();
+            AddIngredient(character, Amount.One, Amount.One, 1, character.name);
 
             foreach (CharacterDrop.Drop drop in characterDrop.m_drops) {
                 Amount amount = new Amount(drop.m_amountMin, drop.m_amountMax, drop.m_chance);
-                AddResult(drop.m_prefab, Amount.One, amount, 1, characterDrop.m_character.name);
+                AddResult(drop.m_prefab, Amount.One, amount, 1, character.name);
             }
 
             OnCalculateIsOnBlacklist += CalculateIsOnBlacklist;

@@ -56,36 +56,33 @@ namespace VNEI.Logic {
                 return;
             }
 
-            foreach (CustomItem customItem in ModRegistry.GetItems()) {
-                SetModOfPrefab(customItem.ItemPrefab.name, customItem.SourceMod);
-            }
-
-            foreach (CustomPiece customPiece in ModRegistry.GetPieces()) {
-                SetModOfPrefab(customPiece.PiecePrefab.name, customPiece.SourceMod);
-            }
-
-            foreach (CustomPrefab customPrefab in ModRegistry.GetPrefabs()) {
-                SetModOfPrefab(customPrefab.Prefab.name, customPrefab.SourceMod);
-            }
-
-            foreach (KeyValuePair<string, Type> pair in VNEIPatcher.VNEIPatcher.sourceMod) {
-                Type pluginType = pair.Value.Assembly.DefinedTypes.FirstOrDefault(IsBaseUnityPlugin);
-
-                if (pluginType != null && Chainloader.ManagerObject.TryGetComponent(pluginType, out Component mod)) {
-                    SetModOfPrefab(pair.Key, ((BaseUnityPlugin)mod).Info.Metadata);
-                }
-            }
+            IndexModNames();
 
             Dictionary<string, PieceTable> pieceTables = new Dictionary<string, PieceTable>();
 
+            IndexItems(pieceTables);
+            DisableItems();
+            IndexRecipes();
+            IndexItemRecipes(pieceTables);
+            RecipeInfo.OnCalculateIsOnBlacklist?.Invoke();
+
+            Log.LogInfo($"Loaded {GetActiveItems().Count()} items");
+
+            try {
+                IndexFinished?.Invoke();
+            } catch (Exception e) {
+                Log.LogError(e);
+            }
+        }
+
+        private static void IndexItems(Dictionary<string, PieceTable> pieceTables) {
             Log.LogInfo("Index prefabs");
 
             AddItem(new Item("vnei_any_item", "$vnei_any_item", string.Empty, null, ItemType.Undefined, null));
 
-            // m_prefabs first iteration: base indexing
             foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
-                if (!(bool)prefab) {
-                    Log.LogDebug("prefab is null!");
+                if (!prefab) {
+                    Log.LogDebug("IndexItems: prefab is null!");
                     continue;
                 }
 
@@ -145,9 +142,15 @@ namespace VNEI.Logic {
                     Log.LogError(e);
                 }
             }
+        }
 
-            // m_prefabs second iteration: disable prefabs
+        private static void DisableItems() {
             foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
+                if (!prefab) {
+                    Log.LogDebug("DisableItems: prefab is null!");
+                    continue;
+                }
+
                 if (prefab.TryGetComponent(out Piece piece)) {
                     if (GetItem(prefab.name) == null) {
                         Log.LogDebug($"not indexed piece {piece.name}: not buildable");
@@ -155,32 +158,15 @@ namespace VNEI.Logic {
                 }
 
                 if (prefab.TryGetComponent(out Humanoid humanoid) && !(humanoid is Player)) {
-                    foreach (GameObject defaultItem in humanoid.m_defaultItems) {
-                        if (!(bool)defaultItem) continue;
-                        DisableItem(defaultItem.name, $"is defaultItem from {prefab.name}");
-                    }
+                    DisableArray(prefab, humanoid.m_randomWeapon);
+                    DisableArray(prefab, humanoid.m_randomShield);
+                    DisableArray(prefab, humanoid.m_randomArmor);
 
-                    foreach (GameObject weapon in humanoid.m_randomWeapon) {
-                        if (!(bool)weapon) continue;
-                        DisableItem(weapon.name, $"is weapon from {prefab.name}");
-                    }
-
-                    foreach (GameObject shield in humanoid.m_randomShield) {
-                        if (!(bool)shield) continue;
-                        DisableItem(shield.name, $"is shield from {prefab.name}");
-                    }
-
-                    foreach (GameObject armour in humanoid.m_randomArmor) {
-                        if (!(bool)armour) continue;
-                        DisableItem(armour.name, $"is armour from {prefab.name}");
-                    }
-
-                    foreach (Humanoid.ItemSet set in humanoid.m_randomSets) {
-                        if (set?.m_items == null) continue;
-
-                        foreach (GameObject item in set.m_items) {
-                            if (!(bool)item) continue;
-                            DisableItem(item.name, $"is randomSet item from {prefab.name}");
+                    if (humanoid.m_randomSets != null) {
+                        foreach (Humanoid.ItemSet set in humanoid.m_randomSets) {
+                            if (set?.m_items == null)
+                                continue;
+                            DisableArray(prefab, set.m_items);
                         }
                     }
                 }
@@ -191,7 +177,18 @@ namespace VNEI.Logic {
                     Log.LogError(e);
                 }
             }
+        }
 
+        private static void DisableArray(GameObject from, GameObject[] array) {
+            if (array == null)
+                return;
+
+            foreach (GameObject item in array.Where(i => (bool)i)) {
+                DisableItem(item.name, $"is defaultItem from {from.name}");
+            }
+        }
+
+        private static void IndexRecipes() {
             Log.LogInfo($"Index recipes");
             foreach (Recipe recipe in ObjectDB.instance.m_recipes) {
                 if (!recipe.m_enabled) {
@@ -214,10 +211,17 @@ namespace VNEI.Logic {
                     Log.LogError(e);
                 }
             }
+        }
 
+        private static void IndexItemRecipes(Dictionary<string, PieceTable> pieceTables) {
             Log.LogInfo("Index prefabs recipes");
-            // m_prefabs third iteration: recipes
+
             foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
+                if (!prefab) {
+                    Log.LogDebug("IndexItemRecipes: prefab is null!");
+                    continue;
+                }
+
                 TryAddRecipeToItemsForEach<Smelter, Smelter.ItemConversion>(prefab, i => i.m_conversion, (s, i) => new RecipeInfo(i, s));
                 TryAddRecipeToItemsForEach<Fermenter, Fermenter.ItemConversion>(prefab, i => i.m_conversion, (f, i) => new RecipeInfo(i, f));
                 TryAddRecipeToItemsForEach<CookingStation, CookingStation.ItemConversion>(prefab, i => i.m_conversion, (c, i) => new RecipeInfo(i, c));
@@ -236,7 +240,7 @@ namespace VNEI.Logic {
                     }
                 }
 
-                TryAddRecipeToItems<CharacterDrop>(prefab, i => new RecipeInfo(i));
+                TryAddRecipeToItems<CharacterDrop>(prefab, i => new RecipeInfo(i), i => i.GetComponent<Character>());
                 TryAddRecipeToItems<MineRock>(prefab, i => new RecipeInfo(prefab, i.m_dropItems));
                 TryAddRecipeToItems<MineRock5>(prefab, i => new RecipeInfo(prefab, i.m_dropItems));
                 TryAddRecipeToItems<DropOnDestroyed>(prefab, i => new RecipeInfo(prefab, i.m_dropWhenDestroyed));
@@ -286,15 +290,27 @@ namespace VNEI.Logic {
                     }
                 }
             }
+        }
 
-            RecipeInfo.OnCalculateIsOnBlacklist?.Invoke();
+        private static void IndexModNames() {
+            foreach (CustomItem customItem in ModRegistry.GetItems()) {
+                SetModOfPrefab(customItem.ItemPrefab.name, customItem.SourceMod);
+            }
 
-            Log.LogInfo($"Loaded {GetActiveItems().Count()} items");
+            foreach (CustomPiece customPiece in ModRegistry.GetPieces()) {
+                SetModOfPrefab(customPiece.PiecePrefab.name, customPiece.SourceMod);
+            }
 
-            try {
-                IndexFinished?.Invoke();
-            } catch (Exception e) {
-                Log.LogError(e);
+            foreach (CustomPrefab customPrefab in ModRegistry.GetPrefabs()) {
+                SetModOfPrefab(customPrefab.Prefab.name, customPrefab.SourceMod);
+            }
+
+            foreach (KeyValuePair<string, Type> pair in VNEIPatcher.VNEIPatcher.sourceMod) {
+                Type pluginType = pair.Value.Assembly.DefinedTypes.FirstOrDefault(IsBaseUnityPlugin);
+
+                if (pluginType != null && Chainloader.ManagerObject.TryGetComponent(pluginType, out Component mod)) {
+                    SetModOfPrefab(pair.Key, ((BaseUnityPlugin)mod).Info.Metadata);
+                }
             }
         }
 
@@ -309,20 +325,29 @@ namespace VNEI.Logic {
                 Item item = new Item(target.name, getName(component), description, icon, itemType, target);
                 AddItem(item);
             } catch (Exception e) {
-                Log.LogError(target.name + Environment.NewLine + e);
+                Log.LogError(target.name + Environment.NewLine + e + Environment.NewLine);
             }
         }
 
-        private static void TryAddRecipeToItems<T>(GameObject target, Func<T, RecipeInfo> getRecipe) where T : Component {
+        private static void TryAddRecipeToItems<T>(GameObject target, Func<T, RecipeInfo> getRecipe, Func<T, bool> check = null) where T : Component {
             if (!target.TryGetComponent(out T component)) {
                 return;
             }
 
-            try {
-                AddRecipeToItems(getRecipe(component));
-            } catch (Exception e) {
-                Log.LogError(target.name + Environment.NewLine + e);
+            if (check != null && !check.Invoke(component)) {
+                return;
             }
+
+            RecipeInfo recipeInfo;
+
+            try {
+                recipeInfo = getRecipe(component);
+            } catch (Exception e) {
+                Log.LogError(target.name + Environment.NewLine + e + Environment.NewLine);
+                return;
+            }
+
+            AddRecipeToItems(recipeInfo);
         }
 
         private static void TryAddRecipeToItemsForEach<T1, T2>(GameObject target, Func<T1, List<T2>> getArray, Func<T1, T2, RecipeInfo> getRecipe) where T1 : Component {
@@ -334,7 +359,7 @@ namespace VNEI.Logic {
                 try {
                     AddRecipeToItems(getRecipe(component, element));
                 } catch (Exception e) {
-                    Log.LogError(target.name + Environment.NewLine + e);
+                    Log.LogError(target.name + Environment.NewLine + e + Environment.NewLine);
                 }
             }
         }
