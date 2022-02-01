@@ -49,14 +49,13 @@ namespace VNEI.Logic {
         public static event Action IndexFinished;
 
         private static Dictionary<int, Item> Items { get; } = new Dictionary<int, Item>();
-        private static Dictionary<string, BepInPlugin> sourceMod = new Dictionary<string, BepInPlugin>();
 
         public static void IndexAll() {
             if (HasIndexed()) {
                 return;
             }
 
-            IndexModNames();
+            ModNames.IndexModNames();
 
             Dictionary<string, PieceTable> pieceTables = new Dictionary<string, PieceTable>();
 
@@ -292,28 +291,6 @@ namespace VNEI.Logic {
             }
         }
 
-        private static void IndexModNames() {
-            foreach (CustomItem customItem in ModRegistry.GetItems()) {
-                SetModOfPrefab(customItem.ItemPrefab.name, customItem.SourceMod);
-            }
-
-            foreach (CustomPiece customPiece in ModRegistry.GetPieces()) {
-                SetModOfPrefab(customPiece.PiecePrefab.name, customPiece.SourceMod);
-            }
-
-            foreach (CustomPrefab customPrefab in ModRegistry.GetPrefabs()) {
-                SetModOfPrefab(customPrefab.Prefab.name, customPrefab.SourceMod);
-            }
-
-            foreach (KeyValuePair<string, Type> pair in VNEIPatcher.VNEIPatcher.sourceMod) {
-                Type pluginType = pair.Value.Assembly.DefinedTypes.FirstOrDefault(IsBaseUnityPlugin);
-
-                if (pluginType != null && Chainloader.ManagerObject.TryGetComponent(pluginType, out Component mod)) {
-                    SetModOfPrefab(pair.Key, ((BaseUnityPlugin)mod).Info.Metadata);
-                }
-            }
-        }
-
         private static void TryAddItem<T>(GameObject target, Func<T, string> getName, ItemType itemType, Func<T, string> getDescription = null, Func<T, Sprite> getIcon = null) where T : Component {
             if (!target.TryGetComponent(out T component)) {
                 return;
@@ -435,24 +412,11 @@ namespace VNEI.Logic {
             return name.ToLower();
         }
 
-        /// <summary>
-        ///     Register the mod of an item. Only needed if not using Jotunn.
-        /// </summary>
-        /// <param name="prefabName"></param>
-        /// <param name="mod"></param>
-        public static void SetModOfPrefab(string prefabName, BepInPlugin mod) {
-            if (!sourceMod.ContainsKey(prefabName)) {
-                sourceMod[prefabName] = mod;
-            }
-        }
+        [Obsolete]
+        public static void SetModOfPrefab(string prefabName, BepInPlugin mod) => ModNames.SetModOfPrefab(prefabName, mod);
 
-        public static BepInPlugin GetModByPrefabName(string name) {
-            if (sourceMod.ContainsKey(name)) {
-                return sourceMod[name];
-            }
-
-            return null;
-        }
+        [Obsolete]
+        public static BepInPlugin GetModByPrefabName(string name) => ModNames.GetModByPrefabName(name);
 
         public static IEnumerable<KeyValuePair<int, Item>> GetActiveItems() {
             return Items.Where(i => i.Value.isActive);
@@ -467,10 +431,6 @@ namespace VNEI.Logic {
 
             Log.LogDebug($"cannot get item: '{CleanupName(name)}' is not indexed");
             return null;
-        }
-
-        private static bool IsBaseUnityPlugin(Type t) {
-            return t.IsClass && t.Assembly != typeof(Plugin).Assembly && typeof(BaseUnityPlugin).IsAssignableFrom(t);
         }
     }
 }

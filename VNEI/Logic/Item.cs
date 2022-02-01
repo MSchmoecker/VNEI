@@ -34,7 +34,7 @@ namespace VNEI.Logic {
             this.maxQuality = maxQuality;
 
             if (prefab != null) {
-                mod = Indexing.GetModByPrefabName(prefab.name);
+                mod = ModNames.GetModByPrefabName(prefab.name);
             }
 
             if (icon != null) {
