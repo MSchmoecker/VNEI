@@ -101,7 +101,7 @@ namespace VNEI.Logic {
                     continue;
                 }
 
-                AddIngredient(resource.m_resItem, Amount.One, amount, quality, recipe.name);
+                AddIngredient(resource.m_resItem, Amount.One, amount, 1, recipe.name);
             }
 
             OnCalculateIsOnBlacklist += CalculateIsOnBlacklist;
