@@ -61,26 +61,20 @@ echo Coping to: "$ModDir"
 
 # copy content
 mkdir -p "$ModDir"
-cp "$ModName/bin/Debug/$ModName.dll" "$ModDir"
+mkdir -p "$ModDir"/plugins
+mkdir -p "$ModDir"/patchers
+
+cp "$ModName/bin/Debug/$ModName.dll" "$ModDir"/plugins
+cp "$ModName/bin/Debug/$ModName.xml" "$ModDir"/plugins
+cp "VNEIPatcher/bin/Debug/VNEIPatcher.dll" "$ModDir"/patchers
 cp README.md "$ModDir"
 cp manifest.json "$ModDir"
 cp icon.png "$ModDir"
-cp "$ModName/bin/Debug/$ModName.xml" "$ModDir"
 
 cp "VNEIPatcher/bin/Debug/VNEIPatcher.dll" "$BEPINEX_INSTALL/patchers"
 
 # make zip files
 cd "$ModDir" || exit
-
 [ -f "$ModName.zip" ] && rm "$ModName.zip"
-[ -f "$ModName-Nexus.zip" ] && rm "$ModName-Nexus.zip"
-
-mkdir -p plugins/$ModName
-cp "$ModName.dll" plugins/$ModName
-cp "$ModName.xml" plugins/$ModName
-cp README.md plugins/$ModName
-
-zip "$ModName.zip" "$ModName.dll" README.md manifest.json icon.png "$ModName.xml"
-zip -r "$ModName-Nexus.zip" plugins/$ModName
-
-rm -r plugins
+zip -r "$ModName.zip" .
+zip -r "$ModName-Nexus.zip" ./plugins ./patchers

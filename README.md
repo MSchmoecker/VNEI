@@ -9,7 +9,7 @@ VNEI shows all items and recipes from the vanilla game and other mods inside an 
 
 ## Installation
 This mod requires BepInEx and Jötunn.\
-Extract the content of `VNEI` into the `BepInEx/plugins` folder.
+Extract the content of `VNEI/plugins` into the `BepInEx/plugins` folder and `VNEI/patchers` into `BepInEx/patchers`
 
 This is a client side mod and not everyone has to use it if you are playing in multiplayer.
 If items or recipes from other mods are missing, please contact me.
