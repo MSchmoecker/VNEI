@@ -55,6 +55,11 @@ See more [here](https://github.com/MSchmoecker/VNEI/blob/master/API.md).
 - Discord: Margmas#9562
 
 ## Changelog
+0.6.0
+- the mod name search now works for the vast majority of mods. This works via a BepInEx patcher that looks for AssetBundle loading and therefore doesn't function with procedural or changed GameObject names
+- fixed errors with AllTamable prefabs and improved error logging
+- fixed wrong level display with ingredients of tools and weapons
+
 0.5.4
 - fixed tabs from other mods sometimes needed to be clicked twice after VNEI tab was active, resulting in not correct active tabs
 
