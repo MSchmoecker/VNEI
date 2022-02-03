@@ -16,7 +16,7 @@ namespace VNEI.Logic {
                 case ItemDrop.ItemData.ItemType.Shield:
                     return ItemType.Weapon;
                 default:
-                    return ItemType.Undefined;
+                    return ItemType.Item;
             }
         }
     }
