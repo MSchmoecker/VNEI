@@ -156,16 +156,15 @@ namespace VNEI.Logic {
                     }
                 }
 
-                if (prefab.TryGetComponent(out Humanoid humanoid) && !(humanoid is Player)) {
+                if (prefab.TryGetComponent(out Humanoid humanoid)) {
+                    DisableArray(prefab, humanoid.m_defaultItems);
                     DisableArray(prefab, humanoid.m_randomWeapon);
                     DisableArray(prefab, humanoid.m_randomShield);
                     DisableArray(prefab, humanoid.m_randomArmor);
 
                     if (humanoid.m_randomSets != null) {
                         foreach (Humanoid.ItemSet set in humanoid.m_randomSets) {
-                            if (set?.m_items == null)
-                                continue;
-                            DisableArray(prefab, set.m_items);
+                            DisableArray(prefab, set?.m_items);
                         }
                     }
                 }
