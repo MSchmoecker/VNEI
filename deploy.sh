@@ -35,6 +35,7 @@ mkdir -p "$ModNameUnity/Assets/Assemblies"
 mkdir -p "$ModNameUnity/AssetBundles/StandaloneWindows"
 
 cp "$ModName/bin/Debug/$ModName.dll" "$ModNameUnity/Assets/Assemblies"
+cp "VNEIPatcher/bin/Debug/VNEIPatcher.dll" "$ModNameUnity/Assets/Assemblies"
 
 cp "$BEPINEX_INSTALL/core/BepInEx.dll" "$ModNameUnity/Assets/Assemblies"
 cp "$BEPINEX_INSTALL/core/0Harmony.dll" "$ModNameUnity/Assets/Assemblies"
@@ -57,7 +58,8 @@ cp "$BEPINEX_INSTALL/plugins/MMHOOK/MMHOOK_assembly_sunshafts.dll" "$ModNameUnit
 cp "$BEPINEX_INSTALL/plugins/MMHOOK/MMHOOK_assembly_guiutils.dll" "$ModNameUnity/Assets/Assemblies"
 cp "$BEPINEX_INSTALL/plugins/MMHOOK/MMHOOK_assembly_steamworks.dll" "$ModNameUnity/Assets/Assemblies"
 cp "$BEPINEX_INSTALL/plugins/MMHOOK/MMHOOK_assembly_googleanalytics.dll" "$ModNameUnity/Assets/Assemblies"
-echo Coping to: "$ModDir"
+
+echo "$ModDir"
 
 # copy content
 mkdir -p "$ModDir"
