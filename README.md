@@ -55,6 +55,11 @@ See more [here](https://github.com/MSchmoecker/VNEI/blob/master/API.md).
 - Discord: Margmas#9562
 
 ## Changelog
+0.6.1
+- added render cache, this speeds up the loading time after the first world spawn drastically. Disabled when pre Jotunn 2.4.10 is used
+- fixed items were categorized as Undefined not Item
+- fixed some monster attacks where visible as items
+
 0.6.0
 - the mod name search now works for the vast majority of mods. This works via a BepInEx patcher that looks for AssetBundle loading and therefore doesn't function with procedural or changed GameObject names
 - fixed errors with AllTamable prefabs and improved error logging
