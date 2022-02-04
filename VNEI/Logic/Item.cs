@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using BepInEx;
+using BepInEx.Bootstrap;
 using Jotunn.Managers;
 using UnityEngine;
-using VNEI.UI;
 
 namespace VNEI.Logic {
     public class Item {
@@ -42,11 +42,21 @@ namespace VNEI.Logic {
             } else {
                 if (prefab) {
                     RenderManager.RenderRequest renderRequest = new RenderManager.RenderRequest(prefab) {
-                        Rotation = Quaternion.Euler(0, -30, 0),
+                        Rotation = RenderManager.IsometricRotation,
                     };
-                    RenderManager.Instance.EnqueueRender(renderRequest, SetIcon);
+
+                    if (Chainloader.PluginInfos["com.jotunn.jotunn"].Metadata.Version.CompareTo(new System.Version(2, 4, 10)) >= 0) {
+                        RenderWithCache(renderRequest);
+                    }
+
+                    SetIcon(RenderManager.Instance.Render(renderRequest));
                 }
             }
+        }
+
+        private void RenderWithCache(RenderManager.RenderRequest renderRequest) {
+            renderRequest.TargetPlugin = mod;
+            renderRequest.UseCache = true;
         }
 
         public string GetName() {
@@ -86,34 +96,31 @@ namespace VNEI.Logic {
             return localizedName.Length > 0 ? localizedName : internalName;
         }
 
-        public string PrintItem()
-        {
+        public string PrintItem() {
             if (internalName == null) return " -- invalid item -- ";
             string modName = mod != null ? mod.Name : string.Empty;
             string descriptionOneLine = GetDescription().Replace('\n', ' ');
             string mappedItemType = itemType.ToString();
             return $"InternalName='{internalName}'; " +
-                $"PrimaryName='{GetPrimaryName()}'; " +
-                $"MappedItemType='{mappedItemType}'; " +
-                $"Description='{descriptionOneLine}'; " +
-                $"SourceMod='{modName}'";
+                   $"PrimaryName='{GetPrimaryName()}'; " +
+                   $"MappedItemType='{mappedItemType}'; " +
+                   $"Description='{descriptionOneLine}'; " +
+                   $"SourceMod='{modName}'";
         }
 
-        public string PrintItemCSV()
-        {
+        public string PrintItemCSV() {
             if (internalName == null) return " -- invalid item -- ";
             string modName = mod != null ? mod.Name : string.Empty;
             string descriptionOneLine = GetDescription().Replace('\n', ' ');
             string mappedItemType = itemType.ToString();
             return $"{internalName};" +
-                $"{GetPrimaryName()};" +
-                $"{mappedItemType};" +
-                $"{descriptionOneLine};" +
-                $"{modName}";
+                   $"{GetPrimaryName()};" +
+                   $"{mappedItemType};" +
+                   $"{descriptionOneLine};" +
+                   $"{modName}";
         }
 
-        public static string PrintCSVHeader()
-        {
+        public static string PrintCSVHeader() {
             return $"internalName;PrimaryName;MappedItemType;Description;SourceModName";
         }
     }
