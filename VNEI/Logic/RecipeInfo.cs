@@ -235,6 +235,12 @@ namespace VNEI.Logic {
             OnCalculateIsOnBlacklist += CalculateIsOnBlacklist;
         }
 
+        public RecipeInfo(Growup growup) {
+            AddIngredient(growup.gameObject, Amount.One, Amount.One, 1, "growup base ");
+            AddResult(growup.m_grownPrefab, Amount.One, Amount.One, 1, "growup result");
+            OnCalculateIsOnBlacklist += CalculateIsOnBlacklist;
+        }
+
         private void AddDropTable(GameObject from, DropTable dropTable) {
             Amount tableCount = new Amount(dropTable.m_dropMin, dropTable.m_dropMax, dropTable.m_dropChance);
             AddIngredient(from, Amount.One, Amount.One, 1, from.name);

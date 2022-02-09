@@ -239,6 +239,7 @@ namespace VNEI.Logic {
                 }
 
                 TryAddRecipeToItems<CharacterDrop>(prefab, i => new RecipeInfo(i), i => i.GetComponent<Character>());
+                TryAddRecipeToItems<Growup>(prefab, i => new RecipeInfo(i));
                 TryAddRecipeToItems<MineRock>(prefab, i => new RecipeInfo(prefab, i.m_dropItems));
                 TryAddRecipeToItems<MineRock5>(prefab, i => new RecipeInfo(prefab, i.m_dropItems));
                 TryAddRecipeToItems<DropOnDestroyed>(prefab, i => new RecipeInfo(prefab, i.m_dropWhenDestroyed));
