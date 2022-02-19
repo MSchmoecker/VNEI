@@ -178,10 +178,12 @@ namespace VNEI.UI {
                         return false;
                     }
 
-                    isSearched = item.mod.Name.IndexOf(searchKey.Substring(1), StringComparison.OrdinalIgnoreCase) >= 0;
+                    isSearched = item.mod.Name.IndexOf(searchKey.Substring(1), StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                 item.mod.GUID.IndexOf(searchKey.Substring(1), StringComparison.OrdinalIgnoreCase) >= 0;
                 } else {
                     isSearched = item.localizedName.IndexOf(searchKey, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                                 item.internalName.IndexOf(searchKey, StringComparison.OrdinalIgnoreCase) >= 0;
+                                 item.internalName.IndexOf(searchKey, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                 Localization.instance.Localize(item.description).IndexOf(searchKey, StringComparison.OrdinalIgnoreCase) >= 0;
                 }
 
                 if (!isSearched) {
