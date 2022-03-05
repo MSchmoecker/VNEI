@@ -106,7 +106,6 @@ namespace VNEI.Logic {
 
                     if (itemData.m_shared.m_damageModifiers == null) {
                         itemData.m_shared.m_damageModifiers = new List<HitData.DamageModPair>();
-                        Log.LogWarning($"fixed m_damageModifiers is null for '{prefab.name}'");
                     }
 
                     ItemType type = ItemTypeHelper.GetItemType(itemData);

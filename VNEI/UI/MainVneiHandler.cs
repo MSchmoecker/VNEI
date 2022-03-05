@@ -26,10 +26,6 @@ namespace VNEI.UI {
                 return null;
             }
 
-            if (Plugin.Instance.IsAugaPresent()) {
-                return null;
-            }
-
             if (vneiTab) {
                 if (forceRecreate) {
                     Object.Destroy(vneiTab.gameObject);

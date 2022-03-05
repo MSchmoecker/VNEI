@@ -123,6 +123,9 @@
         <Reference Include="UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
             <HintPath>$(VALHEIM_INSTALL)\unstripped_corlib\UnityEngine.PhysicsModule.dll</HintPath>
         </Reference>
+        <Reference Include="AugaAPI, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+            <HintPath>Libs/AugaAPI.dll</HintPath>
+        </Reference>
         <Reference Include="System" />
         <Reference Include="System.Core" />
         <Reference Include="System.Data" />
@@ -133,6 +136,7 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="APIExample\SelectUITest.cs" />
+        <Compile Include="Libs/AugaAPI.dll" />
         <Compile Include="Log.cs" />
         <Compile Include="Logic\Amount.cs" />
         <Compile Include="Logic\FileWriter.cs" />
@@ -150,6 +154,7 @@
         <Compile Include="UI\BaseUI.cs" />
         <Compile Include="UI\MainVneiHandler.cs" />
         <Compile Include="UI\DisplayItem.cs" />
+        <Compile Include="UI\MainVneiHandlerAuga.cs" />
         <Compile Include="UI\RecipeUI.cs" />
         <Compile Include="UI\ScrollHandler.cs" />
         <Compile Include="UI\SearchUI.cs" />
@@ -191,6 +196,9 @@
         <Project>{8b77ee68-c6a9-4f17-9ab1-5636d62d4d50}</Project>
         <Name>VNEIPatcher</Name>
       </ProjectReference>
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Libs" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -91,7 +91,11 @@ namespace VNEI {
             ItemBlacklist = SimpleJson.SimpleJson.DeserializeObject<List<string>>(blacklistJson).ToHashSet();
 
             noIconSprite = AssetBundle.LoadAsset<Sprite>("NoSprite.png");
-            GUIManager.OnCustomGUIAvailable += () => MainVneiHandler.Instance.GetOrCreateBaseUI();
+            GUIManager.OnCustomGUIAvailable += () => {
+                if (!Auga.API.IsLoaded()) {
+                    MainVneiHandler.Instance.GetOrCreateBaseUI();
+                }
+            };
             CommandManager.Instance.AddConsoleCommand(new SelectUITest.ToggleUIConsoleCommand());
             CommandManager.Instance.AddConsoleCommand(new FileWriterController());
         }
@@ -111,12 +115,8 @@ namespace VNEI {
             }
         }
 
-        public bool IsAugaPresent() {
-            return Chainloader.PluginInfos.ContainsKey("randyknapp.mods.auga");
-        }
-
         public bool AttachToCrafting() {
-            return attachToCrafting.Value && !IsAugaPresent();
+            return attachToCrafting.Value;
         }
     }
 }

@@ -6,11 +6,13 @@ using VNEI.UI;
 namespace VNEI.Patches {
     [HarmonyPatch]
     public class InventoryGuiPatch {
-        [HarmonyPatch(typeof(InventoryGui), nameof(InventoryGui.Awake)), HarmonyPostfix]
+        [HarmonyPatch(typeof(InventoryGui), nameof(InventoryGui.Awake)), HarmonyPostfix, HarmonyPriority(Priority.Low)]
         public static void AwakePatch(InventoryGui __instance) {
-            MainVneiHandler.Instance.GetOrCreateVneiTabButton();
-            if(!Plugin.Instance.IsAugaPresent()) {
+            if (!Auga.API.IsLoaded()) {
+                MainVneiHandler.Instance.GetOrCreateVneiTabButton();
                 __instance.StartCoroutine(UpdateOtherTabs());
+            } else {
+                MainVneiHandlerAuga.Instance.CreateWindow();
             }
         }
 
@@ -25,12 +27,14 @@ namespace VNEI.Patches {
 
         [HarmonyPatch(typeof(InventoryGui), nameof(InventoryGui.UpdateCraftingPanel)), HarmonyPostfix]
         public static void UpdateCraftingPanelPatch() {
-            // vanilla behaviour has set the vanilla tabs active
-            if (MainVneiHandler.Instance.VneiTabActive) {
-                MainVneiHandler.Instance.SetVneiTabActive();
-            }
+            if (!Auga.API.IsLoaded()) {
+                // vanilla behaviour has set the vanilla tabs active
+                if (MainVneiHandler.Instance.VneiTabActive) {
+                    MainVneiHandler.Instance.SetVneiTabActive();
+                }
 
-            MainVneiHandler.Instance.UpdateTabPosition();
+                MainVneiHandler.Instance.UpdateTabPosition();
+            }
         }
     }
 }
