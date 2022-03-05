@@ -7,6 +7,10 @@ VNEI shows all items and recipes from the vanilla game and other mods inside an 
 
 ![crafting](https://raw.githubusercontent.com/MSchmoecker/VNEI/master/Docs/MeatCrafting.png)
 
+Basic Auga support
+
+![Auga](https://raw.githubusercontent.com/MSchmoecker/VNEI/master/Docs/AugaSidebar.png)
+
 ## Installation
 This mod requires BepInEx and Jötunn.\
 Extract the content of `VNEI/plugins` into the `BepInEx/plugins` folder and `VNEI/patchers` into `BepInEx/patchers`
@@ -55,6 +59,11 @@ See more [here](https://github.com/MSchmoecker/VNEI/blob/master/API.md).
 - Discord: Margmas#9562
 
 ## Changelog
+0.6.2
+- added basic Auga support
+- index creature growups
+- search also takes description into account
+
 0.6.1
 - added render cache, this speeds up the loading time after the first world spawn drastically. Disabled when pre Jotunn 2.4.10 is used
 - fixed items were categorized as Undefined not Item

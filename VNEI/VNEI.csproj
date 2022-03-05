@@ -136,7 +136,6 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="APIExample\SelectUITest.cs" />
-        <Compile Include="Libs/AugaAPI.dll" />
         <Compile Include="Log.cs" />
         <Compile Include="Logic\Amount.cs" />
         <Compile Include="Logic\FileWriter.cs" />
