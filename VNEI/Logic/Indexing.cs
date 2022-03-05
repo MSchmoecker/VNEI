@@ -166,6 +166,20 @@ namespace VNEI.Logic {
                             DisableArray(prefab, set?.m_items);
                         }
                     }
+
+                    DisableEffectList(prefab, humanoid.m_hitEffects);
+                    DisableEffectList(prefab, humanoid.m_critHitEffects);
+                    DisableEffectList(prefab, humanoid.m_backstabHitEffects);
+                    DisableEffectList(prefab, humanoid.m_deathEffects);
+                    DisableEffectList(prefab, humanoid.m_waterEffects);
+                    DisableEffectList(prefab, humanoid.m_tarEffects);
+                    DisableEffectList(prefab, humanoid.m_slideEffects);
+                    DisableEffectList(prefab, humanoid.m_jumpEffects);
+                    DisableEffectList(prefab, humanoid.m_pickupEffects);
+                    DisableEffectList(prefab, humanoid.m_dropEffects);
+                    DisableEffectList(prefab, humanoid.m_consumeItemEffects);
+                    DisableEffectList(prefab, humanoid.m_equipEffects);
+                    DisableEffectList(prefab, humanoid.m_perfectBlockEffect);
                 }
 
                 try {
@@ -182,6 +196,16 @@ namespace VNEI.Logic {
 
             foreach (GameObject item in array.Where(i => (bool)i)) {
                 DisableItem(item.name, $"is defaultItem from {from.name}");
+            }
+        }
+
+        private static void DisableEffectList(GameObject from, EffectList effectList) {
+            if (effectList?.m_effectPrefabs == null) {
+                return;
+            }
+
+            foreach (EffectList.EffectData item in effectList.m_effectPrefabs.Where(i => i != null && (bool)i.m_prefab)) {
+                DisableItem(item.m_prefab.name, $"is defaultItem from {from.name}");
             }
         }
 
