@@ -59,6 +59,9 @@ See more [here](https://github.com/MSchmoecker/VNEI/blob/master/API.md).
 - Discord: Margmas#9562
 
 ## Changelog
+0.6.3
+- fixed some weird behaviour in Auga, had to wait for Auga to update
+
 0.6.2
 - added basic Auga support
 - index creature growups
