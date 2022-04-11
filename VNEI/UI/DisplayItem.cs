@@ -7,7 +7,7 @@ using UnityEngine.UI;
 using VNEI.Logic;
 
 namespace VNEI.UI {
-    public class DisplayItem : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler {
+    public class DisplayItem : MonoBehaviour, IPointerClickHandler {
         private BaseUI baseUI;
 
         public Image image;
@@ -16,8 +16,6 @@ namespace VNEI.UI {
         public Text countText;
         public Text qualityText;
         private Item item;
-
-        private bool mouseOver = false;
 
         private void Awake() {
             uiTooltip.m_tooltipPrefab = PrefabManager.Instance.GetPrefab("InventoryTooltip");
@@ -30,19 +28,6 @@ namespace VNEI.UI {
 
         public void Update() {
             uiTooltip.m_showTimer = 1;
-
-            bool forceHover = mouseOver && Chainloader.PluginInfos.ContainsKey("randyknapp.mods.auga") && Plugin.Instance.AttachToCrafting();
-            if (forceHover && (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2))) {
-                OnPointerClick(new PointerEventData(EventSystem.current));
-            }
-        }
-
-        public void OnPointerEnter(PointerEventData eventData) {
-            mouseOver = true;
-        }
-
-        public void OnPointerExit(PointerEventData eventData) {
-            mouseOver = false;
         }
 
         public void Init(BaseUI baseUI) {
