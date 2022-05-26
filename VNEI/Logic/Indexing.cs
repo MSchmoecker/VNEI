@@ -195,6 +195,13 @@ namespace VNEI.Logic {
                 return;
 
             foreach (GameObject item in array.Where(i => (bool)i)) {
+                ItemDrop itemDrop = item.GetComponent<ItemDrop>();
+
+                if (itemDrop && itemDrop.m_itemData?.m_shared?.m_icons?.Length > 0) {
+                    Log.LogDebug("Not disabling item " + item.name + " because it has icons");
+                    continue;
+                }
+
                 DisableItem(item.name, $"is defaultItem from {from.name}");
             }
         }
