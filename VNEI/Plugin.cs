@@ -98,6 +98,8 @@ namespace VNEI {
             };
             CommandManager.Instance.AddConsoleCommand(new SelectUITest.ToggleUIConsoleCommand());
             CommandManager.Instance.AddConsoleCommand(new FileWriterController());
+
+            ModQuery.Enable();
         }
 
         private void Start() {

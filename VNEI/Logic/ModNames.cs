@@ -12,24 +12,8 @@ namespace VNEI.Logic {
         private static Dictionary<string, BepInPlugin> sourceMod = new Dictionary<string, BepInPlugin>();
 
         public static void IndexModNames() {
-            foreach (CustomItem customItem in ModRegistry.GetItems()) {
-                SetModOfPrefab(customItem.ItemPrefab.name, customItem.SourceMod);
-            }
-
-            foreach (CustomPiece customPiece in ModRegistry.GetPieces()) {
-                SetModOfPrefab(customPiece.PiecePrefab.name, customPiece.SourceMod);
-            }
-
-            foreach (CustomPrefab customPrefab in ModRegistry.GetPrefabs()) {
-                SetModOfPrefab(customPrefab.Prefab.name, customPrefab.SourceMod);
-            }
-
-            foreach (KeyValuePair<string, Type> pair in VNEIPatcher.VNEIPatcher.sourceMod) {
-                Type pluginType = pair.Value.Assembly.DefinedTypes.FirstOrDefault(IsBaseUnityPlugin);
-
-                if (pluginType != null && Chainloader.ManagerObject.TryGetComponent(pluginType, out Component mod)) {
-                    SetModOfPrefab(pair.Key, ((BaseUnityPlugin)mod).Info.Metadata);
-                }
+            foreach (IModPrefab modPrefab in ModQuery.GetPrefabs()) {
+                SetModOfPrefab(modPrefab.Prefab.name, modPrefab.SourceMod);
             }
         }
 
@@ -50,10 +34,6 @@ namespace VNEI.Logic {
             }
 
             return null;
-        }
-
-        private static bool IsBaseUnityPlugin(Type t) {
-            return t.IsClass && t.Assembly != typeof(Plugin).Assembly && typeof(BaseUnityPlugin).IsAssignableFrom(t);
         }
     }
 }

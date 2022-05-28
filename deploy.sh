@@ -35,7 +35,6 @@ mkdir -p "$ModNameUnity/Assets/Assemblies"
 mkdir -p "$ModNameUnity/AssetBundles/StandaloneWindows"
 
 cp "$ModName/bin/Debug/$ModName.dll" "$ModNameUnity/Assets/Assemblies"
-cp "VNEIPatcher/bin/Debug/VNEIPatcher.dll" "$ModNameUnity/Assets/Assemblies"
 
 cp "$BEPINEX_INSTALL/core/BepInEx.dll" "$ModNameUnity/Assets/Assemblies"
 cp "$BEPINEX_INSTALL/core/0Harmony.dll" "$ModNameUnity/Assets/Assemblies"
@@ -68,12 +67,9 @@ mkdir -p "$ModDir"/patchers
 
 cp "$ModName/bin/Debug/$ModName.dll" "$ModDir"/plugins
 cp "$ModName/bin/Debug/$ModName.xml" "$ModDir"/plugins
-cp "VNEIPatcher/bin/Debug/VNEIPatcher.dll" "$ModDir"/patchers
 cp README.md "$ModDir"
 cp manifest.json "$ModDir"
 cp icon.png "$ModDir"
-
-cp "VNEIPatcher/bin/Debug/VNEIPatcher.dll" "$BEPINEX_INSTALL/patchers"
 
 # make zip files
 cd "$ModDir" || exit

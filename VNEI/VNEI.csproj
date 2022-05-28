@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <Import Project="..\packages\JotunnLib.2.4.10\build\JotunnLib.props" Condition="Exists('..\packages\JotunnLib.2.4.10\build\JotunnLib.props')" />
+    <Import Project="..\packages\JotunnLib.2.6.7\build\JotunnLib.props" Condition="Exists('..\packages\JotunnLib.2.6.7\build\JotunnLib.props')" />
     <Import Project="..\packages\ILRepack.2.0.18\build\ILRepack.props" Condition="Exists('..\packages\ILRepack.2.0.18\build\ILRepack.props')" />
     <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
     <PropertyGroup>
@@ -38,13 +38,12 @@
         <DocumentationFile>bin\Release\VNEI.xml</DocumentationFile>
     </PropertyGroup>
     <ItemGroup>
+        <Reference Include="0Harmony, Version=2.9.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>..\packages\HarmonyX.2.9.0\lib\net45\0Harmony.dll</HintPath>
+        </Reference>
         <Reference Include="BepInEx, Culture=neutral, PublicKeyToken=null">
             <HintPath>$(VALHEIM_INSTALL)\BepInEx\core\BepInEx.dll</HintPath>
             <HintPath>$(R2MODMAN_INSTALL)\BepInEx\core\BepInEx.dll</HintPath>
-        </Reference>
-        <Reference Include="0Harmony, Version=2.5.5.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\packages\HarmonyX.2.5.5\lib\net45\0Harmony.dll</HintPath>
-          <Private>True</Private>
         </Reference>
         <Reference Include="assembly_utils, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
             <HintPath>$(VALHEIM_INSTALL)\valheim_Data\Managed\publicized_assemblies\assembly_utils_publicized.dll</HintPath>
@@ -55,9 +54,8 @@
         <Reference Include="assembly_guiutils, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
             <HintPath>$(VALHEIM_INSTALL)\valheim_Data\Managed\publicized_assemblies\assembly_guiutils_publicized.dll</HintPath>
         </Reference>
-        <Reference Include="Jotunn, Version=2.4.10.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\packages\JotunnLib.2.4.10\lib\net462\Jotunn.dll</HintPath>
-          <Private>True</Private>
+        <Reference Include="Jotunn, Version=2.6.7.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>..\packages\JotunnLib.2.6.7\lib\net462\Jotunn.dll</HintPath>
         </Reference>
         <Reference Include="Microsoft.CSharp" />
         <Reference Include="Mono.Cecil, Version=0.11.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e">
@@ -80,13 +78,11 @@
           <HintPath>..\packages\MonoMod.21.9.19.1\lib\net40\MonoMod.exe</HintPath>
           <Private>True</Private>
         </Reference>
-        <Reference Include="MonoMod.RuntimeDetour, Version=21.8.19.1, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\packages\MonoMod.RuntimeDetour.21.8.19.1\lib\net40\MonoMod.RuntimeDetour.dll</HintPath>
-          <Private>True</Private>
+        <Reference Include="MonoMod.RuntimeDetour, Version=22.1.29.1, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>..\packages\MonoMod.RuntimeDetour.22.1.29.1\lib\net452\MonoMod.RuntimeDetour.dll</HintPath>
         </Reference>
-        <Reference Include="MonoMod.Utils, Version=21.9.19.1, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\packages\MonoMod.Utils.21.9.19.1\lib\net40\MonoMod.Utils.dll</HintPath>
-          <Private>True</Private>
+        <Reference Include="MonoMod.Utils, Version=22.1.29.1, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>..\packages\MonoMod.Utils.22.1.29.1\lib\net452\MonoMod.Utils.dll</HintPath>
         </Reference>
         <Reference Include="System.Data.DataSetExtensions" />
         <Reference Include="System.Xml.Linq" />
@@ -191,12 +187,6 @@
       <EmbeddedResource Include="Localization\Config.json" />
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\VNEIPatcher\VNEIPatcher.csproj">
-        <Project>{8b77ee68-c6a9-4f17-9ab1-5636d62d4d50}</Project>
-        <Name>VNEIPatcher</Name>
-      </ProjectReference>
-    </ItemGroup>
-    <ItemGroup>
       <Folder Include="Libs" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -206,7 +196,7 @@
         </PropertyGroup>
         <Error Condition="!Exists('..\packages\ILRepack.2.0.18\build\ILRepack.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\ILRepack.2.0.18\build\ILRepack.props'))" />
         <Error Condition="!Exists('..\packages\ILRepack.Lib.MSBuild.Task.2.0.18.2\build\ILRepack.Lib.MSBuild.Task.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\ILRepack.Lib.MSBuild.Task.2.0.18.2\build\ILRepack.Lib.MSBuild.Task.targets'))" />
-        <Error Condition="!Exists('..\packages\JotunnLib.2.4.10\build\JotunnLib.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JotunnLib.2.4.10\build\JotunnLib.props'))" />
+        <Error Condition="!Exists('..\packages\JotunnLib.2.6.7\build\JotunnLib.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JotunnLib.2.6.7\build\JotunnLib.props'))" />
     </Target>
     <Import Project="..\packages\ILRepack.Lib.MSBuild.Task.2.0.18.2\build\ILRepack.Lib.MSBuild.Task.targets" Condition="Exists('..\packages\ILRepack.Lib.MSBuild.Task.2.0.18.2\build\ILRepack.Lib.MSBuild.Task.targets')" />
     <Import Project="../Environment.props" />
