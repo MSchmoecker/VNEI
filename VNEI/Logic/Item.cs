@@ -64,8 +64,7 @@ namespace VNEI.Logic {
         }
 
         public string GetNameContext() {
-            string modName = mod != null ? mod.Name : string.Empty;
-            return $"{internalName}{Environment.NewLine}{modName}";
+            return $"{internalName}{Environment.NewLine}{GetModName()}";
         }
 
         public string GetDescription() {
@@ -96,28 +95,30 @@ namespace VNEI.Logic {
             return localizedName.Length > 0 ? localizedName : internalName;
         }
 
+        public string GetModName() {
+            return mod != null ? mod.Name : string.Empty;
+        }
+
         public string PrintItem() {
             if (internalName == null) return " -- invalid item -- ";
-            string modName = mod != null ? mod.Name : string.Empty;
             string descriptionOneLine = GetDescription().Replace('\n', ' ');
             string mappedItemType = itemType.ToString();
             return $"InternalName='{internalName}'; " +
                    $"PrimaryName='{GetPrimaryName()}'; " +
                    $"MappedItemType='{mappedItemType}'; " +
                    $"Description='{descriptionOneLine}'; " +
-                   $"SourceMod='{modName}'";
+                   $"SourceMod='{GetModName()}'";
         }
 
         public string PrintItemCSV() {
             if (internalName == null) return " -- invalid item -- ";
-            string modName = mod != null ? mod.Name : string.Empty;
             string descriptionOneLine = GetDescription().Replace('\n', ' ');
             string mappedItemType = itemType.ToString();
             return $"{internalName};" +
                    $"{GetPrimaryName()};" +
                    $"{mappedItemType};" +
                    $"{descriptionOneLine};" +
-                   $"{modName}";
+                   $"{GetModName()}";
         }
 
         public static string PrintCSVHeader() {

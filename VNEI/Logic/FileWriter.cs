@@ -61,7 +61,7 @@ namespace VNEI.Logic {
                                     ? itemDrop.m_itemData.m_shared.m_itemType.ToString()
                                     : MissingType,
                                 item.internalName,
-                                (item.mod != null ? item.mod.Name : string.Empty)))
+                                item.GetModName()))
                     .ToList();
             Dictionary<string, List<string>> groupedItems;
             groupedItems = validItems
@@ -82,7 +82,7 @@ namespace VNEI.Logic {
                    .Where(item => item.gameObject != null)
                    .Where(item => !BadItemTypes.Contains(item.itemType))
                    .Where(item => itemNamesFilterExcluded.All(filterExclude => !item.internalName.Contains(filterExclude)))
-                   .Where(item => modNamesFilterExcluded.All(filterExclude => !(item.mod != null ? item.mod.Name : string.Empty)
+                   .Where(item => modNamesFilterExcluded.All(filterExclude => !item.GetModName()
                                                                  .Contains(filterExclude))).ToList();
         }
 
