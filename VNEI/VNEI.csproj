@@ -25,6 +25,7 @@
         <WarningLevel>4</WarningLevel>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <DocumentationFile>bin\Debug\VNEI.xml</DocumentationFile>
+        <NoWarn>1591</NoWarn>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
         <PlatformTarget>AnyCPU</PlatformTarget>
@@ -36,6 +37,7 @@
         <WarningLevel>4</WarningLevel>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <DocumentationFile>bin\Release\VNEI.xml</DocumentationFile>
+        <NoWarn>1591</NoWarn>
     </PropertyGroup>
     <ItemGroup>
         <Reference Include="0Harmony, Version=2.9.0.0, Culture=neutral, processorArchitecture=MSIL">
