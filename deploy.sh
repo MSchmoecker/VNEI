@@ -50,29 +50,27 @@ cp "$VALHEIM_INSTALL/valheim_Data/Managed/assembly_sunshafts.dll" "$ModNameUnity
 cp "$VALHEIM_INSTALL/valheim_Data/Managed/assembly_guiutils.dll" "$ModNameUnity/Assets/Assemblies"
 cp "$VALHEIM_INSTALL/valheim_Data/Managed/assembly_steamworks.dll" "$ModNameUnity/Assets/Assemblies"
 cp "$VALHEIM_INSTALL/valheim_Data/Managed/assembly_googleanalytics.dll" "$ModNameUnity/Assets/Assemblies"
-cp "$BEPINEX_INSTALL/plugins/MMHOOK/MMHOOK_assembly_valheim.dll" "$ModNameUnity/Assets/Assemblies"
-cp "$BEPINEX_INSTALL/plugins/MMHOOK/MMHOOK_assembly_utils.dll" "$ModNameUnity/Assets/Assemblies"
-cp "$BEPINEX_INSTALL/plugins/MMHOOK/MMHOOK_assembly_postprocessing.dll" "$ModNameUnity/Assets/Assemblies"
-cp "$BEPINEX_INSTALL/plugins/MMHOOK/MMHOOK_assembly_sunshafts.dll" "$ModNameUnity/Assets/Assemblies"
-cp "$BEPINEX_INSTALL/plugins/MMHOOK/MMHOOK_assembly_guiutils.dll" "$ModNameUnity/Assets/Assemblies"
-cp "$BEPINEX_INSTALL/plugins/MMHOOK/MMHOOK_assembly_steamworks.dll" "$ModNameUnity/Assets/Assemblies"
-cp "$BEPINEX_INSTALL/plugins/MMHOOK/MMHOOK_assembly_googleanalytics.dll" "$ModNameUnity/Assets/Assemblies"
 
 echo "$ModDir"
 
 # copy content
 mkdir -p "$ModDir"
-mkdir -p "$ModDir"/plugins
-mkdir -p "$ModDir"/patchers
-
-cp "$ModName/bin/Debug/$ModName.dll" "$ModDir"/plugins
-cp "$ModName/bin/Debug/$ModName.xml" "$ModDir"/plugins
+cp "$ModName/bin/Debug/$ModName.dll" "$ModDir"
+cp "$ModName/bin/Debug/$ModName.xml" "$ModDir"
 cp README.md "$ModDir"
 cp manifest.json "$ModDir"
 cp icon.png "$ModDir"
 
 # make zip files
 cd "$ModDir" || exit
+
 [ -f "$ModName.zip" ] && rm "$ModName.zip"
-zip -r "$ModName.zip" .
-zip -r "$ModName-Nexus.zip" ./plugins ./patchers
+[ -f "$ModName-Nexus.zip" ] && rm "$ModName-Nexus.zip"
+
+mkdir -p plugins
+cp "$ModName.dll" plugins
+
+zip "$ModName.zip" "$ModName.dll" "$ModName.xml" README.md manifest.json icon.png
+zip -r "$ModName-Nexus.zip" plugins
+
+rm -r plugins

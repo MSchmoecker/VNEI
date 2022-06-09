@@ -59,6 +59,11 @@ See more [here](https://github.com/MSchmoecker/VNEI/blob/master/API.md).
 - Discord: Margmas#9562
 
 ## Changelog
+0.6.4
+- added copy-to-clipboard functionality for item/mod names
+- fixed a few items were not showing up in the search
+- removed VNEI patcher
+
 0.6.3
 - fixed some weird behaviour in Auga, had to wait for Auga to update
 
