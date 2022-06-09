@@ -7,6 +7,7 @@ using BepInEx;
 using BepInEx.Bootstrap;
 using BepInEx.Configuration;
 using HarmonyLib;
+using Jotunn;
 using Jotunn.Entities;
 using Jotunn.Utils;
 using Jotunn.Managers;
@@ -40,6 +41,8 @@ namespace VNEI {
         public static bool isUiOpen = true;
         public static event Action OnOpenHotkey;
         public Sprite noIconSprite;
+        public GameObject vneiUI;
+        public GameObject displayItemTemplate;
 
         private Harmony harmony;
 
@@ -91,6 +94,9 @@ namespace VNEI {
             ItemBlacklist = SimpleJson.SimpleJson.DeserializeObject<List<string>>(blacklistJson).ToHashSet();
 
             noIconSprite = AssetBundle.LoadAsset<Sprite>("NoSprite.png");
+            vneiUI = AssetBundle.LoadAsset<GameObject>("VNEI");
+            displayItemTemplate = AssetBundle.LoadAsset<GameObject>("_Template");
+
             GUIManager.OnCustomGUIAvailable += () => {
                 if (!Auga.API.IsLoaded()) {
                     MainVneiHandler.Instance.GetOrCreateBaseUI();
@@ -98,6 +104,8 @@ namespace VNEI {
             };
             CommandManager.Instance.AddConsoleCommand(new SelectUITest.ToggleUIConsoleCommand());
             CommandManager.Instance.AddConsoleCommand(new FileWriterController());
+
+            PrefabManager.OnVanillaPrefabsAvailable += ApplyMocks;
 
             ModQuery.Enable();
         }
@@ -119,6 +127,13 @@ namespace VNEI {
 
         public bool AttachToCrafting() {
             return attachToCrafting.Value;
+        }
+
+        private void ApplyMocks() {
+            vneiUI.FixReferences(true);
+            displayItemTemplate.FixReferences(true);
+
+            PrefabManager.OnVanillaPrefabsAvailable -= ApplyMocks;
         }
     }
 }

@@ -22,7 +22,9 @@ namespace VNEI.UI {
             }
 
             foreach (Button button in root.GetComponentsInChildren<Button>(true)) {
-                GUIManager.Instance.ApplyButtonStyle(button);
+                if (!button.name.StartsWith("__Copy__")) {
+                    GUIManager.Instance.ApplyButtonStyle(button);
+                }
             }
 
             foreach (ScrollRect scrollRect in root.GetComponentsInChildren<ScrollRect>(true)) {

@@ -11,5 +11,8 @@
   "vnei_category_weapon": "Show Weapon/Shields",
   "vnei_category_armor": "Show Armor",
   "vnei_enable_cheats": "Enable cheats",
-  "vnei_any_item": "Any item"
+  "vnei_any_item": "Any item",
+  "copy_display_name": "Copy display name",
+  "copy_internal_name": "Copy internal name",
+  "copy_mod_name": "Copy mod name"
 }

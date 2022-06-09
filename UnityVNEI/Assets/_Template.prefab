@@ -79,7 +79,8 @@ MonoBehaviour:
   m_Script: {fileID: 438561839, guid: 25db3022f3f3483429aa5b06737eb22a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_tooltipPrefab: {fileID: 0}
+  m_tooltipPrefab: {fileID: 3563663758342454988, guid: 7d2a5daa157fac644bb4a14ac185e32c,
+    type: 3}
   m_text: 
   m_topic: 
   m_gamepadFocusObject: {fileID: 0}

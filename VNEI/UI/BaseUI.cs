@@ -35,8 +35,7 @@ namespace VNEI.UI {
         private bool usePluginSize = true;
 
         public static BaseUI CreateBaseUI(bool canBeHidden = false, bool scaleWithPluginSetting = false, bool draggable = true) {
-            GameObject prefab = Plugin.AssetBundle.LoadAsset<GameObject>("VNEI");
-            GameObject spawn = Instantiate(prefab, GUIManager.CustomGUIFront ? GUIManager.CustomGUIFront.transform : null);
+            GameObject spawn = Instantiate(Plugin.Instance.vneiUI, GUIManager.CustomGUIFront ? GUIManager.CustomGUIFront.transform : null);
             BaseUI baseUI = spawn.GetComponent<BaseUI>();
             baseUI.canBeHidden = canBeHidden;
             baseUI.usePluginSize = scaleWithPluginSetting;

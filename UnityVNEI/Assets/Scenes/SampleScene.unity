@@ -466,6 +466,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 15
       objectReference: {fileID: 0}
+    - target: {fileID: 1812281494192956357, guid: 1a5b4ba9c93bfa04fbef697a738adeac,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2253492330281235984, guid: 1a5b4ba9c93bfa04fbef697a738adeac,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -510,6 +515,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: VNEI
+      objectReference: {fileID: 0}
+    - target: {fileID: 4776243928860602842, guid: 1a5b4ba9c93bfa04fbef697a738adeac,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4801067270282843723, guid: 1a5b4ba9c93bfa04fbef697a738adeac,
         type: 3}
@@ -635,6 +645,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6895736452569038743, guid: 1a5b4ba9c93bfa04fbef697a738adeac,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7859397720321528896, guid: 1a5b4ba9c93bfa04fbef697a738adeac,
         type: 3}

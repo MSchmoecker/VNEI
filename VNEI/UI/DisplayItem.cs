@@ -18,8 +18,6 @@ namespace VNEI.UI {
         private Item item;
 
         private void Awake() {
-            uiTooltip.m_tooltipPrefab = PrefabManager.Instance.GetPrefab("InventoryTooltip");
-
             uiTooltip.m_gamepadFocusObject = PrefabManager.Instance.GetPrefab("selected");
             background.sprite = GUIManager.Instance.GetSprite("item_background");
             Styling.ApplyText(countText, GUIManager.Instance.AveriaSerif, Color.white, 12);

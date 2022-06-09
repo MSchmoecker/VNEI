@@ -12,7 +12,8 @@ namespace VNEI.UI {
         public ScrollRect usingScroll;
         public DisplayItem infoIcon;
         public Text infoName;
-        public Text infoNameContext;
+        public Text infoInternalName;
+        public Text infoModName;
         public Text infoDescription;
 
         public BaseUI baseUI;
@@ -74,12 +75,17 @@ namespace VNEI.UI {
             usingScroll.content.sizeDelta = new Vector2(maxSizeX, -(posY + rowHeight / 2f - 10f));
 
             infoName.text = currentItem.GetName();
-            infoNameContext.text = currentItem.GetNameContext();
+            infoInternalName.text = currentItem.internalName;
+            infoModName.text = currentItem.GetModName();
             infoDescription.text = Localization.instance.Localize(currentItem.GetDescription());
             infoIcon.SetItem(currentItem, 1);
 
             UpdateObtainingHidden();
             UpdateUseHidden();
+        }
+
+        public void CopyTextToClipboard(Text text) {
+            GUIUtility.systemCopyBuffer = text.text;
         }
 
         private void UpdateObtainingHidden() {
