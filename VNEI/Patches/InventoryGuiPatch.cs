@@ -26,6 +26,7 @@ namespace VNEI.Patches {
         }
 
         [HarmonyPatch(typeof(InventoryGui), nameof(InventoryGui.UpdateCraftingPanel)), HarmonyPostfix]
+        [HarmonyAfter("org.bepinex.plugins.jewelcrafting")]
         public static void UpdateCraftingPanelPatch() {
             if (!Auga.API.IsLoaded()) {
                 // vanilla behaviour has set the vanilla tabs active
