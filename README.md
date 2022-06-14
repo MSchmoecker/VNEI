@@ -59,6 +59,9 @@ See more [here](https://github.com/MSchmoecker/VNEI/blob/master/API.md).
 - Discord: Margmas#9562
 
 ## Changelog
+0.6.5
+- fixed tab button was not correctly working together with Jewelcrafting
+
 0.6.4
 - added copy-to-clipboard functionality for item/mod names
 - fixed a few items were not showing up in the search
