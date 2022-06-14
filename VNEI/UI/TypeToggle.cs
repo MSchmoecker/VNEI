@@ -13,18 +13,17 @@ namespace VNEI.UI {
         public Image image;
         public Image background;
         public bool isOn = true;
+        public bool toggleItemType;
         public ItemType itemType;
+
+        public bool toggleFavorite;
+        public bool isFavorite;
 
         private BaseUI baseUI;
 
         private void Awake() {
             baseUI = GetComponentInParent<BaseUI>();
             baseUI.typeToggles.Add(this);
-            GetComponent<UITooltip>().m_tooltipPrefab = PrefabManager.Instance.GetPrefab("InventoryTooltip");
-            GetComponent<UITooltip>().m_gamepadFocusObject = PrefabManager.Instance.GetPrefab("selected");
-            background.sprite = GUIManager.Instance.GetSprite("checkbox");
-            background.pixelsPerUnitMultiplier = 2.5f;
-            background.color = new Color(0.61f, 0.61f, 0.61f, 1f);
             UpdateToggle();
         }
 
@@ -41,6 +40,10 @@ namespace VNEI.UI {
             UpdateToggle();
         }
 
+        public bool IsDisabled(ItemType type, bool favorite) {
+            return !isOn && toggleItemType && type == itemType || isOn && toggleFavorite && favorite != isFavorite;
+        }
+
         public void OnPointerDown(PointerEventData eventData) {
             if (eventData.button == PointerEventData.InputButton.Right) {
                 bool turnOthersOn = isOn && baseUI.typeToggles.TrueForAll(i => !i.isOn || i == this);
@@ -50,6 +53,10 @@ namespace VNEI.UI {
 
                 foreach (TypeToggle toggle in baseUI.typeToggles) {
                     if (toggle == this) {
+                        continue;
+                    }
+
+                    if (toggle.toggleItemType != toggleItemType && toggle.toggleFavorite != toggleFavorite) {
                         continue;
                     }
 

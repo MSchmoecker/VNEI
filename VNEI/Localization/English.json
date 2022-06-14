@@ -10,6 +10,7 @@
   "vnei_category_food": "Show Food",
   "vnei_category_weapon": "Show Weapon/Shields",
   "vnei_category_armor": "Show Armor",
+  "vnei_category_favorite": "Show only Favorites",
   "vnei_enable_cheats": "Enable cheats",
   "vnei_any_item": "Any item",
   "copy_display_name": "Copy display name",

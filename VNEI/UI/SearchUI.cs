@@ -74,6 +74,11 @@ namespace VNEI.UI {
             searchField.onValueChanged.AddListener((_) => UpdateSearch(true));
 
             foreach (TypeToggle typeToggle in baseUI.typeToggles) {
+                if (typeToggle.toggleFavorite) {
+                    typeToggle.image.sprite = typeToggle.isFavorite ? Plugin.Instance.starSprite : Plugin.Instance.noStarSprite;
+                    continue;
+                }
+
                 switch (typeToggle.itemType) {
                     case ItemType.Undefined:
                         typeToggle.image.sprite = Plugin.Instance.noIconSprite;
@@ -166,7 +171,7 @@ namespace VNEI.UI {
                 return false;
             }
 
-            if (baseUI.typeToggles.Any(typeToggle => item.itemType == typeToggle.itemType && !typeToggle.isOn)) {
+            if (baseUI.typeToggles.Any(typeToggle => typeToggle.IsDisabled(item.itemType, item.isFavorite))) {
                 return false;
             }
 

@@ -15,6 +15,7 @@ namespace VNEI.UI {
         public Text infoInternalName;
         public Text infoModName;
         public Text infoDescription;
+        public Image favorite;
 
         public BaseUI baseUI;
         public event Action<Item> OnSetItem;
@@ -80,8 +81,20 @@ namespace VNEI.UI {
             infoDescription.text = Localization.instance.Localize(currentItem.GetDescription());
             infoIcon.SetItem(currentItem, 1);
 
+            UpdateFavoriteButton();
             UpdateObtainingHidden();
             UpdateUseHidden();
+        }
+
+        public void ToggleFavorite() {
+            currentItem.isFavorite = !currentItem.isFavorite;
+            currentItem.UpdateFavorite();
+            UpdateFavoriteButton();
+            FavouritesSave.Save();
+        }
+
+        private void UpdateFavoriteButton() {
+            favorite.color = currentItem.isFavorite ? GUIManager.Instance.ValheimOrange : Color.grey;
         }
 
         public void CopyTextToClipboard(Text text) {

@@ -136,6 +136,7 @@
         <Compile Include="APIExample\SelectUITest.cs" />
         <Compile Include="Log.cs" />
         <Compile Include="Logic\Amount.cs" />
+        <Compile Include="Logic\FavouritesSave.cs" />
         <Compile Include="Logic\FileWriter.cs" />
         <Compile Include="Logic\Indexing.cs" />
         <Compile Include="Logic\Item.cs" />

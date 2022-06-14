@@ -12,7 +12,8 @@ namespace VNEI.UI {
     public class BaseUI : MonoBehaviour {
         [Header("Local References")] public RectTransform root;
         public RectTransform dragHandler;
-        public Transform lastViewItemsParent;
+        public RectTransform lastViewItemsParent;
+        public RectTransform favoriteItemsParent;
 
         public SearchUI searchUi;
         public RecipeUI recipeUi;
@@ -23,7 +24,9 @@ namespace VNEI.UI {
         public GameObject arrowPrefab;
 
         private List<DisplayItem> lastViewedDisplayItems = new List<DisplayItem>();
+        private List<DisplayItem> favoriteItemsDisplayItems = new List<DisplayItem>();
         private List<Item> lastViewedItems = new List<Item>();
+        // private List<Item> favoriteItems = new List<Item>();
         private bool blockInput;
         private bool sizeDirty;
         [HideInInspector] public List<TypeToggle> typeToggles = new List<TypeToggle>();
@@ -72,7 +75,7 @@ namespace VNEI.UI {
             Plugin.OnOpenHotkey += UpdateVisibility;
 
             RebuildSize();
-            RebuildLastViewedDisplayItems();
+            RebuildDisplayItemRows();
         }
 
         private void RebuildSizeEvent(object sender, EventArgs e) => sizeDirty = true;
@@ -101,37 +104,47 @@ namespace VNEI.UI {
             if (sizeDirty) {
                 sizeDirty = false;
                 RebuildSize();
-                RebuildLastViewedDisplayItems();
+                RebuildDisplayItemRows();
             }
         }
 
-        private void RebuildLastViewedDisplayItems() {
-            foreach (DisplayItem displayItem in lastViewedDisplayItems) {
+        private void RebuildDisplayItemRows() {
+            RebuildDisplayItemRow(lastViewedDisplayItems, lastViewItemsParent);
+            UpdateDisplayItemRow(lastViewedDisplayItems, lastViewedItems);
+
+            // RebuildDisplayItemRow(favoriteItemsDisplayItems, favoriteItemsParent);
+            // UpdateDisplayItemRow(favoriteItemsDisplayItems, favoriteItems);
+        }
+
+        private void RebuildDisplayItemRow(List<DisplayItem> displayItems, RectTransform parent) {
+            foreach (DisplayItem displayItem in displayItems) {
                 Destroy(displayItem.gameObject);
             }
 
-            lastViewedDisplayItems.Clear();
+            displayItems.Clear();
 
             if (GetComponent<SelectUI>()) {
                 // TODO responsibility in SelectUI?
                 return;
             }
 
-            int lastViewCount = Mathf.Max(ItemSizeX - 5, 0);
+            int displayItemCount = Mathf.Max(ItemSizeX - 5, 0);
 
-            RectTransform parentRectTransform = ((RectTransform)lastViewItemsParent.transform);
-            parentRectTransform.anchoredPosition = new Vector2((lastViewCount * 50f) / 2f + 5f, -25f);
-            parentRectTransform.sizeDelta = new Vector2(lastViewCount * 50f, 50f);
+            parent.anchoredPosition = new Vector2((displayItemCount * 50f) / 2f + 5f, parent.anchoredPosition.y);
+            parent.sizeDelta = new Vector2(displayItemCount * 50f, 50f);
 
-            for (int i = 0; i < lastViewCount; i++) {
-                GameObject sprite = Instantiate(itemPrefab, lastViewItemsParent);
-                ((RectTransform)sprite.transform).anchoredPosition = new Vector2(25f + i * 50, -25f);
-                DisplayItem displayItem = sprite.GetComponent<DisplayItem>();
-                displayItem.Init(this);
-                lastViewedDisplayItems.Add(displayItem);
+            for (int i = 0; i < displayItemCount; i++) {
+                DisplayItem displayItem = SpawnDisplayItem(new Vector2(25f + i * 50, -25f), parent);
+                displayItems.Add(displayItem);
             }
+        }
 
-            UpdateLastViewDisplayItems();
+        private DisplayItem SpawnDisplayItem(Vector2 anchoredPosition, Transform parent) {
+            GameObject sprite = Instantiate(itemPrefab, parent);
+            ((RectTransform)sprite.transform).anchoredPosition = anchoredPosition;
+            DisplayItem displayItem = sprite.GetComponent<DisplayItem>();
+            displayItem.Init(this);
+            return displayItem;
         }
 
         private void LateUpdate() {
@@ -170,17 +183,17 @@ namespace VNEI.UI {
             }
 
             // display items at corresponding slots
-            UpdateLastViewDisplayItems();
+            UpdateDisplayItemRow(lastViewedDisplayItems, lastViewedItems);
         }
 
-        private void UpdateLastViewDisplayItems() {
-            for (int i = 0; i < lastViewedDisplayItems.Count; i++) {
-                if (i >= lastViewedItems.Count) {
-                    lastViewedDisplayItems[i].SetItem(null, 1);
+        private static void UpdateDisplayItemRow(List<DisplayItem> displayItems, List<Item> items) {
+            for (int i = 0; i < displayItems.Count; i++) {
+                if (i >= items.Count) {
+                    displayItems[i].SetItem(null, 1);
                     continue;
                 }
 
-                lastViewedDisplayItems[i].SetItem(lastViewedItems[i], 1);
+                displayItems[i].SetItem(items[i], 1);
             }
         }
 
@@ -197,7 +210,7 @@ namespace VNEI.UI {
 
             // don't use `sizeDirty = true` as it needs one frame to execute
             RebuildSize();
-            RebuildLastViewedDisplayItems();
+            RebuildDisplayItemRows();
         }
 
         public void SetVisibility(bool visible) {

@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6747814230046643599}
   m_Layer: 0
-  m_Name: JVLmock_InventoryTooltip
+  m_Name: JVLmock_selected
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

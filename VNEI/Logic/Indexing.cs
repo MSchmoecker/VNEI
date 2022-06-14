@@ -64,6 +64,7 @@ namespace VNEI.Logic {
             IndexRecipes();
             IndexItemRecipes(pieceTables);
             RecipeInfo.OnCalculateIsOnBlacklist?.Invoke();
+            FavouritesSave.Load();
 
             Log.LogInfo($"Loaded {GetActiveItems().Count()} items");
 

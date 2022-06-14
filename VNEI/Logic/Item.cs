@@ -16,10 +16,12 @@ namespace VNEI.Logic {
         public readonly BepInPlugin mod;
         public bool isActive = true;
         public int maxQuality;
+        public bool isFavorite;
 
         public readonly List<RecipeInfo> result = new List<RecipeInfo>();
         public readonly List<RecipeInfo> ingredient = new List<RecipeInfo>();
 
+        private readonly List<Tuple<Component, Action>> onFavoriteChangedListeners = new List<Tuple<Component, Action>>();
         private Sprite icon;
 
         public Item(string name, string localizeName, string description, Sprite icon, ItemType itemType,
@@ -123,6 +125,17 @@ namespace VNEI.Logic {
 
         public static string PrintCSVHeader() {
             return $"internalName;PrimaryName;MappedItemType;Description;SourceModName";
+        }
+
+        public void UpdateFavorite() {
+            onFavoriteChangedListeners.RemoveAll(i => i?.Item1 == null);
+            foreach (Tuple<Component, Action> listener in onFavoriteChangedListeners) {
+                listener.Item2.Invoke();
+            }
+        }
+
+        public void SubscribeOnFavoriteChanged(Component target, Action updateFavorite) {
+            onFavoriteChangedListeners.Add(new Tuple<Component, Action>(target, updateFavorite));
         }
     }
 }

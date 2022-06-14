@@ -12,6 +12,7 @@ namespace VNEI.UI {
 
         public Image image;
         public Image background;
+        public Image favorite;
         public UITooltip uiTooltip;
         public Text countText;
         public Text qualityText;
@@ -22,6 +23,7 @@ namespace VNEI.UI {
             background.sprite = GUIManager.Instance.GetSprite("item_background");
             Styling.ApplyText(countText, GUIManager.Instance.AveriaSerif, Color.white, 12);
             qualityText.font = GUIManager.Instance.AveriaSerifBold;
+            favorite.color = GUIManager.Instance.ValheimOrange;
         }
 
         public void Update() {
@@ -35,8 +37,10 @@ namespace VNEI.UI {
         public void SetItem(Item target, int quality) {
             item = target;
             image.gameObject.SetActive(item != null);
+            UpdateFavorite();
 
             if (item != null) {
+                item.SubscribeOnFavoriteChanged(this, UpdateFavorite);
                 image.sprite = item.GetIcon();
                 uiTooltip.Set(item.GetPrimaryName(), item.GetTooltip(quality));
                 qualityText.text = item.maxQuality > 1 || quality > 1 ? $"{quality}" : "";
@@ -44,6 +48,10 @@ namespace VNEI.UI {
                 uiTooltip.Set("", "");
                 qualityText.text = "";
             }
+        }
+
+        private void UpdateFavorite() {
+            favorite.gameObject.SetActive(item != null && item.isFavorite);
         }
 
         public static bool IsPlayerCheating() {

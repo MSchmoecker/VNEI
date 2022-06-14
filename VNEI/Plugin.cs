@@ -41,6 +41,8 @@ namespace VNEI {
         public static bool isUiOpen = true;
         public static event Action OnOpenHotkey;
         public Sprite noIconSprite;
+        public Sprite starSprite;
+        public Sprite noStarSprite;
         public GameObject vneiUI;
         public GameObject displayItemTemplate;
 
@@ -94,6 +96,8 @@ namespace VNEI {
             ItemBlacklist = SimpleJson.SimpleJson.DeserializeObject<List<string>>(blacklistJson).ToHashSet();
 
             noIconSprite = AssetBundle.LoadAsset<Sprite>("NoSprite.png");
+            starSprite = AssetBundle.LoadAsset<Sprite>("Star.png");
+            noStarSprite = AssetBundle.LoadAsset<Sprite>("NoStar.png");
             vneiUI = AssetBundle.LoadAsset<GameObject>("VNEI");
             displayItemTemplate = AssetBundle.LoadAsset<GameObject>("_Template");
 
