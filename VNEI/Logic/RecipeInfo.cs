@@ -6,24 +6,22 @@ using Object = UnityEngine.Object;
 
 namespace VNEI.Logic {
     public class RecipeInfo {
-        public Dictionary<Amount, List<Part>> ingredient = new Dictionary<Amount, List<Part>>();
-        public Dictionary<Amount, List<Part>> result = new Dictionary<Amount, List<Part>>();
-        public Part station;
+        public Dictionary<Amount, List<Part>> Ingredients { get; private set; } = new Dictionary<Amount, List<Part>>();
+        public Dictionary<Amount, List<Part>> Results { get; private set; } = new Dictionary<Amount, List<Part>>();
+        public Part Station { get; private set; }
+        public bool IsOnBlacklist { get; private set; }
 
         public static List<RecipeInfo> Recipes { get; private set; } = new List<RecipeInfo>();
-
-        public static Action OnCalculateIsOnBlacklist;
-        public bool isOnBlacklist;
 
         public void AddIngredient(string name, Amount groupAmount, Amount count, int quality) {
             Item item = Indexing.GetItem(name);
 
             if (item != null) {
-                if (!ingredient.ContainsKey(groupAmount)) {
-                    ingredient.Add(groupAmount, new List<Part>());
+                if (!Ingredients.ContainsKey(groupAmount)) {
+                    Ingredients.Add(groupAmount, new List<Part>());
                 }
 
-                ingredient[groupAmount].Add(new Part(item, count, quality));
+                Ingredients[groupAmount].Add(new Part(item, count, quality));
             }
         }
 
@@ -39,11 +37,11 @@ namespace VNEI.Logic {
             Item item = Indexing.GetItem(name);
 
             if (item != null) {
-                if (!result.ContainsKey(groupAmount)) {
-                    result.Add(groupAmount, new List<Part>());
+                if (!Results.ContainsKey(groupAmount)) {
+                    Results.Add(groupAmount, new List<Part>());
                 }
 
-                result[groupAmount].Add(new Part(item, count, quality));
+                Results[groupAmount].Add(new Part(item, count, quality));
             }
         }
 
@@ -59,7 +57,7 @@ namespace VNEI.Logic {
             Item item = Indexing.GetItem(name);
 
             if (item != null) {
-                station = new Part(item, new Amount(1), level);
+                Station = new Part(item, new Amount(1), level);
             }
         }
 
@@ -72,18 +70,17 @@ namespace VNEI.Logic {
         }
 
         public void CalculateIsOnBlacklist() {
-            if (ingredient.SelectMany(i => i.Value).Any(i => Plugin.ItemBlacklist.Contains(i.item.internalName))) {
-                isOnBlacklist = true;
+            if (Ingredients.SelectMany(i => i.Value).Any(i => Plugin.ItemBlacklist.Contains(i.item.internalName))) {
+                IsOnBlacklist = true;
                 return;
             }
 
-            if (result.SelectMany(i => i.Value).Any(i => Plugin.ItemBlacklist.Contains(i.item.internalName))) {
-                isOnBlacklist = true;
+            if (Results.SelectMany(i => i.Value).Any(i => Plugin.ItemBlacklist.Contains(i.item.internalName))) {
+                IsOnBlacklist = true;
             }
         }
 
         public RecipeInfo() {
-            OnCalculateIsOnBlacklist += CalculateIsOnBlacklist;
             Recipes.Add(this);
         }
 
@@ -162,7 +159,7 @@ namespace VNEI.Logic {
         }
 
         public RecipeInfo(GameObject prefab, Piece piece, Item crafter) : this() {
-            station = new Part(crafter, new Amount(1), 1);
+            Station = new Part(crafter, new Amount(1), 1);
             AddResult(prefab, Amount.One, Amount.One, 1, prefab.name);
 
             foreach (Piece.Requirement requirement in piece.m_resources) {
@@ -233,7 +230,7 @@ namespace VNEI.Logic {
         }
 
         public bool IngredientsAndResultSame() {
-            return ingredient.SequenceEqual(result);
+            return Ingredients.SequenceEqual(Results);
         }
     }
 }

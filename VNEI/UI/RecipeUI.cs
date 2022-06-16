@@ -52,7 +52,7 @@ namespace VNEI.UI {
             float posY = -rowHeight / 2f;
 
             foreach (RecipeInfo recipe in item.result) {
-                if (useBlacklist && recipe.isOnBlacklist) continue;
+                if (useBlacklist && recipe.IsOnBlacklist) continue;
 
                 float sizeX = SpawnRecipe(recipe, obtainingScroll.content, obtainItems, posY);
 
@@ -65,7 +65,7 @@ namespace VNEI.UI {
             posY = -rowHeight / 2f;
 
             foreach (RecipeInfo recipe in item.ingredient) {
-                if (useBlacklist && recipe.isOnBlacklist) continue;
+                if (useBlacklist && recipe.IsOnBlacklist) continue;
 
                 float sizeX = SpawnRecipe(recipe, usingScroll.content, usingItems, posY);
 
@@ -137,8 +137,8 @@ namespace VNEI.UI {
             float sizeX = 25;
             float deltaX;
 
-            foreach (KeyValuePair<Amount, List<Part>> pair in recipe.ingredient) {
-                if (recipe.ingredient.Count > 1 || pair.Key.min != 1 || pair.Key.max != 1 || Math.Abs(pair.Key.chance - 1f) > 0.01f) {
+            foreach (KeyValuePair<Amount, List<Part>> pair in recipe.Ingredients) {
+                if (recipe.Ingredients.Count > 1 || pair.Key.min != 1 || pair.Key.max != 1 || Math.Abs(pair.Key.chance - 1f) > 0.01f) {
                     RectTransform recipeDropped = SpawnRowElement(baseUI.recipeDroppedTextPrefab, row, new Vector2(0, -25f),
                                                                   ref sizeX, out deltaX);
                     Text recipeDroppedText = recipeDropped.GetComponent<Text>();
@@ -151,7 +151,7 @@ namespace VNEI.UI {
                 }
             }
 
-            if (recipe.station == null) {
+            if (recipe.Station == null) {
                 SpawnRowElement(baseUI.arrowPrefab, row, new Vector2(-15f, -25f), ref sizeX, out deltaX);
             } else {
                 float tmp = sizeX;
@@ -163,11 +163,11 @@ namespace VNEI.UI {
                 sizeX += deltaX;
                 DisplayItem displayItem = spawned.GetComponent<DisplayItem>();
                 displayItem.Init(baseUI);
-                displayItem.SetItem(recipe.station.item, recipe.station.quality);
+                displayItem.SetItem(recipe.Station.item, recipe.Station.quality);
             }
 
-            foreach (KeyValuePair<Amount, List<Part>> pair in recipe.result) {
-                if (recipe.result.Count > 1 || pair.Key.min != 1 || pair.Key.max != 1 || Math.Abs(pair.Key.chance - 1f) > 0.01f) {
+            foreach (KeyValuePair<Amount, List<Part>> pair in recipe.Results) {
+                if (recipe.Results.Count > 1 || pair.Key.min != 1 || pair.Key.max != 1 || Math.Abs(pair.Key.chance - 1f) > 0.01f) {
                     RectTransform recipeDropped = SpawnRowElement(baseUI.recipeDroppedTextPrefab, row, new Vector2(0, -25f),
                                                                   ref sizeX, out deltaX);
                     Text recipeDroppedText = recipeDropped.GetComponent<Text>();

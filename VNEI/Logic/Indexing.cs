@@ -63,7 +63,11 @@ namespace VNEI.Logic {
             DisableItems();
             IndexRecipes();
             IndexItemRecipes(pieceTables);
-            RecipeInfo.OnCalculateIsOnBlacklist?.Invoke();
+
+            foreach (RecipeInfo recipe in RecipeInfo.Recipes) {
+                recipe.CalculateIsOnBlacklist();
+            }
+
             FavouritesSave.Load();
 
             Log.LogInfo($"Loaded {GetActiveItems().Count()} items");
@@ -421,16 +425,16 @@ namespace VNEI.Logic {
         }
 
         public static void AddRecipeToItems(RecipeInfo recipeInfo) {
-            foreach (Part part in recipeInfo.ingredient.SelectMany(i => i.Value)) {
+            foreach (Part part in recipeInfo.Ingredients.SelectMany(i => i.Value)) {
                 ItemUsedInRecipe(part.item.internalName, recipeInfo);
             }
 
-            foreach (Part part in recipeInfo.result.SelectMany(i => i.Value)) {
+            foreach (Part part in recipeInfo.Results.SelectMany(i => i.Value)) {
                 ItemObtainedInRecipe(part.item.internalName, recipeInfo);
             }
 
-            if (recipeInfo.station != null) {
-                ItemUsedInRecipe(recipeInfo.station.item.internalName, recipeInfo);
+            if (recipeInfo.Station != null) {
+                ItemUsedInRecipe(recipeInfo.Station.item.internalName, recipeInfo);
             }
         }
 
