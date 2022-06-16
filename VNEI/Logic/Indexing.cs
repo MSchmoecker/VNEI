@@ -67,6 +67,7 @@ namespace VNEI.Logic {
             FavouritesSave.Load();
 
             Log.LogInfo($"Loaded {GetActiveItems().Count()} items");
+            Log.LogInfo($"Loaded {RecipeInfo.Recipes.Count} recipes");
 
             try {
                 IndexFinished?.Invoke();
