@@ -75,6 +75,10 @@ namespace VNEI.Logic {
 
         public string GetTooltip(int quality) {
             if ((bool)gameObject && gameObject.TryGetComponent(out ItemDrop itemDrop)) {
+                if (!itemDrop.m_itemData.m_dropPrefab) {
+                    itemDrop.m_itemData.m_dropPrefab = gameObject;
+                }
+
                 return ItemDrop.ItemData.GetTooltip(itemDrop.m_itemData, quality, true);
             }
 
