@@ -136,7 +136,6 @@ namespace VNEI.Logic {
                 TryAddItem<Pickable>(prefab, i => i.m_overrideName, ItemType.Undefined);
                 TryAddItem<SpawnArea>(prefab, i => fallbackLocalizedName, ItemType.Creature);
                 TryAddItem<Destructible>(prefab, i => fallbackLocalizedName, ItemType.Undefined);
-                TryAddItem<TreeLog>(prefab, i => fallbackLocalizedName, ItemType.Undefined);
                 TryAddItem<TreeBase>(prefab, i => fallbackLocalizedName, ItemType.Undefined);
                 TryAddItem<Trader>(prefab, i => i.m_name, ItemType.Undefined);
 
@@ -303,11 +302,14 @@ namespace VNEI.Logic {
                 TryAddRecipeToItems<Pickable>(prefab, i => new RecipeInfo(prefab, i));
                 TryAddRecipeToItems<SpawnArea>(prefab, i => new RecipeInfo(i));
 
-                if (prefab.TryGetComponent(out Destructible destructible) && destructible.m_spawnWhenDestroyed != null) {
-                    AddRecipeToItems(new RecipeInfo(destructible));
+                if (prefab.TryGetComponent(out Destructible destructible)) {
+                    if (destructible.m_spawnWhenDestroyed && GetItem(destructible.m_spawnWhenDestroyed.name) != null) {
+                        AddRecipeToItems(new RecipeInfo(destructible));
+                    } else if (!prefab.TryGetComponent(out DropOnDestroyed dropOnDestroyed)) {
+                        DisableItem(prefab.name, $"destructible.m_spawnWhenDestroyed is null or not indexed");
+                    }
                 }
 
-                TryAddRecipeToItems<TreeLog>(prefab, i => new RecipeInfo(i));
                 TryAddRecipeToItems<TreeBase>(prefab, i => new RecipeInfo(i));
                 TryAddRecipeToItemsForEach<Trader, Trader.TradeItem>(prefab, i => i.m_items, (t, i) => new RecipeInfo(t, i));
 

@@ -177,7 +177,12 @@ namespace VNEI.Logic {
         }
 
         public RecipeInfo(GameObject from, DropTable dropTable) : this() {
+            AddIngredient(from, Amount.One, Amount.One, 1, from.name);
             AddDropTable(from, dropTable);
+
+            if (dropTable.m_drops != null && dropTable.m_drops.Count == 0) {
+                Indexing.DisableItem(from.name, "No drops in DropTable");
+            }
         }
 
         public RecipeInfo(SpawnArea spawnArea) : this() {
@@ -192,18 +197,31 @@ namespace VNEI.Logic {
             AddResult(spawnArea.m_spawnWhenDestroyed, Amount.One, Amount.One, 1, spawnArea.name);
         }
 
-        public RecipeInfo(TreeLog treeLog) : this() {
-            for (int i = 0; i < treeLog.m_subLogPoints.Length; i++) {
-                AddResult(treeLog.m_subLogPrefab, Amount.One, Amount.One, 1, treeLog.name);
+        private void AddTreeLog(GameObject logPrefab, int depth, string name, int treeCount) {
+            if (depth > 50) {
+                Log.LogWarning($"TreeLog is recursively {name}");
+                return;
             }
 
-            AddDropTable(treeLog.gameObject, treeLog.m_dropWhenDestroyed);
+            if (logPrefab && logPrefab.TryGetComponent(out TreeLog treeLog)) {
+                if (treeLog.m_subLogPoints != null) {
+                    AddTreeLog(treeLog.m_subLogPrefab, depth + 1, name, treeLog.m_subLogPoints.Length);
+                }
+
+                AddDropTable(treeLog.gameObject, treeLog.m_dropWhenDestroyed, treeCount);
+                Indexing.DisableItem(treeLog.gameObject.name, name);
+            }
         }
 
         public RecipeInfo(TreeBase treeBase) : this() {
-            AddResult(treeBase.m_stubPrefab, Amount.One, Amount.One, 1, treeBase.name);
-            AddResult(treeBase.m_logPrefab, Amount.One, Amount.One, 1, treeBase.name);
+            AddIngredient(treeBase, Amount.One, Amount.One, 1, treeBase.name);
+            AddTreeLog(treeBase.m_logPrefab, 0, treeBase.name, 1);
             AddDropTable(treeBase.gameObject, treeBase.m_dropWhenDestroyed);
+
+            if (treeBase.m_stubPrefab && treeBase.m_stubPrefab.TryGetComponent(out DropOnDestroyed dropOnDestroyed)) {
+                AddDropTable(treeBase.gameObject, dropOnDestroyed.m_dropWhenDestroyed);
+                Indexing.DisableItem(treeBase.m_stubPrefab.name, treeBase.gameObject.name);
+            }
         }
 
         public RecipeInfo(Trader trader, Trader.TradeItem tradeItem) : this() {
@@ -217,9 +235,8 @@ namespace VNEI.Logic {
             AddResult(growup.m_grownPrefab, Amount.One, Amount.One, 1, "growup result");
         }
 
-        private void AddDropTable(GameObject from, DropTable dropTable) {
-            Amount tableCount = new Amount(dropTable.m_dropMin, dropTable.m_dropMax, dropTable.m_dropChance);
-            AddIngredient(from, Amount.One, Amount.One, 1, from.name);
+        private void AddDropTable(GameObject from, DropTable dropTable, int groupMultiplier = 1) {
+            Amount tableCount = new Amount(dropTable.m_dropMin * groupMultiplier, dropTable.m_dropMax * groupMultiplier, dropTable.m_dropChance);
 
             float totalWeight = dropTable.m_drops.Sum(i => i.m_weight);
 
