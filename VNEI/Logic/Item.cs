@@ -9,6 +9,7 @@ using UnityEngine;
 namespace VNEI.Logic {
     public class Item {
         public readonly string internalName;
+        public readonly string preLocalizedName;
         public readonly string localizedName;
         public readonly string description;
         public readonly GameObject gameObject;
@@ -18,16 +19,20 @@ namespace VNEI.Logic {
         public bool isActive = true;
         public int maxQuality;
         public bool isFavorite;
+        public bool IsKnown { get; private set; }
+        public bool IsSelfKnown { get; private set; }
         private readonly Dictionary<int, string> tooltipsCache = new Dictionary<int, string>();
 
         public readonly List<RecipeInfo> result = new List<RecipeInfo>();
         public readonly List<RecipeInfo> ingredient = new List<RecipeInfo>();
 
-        private readonly List<Tuple<Component, Action>> onFavoriteChangedListeners = new List<Tuple<Component, Action>>();
+        public readonly ComponentEvent onFavoriteChanged = new ComponentEvent();
+        public readonly ComponentEvent onKnownChanged = new ComponentEvent();
         private Sprite icon;
 
         public Item(string name, string localizeName, string description, Sprite icon, ItemType itemType, GameObject prefab, int maxQuality = 1) {
             internalName = name;
+            preLocalizedName = localizeName;
             localizedName = Localization.instance.Localize(localizeName);
             this.description = description;
             gameObject = prefab;
@@ -142,15 +147,37 @@ namespace VNEI.Logic {
             return $"internalName;PrimaryName;MappedItemType;Description;SourceModName";
         }
 
-        public void UpdateFavorite() {
-            onFavoriteChangedListeners.RemoveAll(i => i?.Item1 == null);
-            foreach (Tuple<Component, Action> listener in onFavoriteChangedListeners) {
-                listener.Item2.Invoke();
-            }
+        public void UpdateFavorite(bool favorite) {
+            isFavorite = favorite;
+            onFavoriteChanged.Invoke();
         }
 
-        public void SubscribeOnFavoriteChanged(Component target, Action updateFavorite) {
-            onFavoriteChangedListeners.Add(new Tuple<Component, Action>(target, updateFavorite));
+        public void UpdateSelfKnown() {
+            IsKnown = false;
+
+            if (Plugin.showUnknown.Value) {
+                IsSelfKnown = true;
+                return;
+            }
+
+            IsSelfKnown = Player.m_localPlayer.m_knownMaterial.Contains(preLocalizedName) || Player.m_localPlayer.m_knownStations.ContainsKey(preLocalizedName);
+        }
+
+        public void UpdateKnown() {
+            if (IsSelfKnown || Plugin.showUnknown.Value) {
+                IsKnown = true;
+                onKnownChanged.Invoke();
+                return;
+            }
+
+            if (result.Any(recipe => recipe.IsSelfKnown) || ingredient.Any(recipe => recipe.IsSelfKnown)) {
+                IsKnown = true;
+                onKnownChanged.Invoke();
+                return;
+            }
+
+            IsKnown = false;
+            onKnownChanged.Invoke();
         }
     }
 }

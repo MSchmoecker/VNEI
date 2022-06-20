@@ -84,6 +84,7 @@ namespace VNEI.Logic {
             Log.LogInfo("Index prefabs");
 
             AddItem(new Item("vnei_any_item", "$vnei_any_item", string.Empty, null, ItemType.Undefined, null));
+            AddItem(new Item("vnei_unknown_item", "$vnei_unknown_item", string.Empty, null, ItemType.Undefined, null));
 
             foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
                 if (!prefab) {

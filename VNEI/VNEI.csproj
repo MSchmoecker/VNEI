@@ -136,6 +136,7 @@
         <Compile Include="APIExample\SelectUITest.cs" />
         <Compile Include="Log.cs" />
         <Compile Include="Logic\Amount.cs" />
+        <Compile Include="Logic\ComponentEvent.cs" />
         <Compile Include="Logic\FavouritesSave.cs" />
         <Compile Include="Logic\FileWriter.cs" />
         <Compile Include="Logic\Indexing.cs" />
@@ -147,6 +148,7 @@
         <Compile Include="Logic\RecipeInfo.cs" />
         <Compile Include="Patches\InventoryGuiPatch.cs" />
         <Compile Include="Patches\ModCompat.cs" />
+        <Compile Include="Patches\KnownRecipesPatchs.cs" />
         <Compile Include="Plugin.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Include="UI\BaseUI.cs" />

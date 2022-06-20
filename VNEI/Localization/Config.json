@@ -7,5 +7,6 @@
   "ItemsVertical": "Count of visible vertical items. Determines the height of the UI. Only active when 'Attach To Crafting' is false. Can be changed while ingame.",
   "Transparency": "Transparency of the background image. Values in percent, 0 = full visible, 100 = completely transparent. Only active when 'Attach To Crafting' is false. Can be changed while ingame.",
   "AttachToCrafting": "Bind the UI to the crafting tab instead of floating free. Can be toggled while ingame.",
-  "HideGUIAtStart": "Hide the GUI at startup and use the Hotkey to open it. Only active when 'Attach To Crafting' is false."
+  "HideGUIAtStart": "Hide the GUI at startup and use the Hotkey to open it. Only active when 'Attach To Crafting' is false.",
+  "ShowUnknown": "Show unknown items."
 }

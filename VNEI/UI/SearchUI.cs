@@ -6,6 +6,7 @@ using Jotunn.Managers;
 using UnityEngine;
 using UnityEngine.UI;
 using VNEI.Logic;
+using VNEI.Patches;
 
 namespace VNEI.UI {
     public class SearchUI : MonoBehaviour {
@@ -20,13 +21,17 @@ namespace VNEI.UI {
         private bool hasInit;
         private readonly Vector2 itemSpacing = new Vector2(50f, 50f);
         private Action typeToggleOnChange;
+        private EventHandler updateKnownEventHandler;
         private int currentPage;
         private int maxPages;
 
         public void Awake() {
             hasInit = false;
             typeToggleOnChange = () => UpdateSearch(true);
+            updateKnownEventHandler = (sender, args) => UpdateKnown();
             TypeToggle.OnChange += typeToggleOnChange;
+            KnownRecipesPatchs.OnUpdateKnownRecipes += UpdateKnown;
+            Plugin.showUnknown.SettingChanged += updateKnownEventHandler;
             baseUI.RebuildedSize += RebuildCells;
 
             for (int i = 0; i < spawnRect.childCount; i++) {
@@ -106,6 +111,7 @@ namespace VNEI.UI {
                 }
             }
 
+            UpdateKnown();
             UpdateSearch(true);
         }
 
@@ -119,10 +125,11 @@ namespace VNEI.UI {
                 Parallel.ForEach(listItems, i => { i.isActive = CalculateActive(i.item, useBlacklist, searchKeys); });
             }
 
-            int totalActive = listItems.Count(i => i.isActive);
-            maxPages = Mathf.Max(Mathf.CeilToInt((float) totalActive / displayItems.Count) - 1, 0);
+            int totalActive = listItems.Count(i => i.isActive && (Plugin.showUnknown.Value || i.item.IsKnown));
+            maxPages = Mathf.Max(Mathf.CeilToInt((float)totalActive / displayItems.Count) - 1, 0);
             int displayPage = Mathf.Min(currentPage, maxPages);
-            List<ListItem> activeDisplayItems = listItems.Where(i => i.isActive)
+            List<ListItem> activeDisplayItems = listItems.Where(i => i.isActive && (Plugin.showUnknown.Value || i.item.IsKnown))
+                                                         .OrderBy(i => !i.item.IsKnown)
                                                          .Skip(displayPage * displayItems.Count)
                                                          .Take(displayItems.Count).ToList();
             pageText.text = $"{displayPage + 1}/{maxPages + 1}";
@@ -136,13 +143,34 @@ namespace VNEI.UI {
                     displayItems[i].SetItem(null, 1);
                 }
 
-                RectTransform rectTransform = (RectTransform) displayItems[i].transform;
+                RectTransform rectTransform = (RectTransform)displayItems[i].transform;
 
                 rectTransform.anchorMin = new Vector2(0f, 1f);
                 rectTransform.anchorMax = new Vector2(0f, 1f);
                 int row = i % baseUI.ItemSizeX;
                 int column = i / baseUI.ItemSizeX;
                 rectTransform.anchoredPosition = new Vector2(row + 0.5f, -column - 0.5f) * itemSpacing;
+            }
+        }
+
+        private void UpdateKnown() {
+            DateTime start = DateTime.Now;
+            foreach (ListItem listItem in listItems) {
+                listItem.item.UpdateSelfKnown();
+            }
+
+            foreach (RecipeInfo recipe in RecipeInfo.Recipes) {
+                recipe.UpdateKnown();
+            }
+
+            foreach (ListItem listItem in listItems) {
+                listItem.item.UpdateKnown();
+            }
+
+            Log.LogInfo("UpdateKnown took " + (DateTime.Now - start).TotalMilliseconds + "ms");
+
+            if (gameObject.activeSelf) {
+                UpdateSearch(true);
             }
         }
 
@@ -202,6 +230,8 @@ namespace VNEI.UI {
         private void OnDestroy() {
             TypeToggle.OnChange -= typeToggleOnChange;
             baseUI.RebuildedSize -= RebuildCells;
+            KnownRecipesPatchs.OnUpdateKnownRecipes -= UpdateKnown;
+            Plugin.showUnknown.SettingChanged -= updateKnownEventHandler;
         }
 
         private class ListItem {

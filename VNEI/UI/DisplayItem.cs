@@ -17,6 +17,9 @@ namespace VNEI.UI {
         public Text countText;
         public Text qualityText;
         private Item item;
+        private int quality;
+
+        public static Color unknownColor = new Color(0.5f, 0.5f, 0.5f, .5f);
 
         private void Awake() {
             uiTooltip.m_gamepadFocusObject = PrefabManager.Instance.GetPrefab("selected");
@@ -35,16 +38,38 @@ namespace VNEI.UI {
         }
 
         public void SetItem(Item target, int quality) {
+            if (item != null) {
+                item.onFavoriteChanged.RemoveListener(this);
+                item.onKnownChanged.RemoveListener(this);
+            }
+
             item = target;
+            this.quality = quality;
             image.gameObject.SetActive(item != null);
             UpdateFavorite();
+            UpdateIconAndTooltip();
 
             if (item != null) {
-                item.SubscribeOnFavoriteChanged(this, UpdateFavorite);
-                image.sprite = item.GetIcon();
-                uiTooltip.Set(item.GetPrimaryName(), item.GetTooltip(quality));
-                qualityText.text = item.maxQuality > 1 || quality > 1 ? $"{quality}" : "";
+                item.onFavoriteChanged.AddListener(this, UpdateFavorite);
+                item.onKnownChanged.AddListener(this, UpdateIconAndTooltip);
+            }
+        }
+
+        private void UpdateIconAndTooltip() {
+            if (item != null) {
+                if (Plugin.showUnknown.Value || item.IsKnown) {
+                    image.color = Color.white;
+                    image.sprite = item.GetIcon();
+                    uiTooltip.Set(item.GetPrimaryName(), item.GetTooltip(quality));
+                    qualityText.text = item.maxQuality > 1 || quality > 1 ? $"{quality}" : "";
+                } else {
+                    image.color = unknownColor;
+                    image.sprite = Plugin.Instance.noIconSprite;
+                    uiTooltip.Set("$vnei_unknown_item", "");
+                    qualityText.text = "";
+                }
             } else {
+                image.sprite = null;
                 uiTooltip.Set("", "");
                 qualityText.text = "";
             }
@@ -63,20 +88,26 @@ namespace VNEI.UI {
                 return;
             }
 
+            if (!(Plugin.showUnknown.Value || item.IsKnown)) {
+                return;
+            }
+
             if (baseUI.TryGetComponent(out SelectUI selectUI)) {
                 selectUI.SelectItem(item);
                 return;
             }
 
             if (IsPlayerCheating() && eventData.button == PointerEventData.InputButton.Right) {
-                if (item.gameObject.GetComponent<ItemDrop>()) {
-                    ItemDrop itemDrop = item.gameObject.GetComponent<ItemDrop>();
-                    bool isShiftKeyDown = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
-                    int stackSize = isShiftKeyDown ? itemDrop.m_itemData.m_shared.m_maxStackSize : 1;
-                    Player.m_localPlayer.PickupPrefab(item.gameObject, stackSize);
-                } else {
-                    Transform playerTransform = Player.m_localPlayer.transform;
-                    Instantiate(item.gameObject, playerTransform.position + playerTransform.forward * 2f, Quaternion.identity);
+                if (item.gameObject) {
+                    if (item.gameObject.GetComponent<ItemDrop>()) {
+                        ItemDrop itemDrop = item.gameObject.GetComponent<ItemDrop>();
+                        bool isShiftKeyDown = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+                        int stackSize = isShiftKeyDown ? itemDrop.m_itemData.m_shared.m_maxStackSize : 1;
+                        Player.m_localPlayer.PickupPrefab(item.gameObject, stackSize);
+                    } else {
+                        Transform playerTransform = Player.m_localPlayer.transform;
+                        Instantiate(item.gameObject, playerTransform.position + playerTransform.forward * 2f, Quaternion.identity);
+                    }
                 }
             } else {
                 baseUI.recipeUi.SetItem(item);

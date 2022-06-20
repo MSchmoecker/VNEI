@@ -13,6 +13,40 @@ namespace VNEI.Logic {
 
         public static List<RecipeInfo> Recipes { get; private set; } = new List<RecipeInfo>();
 
+        public bool IsSelfKnown { get; private set; }
+
+        public void UpdateKnown() {
+            IsSelfKnown = CalcSelfKnown();
+        }
+
+        private static bool AnySelfKnown(Dictionary<Amount, List<Part>> list) {
+            return list.Where(pair => pair.Key.max != 0 && pair.Value != null).Any(pair => pair.Value.Any(part => part.item.IsSelfKnown));
+        }
+
+        private static bool AllSelfKnown(Dictionary<Amount, List<Part>> list) {
+            return list.Where(pair => pair.Key.max != 0 && pair.Value != null).All(pair => pair.Value.All(part => part.item.IsSelfKnown));
+        }
+
+        private bool CalcSelfKnown() {
+            if (Plugin.showUnknown.Value) {
+                return true;
+            }
+
+            if (Station != null && !Station.item.IsSelfKnown) {
+                return false;
+            }
+
+            if (AllSelfKnown(Ingredients)) {
+                return true;
+            }
+
+            if (AllSelfKnown(Results)) {
+                return true;
+            }
+
+            return false;
+        }
+
         public void AddIngredient(string name, Amount groupAmount, Amount count, int quality) {
             Item item = Indexing.GetItem(name);
 

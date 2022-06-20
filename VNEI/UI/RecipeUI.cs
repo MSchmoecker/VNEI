@@ -87,8 +87,7 @@ namespace VNEI.UI {
         }
 
         public void ToggleFavorite() {
-            currentItem.isFavorite = !currentItem.isFavorite;
-            currentItem.UpdateFavorite();
+            currentItem.UpdateFavorite(!currentItem.isFavorite);
             UpdateFavoriteButton();
             FavouritesSave.Save();
         }
@@ -192,8 +191,7 @@ namespace VNEI.UI {
             displayItem.SetCount(part.amount.ToString());
         }
 
-        private static RectTransform SpawnRowElement(GameObject prefab, Transform parent, Vector2 relPos, ref float posX,
-            out float deltaX) {
+        private static RectTransform SpawnRowElement(GameObject prefab, Transform parent, Vector2 relPos, ref float posX, out float deltaX) {
             GameObject spawned = Instantiate(prefab, parent);
             RectTransform rectTransform = (RectTransform)spawned.transform;
 
