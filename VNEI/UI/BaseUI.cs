@@ -25,8 +25,10 @@ namespace VNEI.UI {
 
         private List<DisplayItem> lastViewedDisplayItems = new List<DisplayItem>();
         private List<DisplayItem> favoriteItemsDisplayItems = new List<DisplayItem>();
+
         private List<Item> lastViewedItems = new List<Item>();
         // private List<Item> favoriteItems = new List<Item>();
+
         private bool blockInput;
         private bool sizeDirty;
         [HideInInspector] public List<TypeToggle> typeToggles = new List<TypeToggle>();
@@ -151,19 +153,14 @@ namespace VNEI.UI {
             root.anchoredPosition = dragHandler.anchoredPosition;
         }
 
-        private void HideAll() {
-            searchUi.gameObject.SetActive(false);
-            recipeUi.gameObject.SetActive(false);
-        }
-
         public void ShowSearch() {
-            HideAll();
+            recipeUi.gameObject.SetActive(false);
             searchUi.gameObject.SetActive(true);
         }
 
         public void ShowRecipe() {
-            HideAll();
             recipeUi.gameObject.SetActive(true);
+            searchUi.gameObject.SetActive(false);
         }
 
         private void AddItemToLastViewedQueue(Item item) {
