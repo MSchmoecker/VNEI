@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using BepInEx;
 using BepInEx.Bootstrap;
 using Jotunn.Managers;
@@ -17,6 +18,7 @@ namespace VNEI.Logic {
         public bool isActive = true;
         public int maxQuality;
         public bool isFavorite;
+        private readonly Dictionary<int, string> tooltipsCache = new Dictionary<int, string>();
 
         public readonly List<RecipeInfo> result = new List<RecipeInfo>();
         public readonly List<RecipeInfo> ingredient = new List<RecipeInfo>();
@@ -24,8 +26,7 @@ namespace VNEI.Logic {
         private readonly List<Tuple<Component, Action>> onFavoriteChangedListeners = new List<Tuple<Component, Action>>();
         private Sprite icon;
 
-        public Item(string name, string localizeName, string description, Sprite icon, ItemType itemType,
-            GameObject prefab, int maxQuality = 1) {
+        public Item(string name, string localizeName, string description, Sprite icon, ItemType itemType, GameObject prefab, int maxQuality = 1) {
             internalName = name;
             localizedName = Localization.instance.Localize(localizeName);
             this.description = description;
@@ -74,6 +75,16 @@ namespace VNEI.Logic {
         }
 
         public string GetTooltip(int quality) {
+            if (tooltipsCache.TryGetValue(quality, out string tooltip)) {
+                return tooltip;
+            }
+
+            tooltip = GenerateTooltip(quality);
+            tooltipsCache.Add(quality, tooltip);
+            return tooltip;
+        }
+
+        private string GenerateTooltip(int quality) {
             if ((bool)gameObject && gameObject.TryGetComponent(out ItemDrop itemDrop)) {
                 if (!itemDrop.m_itemData.m_dropPrefab) {
                     itemDrop.m_itemData.m_dropPrefab = gameObject;
