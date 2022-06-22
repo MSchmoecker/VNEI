@@ -55,6 +55,8 @@ namespace VNEI.Logic {
                 return;
             }
 
+            Log.LogInfo("Index items and recipes");
+
             ModNames.IndexModNames();
 
             Dictionary<string, PieceTable> pieceTables = new Dictionary<string, PieceTable>();
@@ -70,8 +72,7 @@ namespace VNEI.Logic {
 
             FavouritesSave.Load();
 
-            Log.LogInfo($"Loaded {GetActiveItems().Count()} items");
-            Log.LogInfo($"Loaded {RecipeInfo.Recipes.Count} recipes");
+            Log.LogInfo($"Loaded {GetActiveItems().Count()} items and {RecipeInfo.Recipes.Count} recipes");
 
             try {
                 IndexFinished?.Invoke();
@@ -81,8 +82,6 @@ namespace VNEI.Logic {
         }
 
         private static void IndexItems(Dictionary<string, PieceTable> pieceTables) {
-            Log.LogInfo("Index prefabs");
-
             AddItem(new Item("vnei_any_item", "$vnei_any_item", string.Empty, null, ItemType.Undefined, null));
             AddItem(new Item("vnei_unknown_item", "$vnei_unknown_item", string.Empty, null, ItemType.Undefined, null));
 
@@ -223,7 +222,6 @@ namespace VNEI.Logic {
         }
 
         private static void IndexRecipes() {
-            Log.LogInfo($"Index recipes");
             foreach (Recipe recipe in ObjectDB.instance.m_recipes) {
                 if (!recipe.m_enabled) {
                     Log.LogDebug($"skipping {recipe.name}: not enabled");
@@ -248,8 +246,6 @@ namespace VNEI.Logic {
         }
 
         private static void IndexItemRecipes(Dictionary<string, PieceTable> pieceTables) {
-            Log.LogInfo("Index prefabs recipes");
-
             foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
                 if (!prefab) {
                     Log.LogDebug("IndexItemRecipes: prefab is null!");

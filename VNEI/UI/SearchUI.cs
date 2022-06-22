@@ -154,7 +154,6 @@ namespace VNEI.UI {
         }
 
         private void UpdateKnown() {
-            DateTime start = DateTime.Now;
             foreach (ListItem listItem in listItems) {
                 listItem.item.UpdateSelfKnown();
             }
@@ -166,8 +165,6 @@ namespace VNEI.UI {
             foreach (ListItem listItem in listItems) {
                 listItem.item.UpdateKnown();
             }
-
-            Log.LogInfo("UpdateKnown took " + (DateTime.Now - start).TotalMilliseconds + "ms");
 
             if (gameObject.activeSelf) {
                 UpdateSearch(true);
