@@ -61,6 +61,11 @@ namespace VNEI.UI {
             ShowSearch();
 
             Styling.ApplyAllComponents(root);
+
+            foreach (Text text in root.GetComponentsInChildren<Text>(true)) {
+                text.text = Localization.instance.Localize(text.text);
+            }
+
             GUIManager.Instance.ApplyWoodpanelStyle(dragHandler);
             UpdateTransparency(null, EventArgs.Empty);
             Plugin.transparency.SettingChanged += UpdateTransparency;

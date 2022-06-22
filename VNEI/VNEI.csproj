@@ -155,7 +155,9 @@
         <Compile Include="UI\MainVneiHandler.cs" />
         <Compile Include="UI\DisplayItem.cs" />
         <Compile Include="UI\MainVneiHandlerAuga.cs" />
+        <Compile Include="UI\RecipeScroll.cs" />
         <Compile Include="UI\RecipeUI.cs" />
+        <Compile Include="UI\RecipeView.cs" />
         <Compile Include="UI\ScrollHandler.cs" />
         <Compile Include="UI\SearchUI.cs" />
         <Compile Include="UI\SelectUI.cs" />
