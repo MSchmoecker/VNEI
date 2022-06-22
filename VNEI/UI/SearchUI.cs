@@ -117,12 +117,9 @@ namespace VNEI.UI {
 
         public void UpdateSearch(bool recalculateActive) {
             baseUI.ShowSearch();
-            bool useBlacklist = Plugin.useBlacklist.Value;
-
-            string[] searchKeys = searchField.text.Split();
 
             if (recalculateActive) {
-                Parallel.ForEach(listItems, i => { i.isActive = CalculateActive(i.item, useBlacklist, searchKeys); });
+                RecalculateActive();
             }
 
             int totalActive = listItems.Count(i => i.isActive && (Plugin.showUnknown.Value || i.item.IsKnown));
@@ -151,6 +148,13 @@ namespace VNEI.UI {
                 int column = i / baseUI.ItemSizeX;
                 rectTransform.anchoredPosition = new Vector2(row + 0.5f, -column - 0.5f) * itemSpacing;
             }
+        }
+
+        private void RecalculateActive() {
+            bool useBlacklist = Plugin.useBlacklist.Value;
+            string[] searchKeys = searchField.text.Split();
+
+            Parallel.ForEach(listItems, i => { i.isActive = CalculateActive(i.item, useBlacklist, searchKeys); });
         }
 
         private void UpdateKnown() {
