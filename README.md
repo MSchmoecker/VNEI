@@ -19,19 +19,31 @@ This is a client side mod and not everyone has to use it if you are playing in m
 If items or recipes from other mods are missing, please contact me.
 
 ## Controls and settings
+### BepInEx config
 The config file is generated at `BepInEx/config/com.maxsch.valheim.vnei.cfg` after the first launch, see there for detailed information.
 
 - Recipes
   - Fix Cultivate Plants
   - Use Item Blacklist
+  - Show Only Known
 - UI
   - Invert Scroll
+  - Attach To Crafting
+  - Hide GUI At Start
   - Open UI Hotkey
   - Items Horizontal
   - Items Vertical
   - Background Transparency
 
+### Item Blacklist
+Items can be blacklisted at `BepInEx/config/com.maxsch.valheim.vnei.blacklist.txt`.
+The internal item name has to be used, one name on every line.
+If an item is blacklisted it will not show up in the search and recipes using it will be disabled.
+Requires a restart to take effect.
+
+### Cheating
 If devcommands are enabled, items can be right clicked to spawn them.
+This is only possible at a local game or when the user is an admin at a server.
 Shift + RightClick spawns a whole stack.
 
 ## Ingame Commands
@@ -59,6 +71,15 @@ See more [here](https://github.com/MSchmoecker/VNEI/blob/master/API.md).
 - Discord: Margmas#9562
 
 ## Changelog
+0.7.0
+- Added possibility to favorite items
+- Added option to only show items that are known by the player
+- Added option to switch switch between split/only optaining/only using view of recipes
+- Added external blacklist for items
+- Fixed a tooltip was not showing for Jewelcrafting gem items
+- Fixed items could be spawned even if the player is no admin
+- Improved recipe calculation of trees, intermediate prefabs are not shown
+
 0.6.5
 - fixed tab button was not correctly working together with Jewelcrafting
 
