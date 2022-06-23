@@ -19,7 +19,9 @@ namespace VNEI.Logic {
         public bool isActive = true;
         public int maxQuality;
         public bool isFavorite;
-        public bool IsKnown { get; private set; }
+
+        private bool isKnown;
+        public bool IsKnown => isKnown || !Plugin.showOnlyKnown.Value;
         public bool IsSelfKnown { get; private set; }
         private readonly Dictionary<int, string> tooltipsCache = new Dictionary<int, string>();
 
@@ -152,9 +154,9 @@ namespace VNEI.Logic {
         }
 
         public void UpdateSelfKnown() {
-            IsKnown = false;
+            isKnown = false;
 
-            if (Plugin.showUnknown.Value) {
+            if (!Plugin.showOnlyKnown.Value) {
                 IsSelfKnown = true;
                 return;
             }
@@ -163,19 +165,19 @@ namespace VNEI.Logic {
         }
 
         public void UpdateKnown() {
-            if (IsSelfKnown || Plugin.showUnknown.Value) {
-                IsKnown = true;
+            if (IsSelfKnown) {
+                isKnown = true;
                 onKnownChanged.Invoke();
                 return;
             }
 
             if (result.Any(recipe => recipe.IsSelfKnown) || ingredient.Any(recipe => recipe.IsSelfKnown)) {
-                IsKnown = true;
+                isKnown = true;
                 onKnownChanged.Invoke();
                 return;
             }
 
-            IsKnown = false;
+            isKnown = false;
             onKnownChanged.Invoke();
         }
     }

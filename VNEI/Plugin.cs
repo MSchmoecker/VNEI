@@ -37,7 +37,7 @@ namespace VNEI {
         public static ConfigEntry<int> columnCount;
         public static ConfigEntry<int> transparency;
         public static ConfigEntry<KeyboardShortcut> openHotkey;
-        public static ConfigEntry<bool> showUnknown;
+        public static ConfigEntry<bool> showOnlyKnown;
 
         public static bool isUiOpen = true;
         public static event Action OnOpenHotkey;
@@ -64,7 +64,7 @@ namespace VNEI {
             useBlacklist = Config.Bind("General", "Use Item Blacklist", true, new ConfigDescription(config["UseItemBlacklist"]));
             invertScroll = Config.Bind("General", "Invert Scroll", false, new ConfigDescription(config["InvertScroll"]));
 
-            showUnknown = Config.Bind("General", "Show Unknown", true, new ConfigDescription(config["ShowUnknown"]));
+            showOnlyKnown = Config.Bind("General", "Show Only Known", false, new ConfigDescription(config["ShowOnlyKnown"]));
 
             // Hotkeys
             openHotkey = Config.Bind("Hotkeys", "Open UI Hotkey", new KeyboardShortcut(KeyCode.H, KeyCode.LeftAlt), config["OpenUIHotkey"]);

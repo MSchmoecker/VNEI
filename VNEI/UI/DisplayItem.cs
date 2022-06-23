@@ -57,7 +57,7 @@ namespace VNEI.UI {
 
         private void UpdateIconAndTooltip() {
             if (item != null) {
-                if (Plugin.showUnknown.Value || item.IsKnown) {
+                if (item.IsKnown) {
                     image.color = Color.white;
                     image.sprite = item.GetIcon();
                     uiTooltip.Set(item.GetPrimaryName(), item.GetTooltip(quality));
@@ -88,7 +88,7 @@ namespace VNEI.UI {
                 return;
             }
 
-            if (!(Plugin.showUnknown.Value || item.IsKnown)) {
+            if (!item.IsKnown) {
                 return;
             }
 

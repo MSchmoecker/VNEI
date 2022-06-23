@@ -31,7 +31,7 @@ namespace VNEI.UI {
             updateKnownEventHandler = (sender, args) => UpdateKnown();
             TypeToggle.OnChange += typeToggleOnChange;
             KnownRecipesPatchs.OnUpdateKnownRecipes += UpdateKnown;
-            Plugin.showUnknown.SettingChanged += updateKnownEventHandler;
+            Plugin.showOnlyKnown.SettingChanged += updateKnownEventHandler;
             baseUI.RebuildedSize += RebuildCells;
 
             for (int i = 0; i < spawnRect.childCount; i++) {
@@ -122,10 +122,10 @@ namespace VNEI.UI {
                 RecalculateActive();
             }
 
-            int totalActive = listItems.Count(i => i.isActive && (Plugin.showUnknown.Value || i.item.IsKnown));
+            int totalActive = listItems.Count(i => i.isActive && i.item.IsKnown);
             maxPages = Mathf.Max(Mathf.CeilToInt((float)totalActive / displayItems.Count) - 1, 0);
             int displayPage = Mathf.Min(currentPage, maxPages);
-            List<ListItem> activeDisplayItems = listItems.Where(i => i.isActive && (Plugin.showUnknown.Value || i.item.IsKnown))
+            List<ListItem> activeDisplayItems = listItems.Where(i => i.isActive && i.item.IsKnown)
                                                          .OrderBy(i => !i.item.IsKnown)
                                                          .Skip(displayPage * displayItems.Count)
                                                          .Take(displayItems.Count).ToList();
@@ -232,7 +232,7 @@ namespace VNEI.UI {
             TypeToggle.OnChange -= typeToggleOnChange;
             baseUI.RebuildedSize -= RebuildCells;
             KnownRecipesPatchs.OnUpdateKnownRecipes -= UpdateKnown;
-            Plugin.showUnknown.SettingChanged -= updateKnownEventHandler;
+            Plugin.showOnlyKnown.SettingChanged -= updateKnownEventHandler;
         }
 
         private class ListItem {
