@@ -36,8 +36,7 @@ namespace VNEI.Logic {
             localizedName = Localization.instance.Localize(localizeName);
             this.description = description;
             gameObject = prefab;
-            isOnBlacklist = Plugin.ItemBlacklist.Contains(name) ||
-                            Plugin.ItemBlacklist.Contains(Indexing.CleanupName(name));
+            isOnBlacklist = Plugin.IsItemBlacklisted(this);
             this.itemType = itemType;
             this.maxQuality = maxQuality;
 

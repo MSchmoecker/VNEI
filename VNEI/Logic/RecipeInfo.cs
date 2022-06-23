@@ -104,12 +104,12 @@ namespace VNEI.Logic {
         }
 
         public void CalculateIsOnBlacklist() {
-            if (Ingredients.SelectMany(i => i.Value).Any(i => Plugin.ItemBlacklist.Contains(i.item.internalName))) {
+            if (Ingredients.SelectMany(i => i.Value).Any(i => i.item.isOnBlacklist)) {
                 IsOnBlacklist = true;
                 return;
             }
 
-            if (Results.SelectMany(i => i.Value).Any(i => Plugin.ItemBlacklist.Contains(i.item.internalName))) {
+            if (Results.SelectMany(i => i.Value).Any(i => i.item.isOnBlacklist)) {
                 IsOnBlacklist = true;
             }
         }

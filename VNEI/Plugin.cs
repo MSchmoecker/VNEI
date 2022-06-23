@@ -26,7 +26,7 @@ namespace VNEI {
         public const string ModVersion = "0.6.5";
         public static Plugin Instance { get; private set; }
         public static AssetBundle AssetBundle { get; private set; }
-        public static HashSet<string> ItemBlacklist { get; private set; } = new HashSet<string>();
+        private static HashSet<string> ItemBlacklist { get; set; } = new HashSet<string>();
 
         public static ConfigEntry<bool> fixPlants;
         public static ConfigEntry<bool> useBlacklist;
@@ -94,9 +94,7 @@ namespace VNEI {
 
             LocalizationManager.Instance.AddLocalization(localization);
 
-            // load embedded blacklist
-            string blacklistJson = AssetUtils.LoadTextFromResources("ItemBlacklist.json", Assembly.GetExecutingAssembly());
-            ItemBlacklist = SimpleJson.SimpleJson.DeserializeObject<List<string>>(blacklistJson).ToHashSet();
+            LoadBlacklist();
 
             noIconSprite = AssetBundle.LoadAsset<Sprite>("NoSprite.png");
             starSprite = AssetBundle.LoadAsset<Sprite>("Star.png");
@@ -115,6 +113,28 @@ namespace VNEI {
             PrefabManager.OnVanillaPrefabsAvailable += ApplyMocks;
 
             ModQuery.Enable();
+        }
+
+        private static void LoadBlacklist() {
+            // load embedded blacklist
+            string blacklistJson = AssetUtils.LoadTextFromResources("ItemBlacklist.json", Assembly.GetExecutingAssembly());
+            ItemBlacklist = SimpleJson.SimpleJson.DeserializeObject<List<string>>(blacklistJson).ToHashSet();
+
+            // load user blacklist
+            string externalBlacklist = Path.Combine(BepInEx.Paths.ConfigPath, $"{ModGuid}.blacklist.txt");
+
+            if (!File.Exists(externalBlacklist)) {
+                File.WriteAllText(externalBlacklist, "");
+                return;
+            }
+
+            foreach (string line in File.ReadAllLines(externalBlacklist)) {
+                if (string.IsNullOrEmpty(line) || ItemBlacklist.Contains(line)) {
+                    continue;
+                }
+
+                ItemBlacklist.Add(line);
+            }
         }
 
         private void Start() {
@@ -141,6 +161,10 @@ namespace VNEI {
             displayItemTemplate.FixReferences(true);
 
             PrefabManager.OnVanillaPrefabsAvailable -= ApplyMocks;
+        }
+
+        public static bool IsItemBlacklisted(Item item) {
+            return ItemBlacklist.Contains(item.internalName) || ItemBlacklist.Contains(Indexing.CleanupName(item.internalName));
         }
     }
 }
