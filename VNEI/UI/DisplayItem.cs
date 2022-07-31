@@ -80,7 +80,7 @@ namespace VNEI.UI {
         }
 
         public static bool IsPlayerCheating() {
-            return Player.m_localPlayer && SynchronizationManager.Instance.PlayerIsAdmin;
+            return Player.m_localPlayer && SynchronizationManager.Instance.PlayerIsAdmin && Terminal.m_cheat;
         }
 
         public void OnPointerClick(PointerEventData eventData) {
