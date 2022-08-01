@@ -22,18 +22,12 @@ If items or recipes from other mods are missing, please contact me.
 ### BepInEx config
 The config file is generated at `BepInEx/config/com.maxsch.valheim.vnei.cfg` after the first launch, see there for detailed information.
 
-- Recipes
-  - Fix Cultivate Plants
-  - Use Item Blacklist
-  - Show Only Known
-- UI
-  - Invert Scroll
-  - Attach To Crafting
-  - Hide GUI At Start
-  - Open UI Hotkey
-  - Items Horizontal
-  - Items Vertical
-  - Background Transparency
+Interesting configs:\
+Show Only Known: Hide unknown items and recipes to discover them while playing the game
+
+### Shortcuts
+Press 'R' to view a recipe of an item while hovering over it.
+Works in the inventory, too.
 
 ### Item Blacklist
 Items can be blacklisted at `BepInEx/config/com.maxsch.valheim.vnei.blacklist.txt`.
@@ -71,13 +65,20 @@ See more [here](https://github.com/MSchmoecker/VNEI/blob/master/API.md).
 - Discord: Margmas#9562
 
 ## Changelog
+0.7.1
+- Added shortcut to quickly view recipes, hover over an item an press 'R'. Works in the inventory, too
+- Added German translation
+- Added needed crafting stations to piece recipes
+- Fixed cheat was always enabled, regardless of devcommands (still only for admins)
+- Changed cheating of pieces will spawn the resources in the player's inventory instead of spawning them in the world. Disabled spawning of items that are neither items or pieces.
+
 0.7.0
 - Added possibility to favorite items
 - Added option to only show items that are known by the player
 - Added option to switch switch between split/only optaining/only using view of recipes
 - Added external blacklist for items
 - Fixed a tooltip was not showing for Jewelcrafting gem items
-- Fixed items could be spawned even if the player is no admin
+- Fixed cheat were enabled even if the player is no admin
 - Improved recipe calculation of trees, intermediate prefabs are not shown
 
 0.6.5
