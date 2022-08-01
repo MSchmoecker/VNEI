@@ -93,6 +93,7 @@ namespace VNEI.Logic {
                     continue;
                 }
 
+                string prefabName = prefab.name;
                 string fallbackLocalizedName = string.Empty;
 
                 if (prefab.TryGetComponent(out HoverText hoverText)) {
@@ -100,7 +101,7 @@ namespace VNEI.Logic {
                 }
 
                 // Treasure Chests are the only none-buildable prefabs that needs to be indexed
-                if (prefab.name.StartsWith("TreasureChest")) {
+                if (prefabName.StartsWith("TreasureChest")) {
                     TryAddItem<Piece>(prefab, i => i.m_name, ItemType.Piece, i => i.m_description, i => i.m_icon);
                 }
 
@@ -123,7 +124,7 @@ namespace VNEI.Logic {
 
                     // add pieces here as it is guaranteed they are buildable
                     if ((bool)itemData.m_shared.m_buildPieces) {
-                        pieceTables.Add(CleanupName(prefab.name), itemData.m_shared.m_buildPieces);
+                        pieceTables.Add(CleanupName(prefabName), itemData.m_shared.m_buildPieces);
 
                         foreach (GameObject buildPiece in itemData.m_shared.m_buildPieces.m_pieces) {
                             TryAddItem<Piece>(buildPiece, i => i.m_name, ItemType.Piece, i => i.m_description, i => i.m_icon);
@@ -442,8 +443,8 @@ namespace VNEI.Logic {
                 ItemObtainedInRecipe(part.item.internalName, recipeInfo);
             }
 
-            if (recipeInfo.Station != null) {
-                ItemUsedInRecipe(recipeInfo.Station.item.internalName, recipeInfo);
+            foreach (Part station in recipeInfo.Stations) {
+                ItemUsedInRecipe(station.item.internalName, recipeInfo);
             }
         }
 

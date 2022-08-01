@@ -8,7 +8,7 @@ namespace VNEI.Logic {
     public class RecipeInfo {
         public Dictionary<Amount, List<Part>> Ingredients { get; private set; } = new Dictionary<Amount, List<Part>>();
         public Dictionary<Amount, List<Part>> Results { get; private set; } = new Dictionary<Amount, List<Part>>();
-        public Part Station { get; private set; }
+        public List<Part> Stations { get; private set; } = new List<Part>();
         public bool IsOnBlacklist { get; private set; }
 
         public static List<RecipeInfo> Recipes { get; private set; } = new List<RecipeInfo>();
@@ -32,7 +32,7 @@ namespace VNEI.Logic {
                 return true;
             }
 
-            if (Station != null && !Station.item.IsSelfKnown) {
+            if (Stations.Any(s => !s.item.IsSelfKnown)) {
                 return false;
             }
 
@@ -87,17 +87,17 @@ namespace VNEI.Logic {
             }
         }
 
-        public void SetStation(string name, int level) {
+        public void AddStation(string name, int level) {
             Item item = Indexing.GetItem(name);
 
             if (item != null) {
-                Station = new Part(item, new Amount(1), level);
+                Stations.Add(new Part(item, new Amount(1), level));
             }
         }
 
-        public void SetStation<T>(T target, int level) where T : Object {
+        public void AddStation<T>(T target, int level) where T : Object {
             if (target != null) {
-                SetStation(target.name, level);
+                AddStation(target.name, level);
             } else {
                 Log.LogDebug($"cannot set station: is null");
             }
@@ -120,7 +120,7 @@ namespace VNEI.Logic {
 
         public RecipeInfo(Recipe recipe, int quality) : this() {
             if (recipe.GetRequiredStation(quality) != null) {
-                SetStation(recipe.GetRequiredStation(quality), recipe.GetRequiredStationLevel(quality));
+                AddStation(recipe.GetRequiredStation(quality), recipe.GetRequiredStationLevel(quality));
             }
 
             AddResult(recipe.m_item, Amount.One, new Amount(recipe.m_amount), quality, recipe.name);
@@ -140,7 +140,7 @@ namespace VNEI.Logic {
         }
 
         public RecipeInfo(Smelter.ItemConversion conversion, Smelter smelter) : this() {
-            SetStation(smelter, 1);
+            AddStation(smelter, 1);
             AddIngredient(conversion.m_from, Amount.One, Amount.One, 1, smelter.name);
 
             if ((bool)smelter.m_fuelItem) {
@@ -151,25 +151,25 @@ namespace VNEI.Logic {
         }
 
         public RecipeInfo(Fermenter.ItemConversion conversion, Fermenter fermenter) : this() {
-            SetStation(fermenter, 1);
+            AddStation(fermenter, 1);
             AddIngredient(conversion.m_from, Amount.One, Amount.One, 1, fermenter.name);
             AddResult(conversion.m_to, Amount.One, new Amount(conversion.m_producedItems), 1, fermenter.name);
         }
 
         public RecipeInfo(CookingStation.ItemConversion conversion, CookingStation cookingStation) : this() {
-            SetStation(cookingStation, 1);
+            AddStation(cookingStation, 1);
             AddIngredient(conversion.m_from, Amount.One, Amount.One, 1, cookingStation.name);
             AddResult(conversion.m_to, Amount.One, Amount.One, 1, cookingStation.name);
         }
 
         public RecipeInfo(Incinerator incinerator) : this() {
-            SetStation(incinerator, 1);
+            AddStation(incinerator, 1);
             AddResult(incinerator.m_defaultResult, Amount.One, Amount.One, 1, incinerator.name);
             AddIngredient("vnei_any_item", Amount.One, new Amount(incinerator.m_defaultCost), 1);
         }
 
         public RecipeInfo(Incinerator.IncineratorConversion conversion, Incinerator incinerator) : this() {
-            SetStation(incinerator, 1);
+            AddStation(incinerator, 1);
             AddResult(conversion.m_result, Amount.One, new Amount(conversion.m_resultAmount), 1, incinerator.name);
             foreach (Incinerator.Requirement requirement in conversion.m_requirements) {
                 AddIngredient(requirement.m_resItem, Amount.One, new Amount(requirement.m_amount), 1, incinerator.name);
@@ -177,7 +177,7 @@ namespace VNEI.Logic {
         }
 
         public RecipeInfo(Incinerator.IncineratorConversion conversion, Incinerator.Requirement requirement, Incinerator incinerator) : this() {
-            SetStation(incinerator, 1);
+            AddStation(incinerator, 1);
             AddResult(conversion.m_result, Amount.One, new Amount(conversion.m_resultAmount), 1, incinerator.name);
             AddIngredient(requirement.m_resItem, Amount.One, new Amount(requirement.m_amount), 1, incinerator.name);
         }
@@ -193,7 +193,12 @@ namespace VNEI.Logic {
         }
 
         public RecipeInfo(GameObject prefab, Piece piece, Item crafter) : this() {
-            Station = new Part(crafter, new Amount(1), 1);
+            Stations.Add(new Part(crafter, new Amount(1), 1));
+
+            if (piece.m_craftingStation) {
+                Stations.Add(new Part(Indexing.GetItem(piece.m_craftingStation.m_name), new Amount(1), 1));
+            }
+
             AddResult(prefab, Amount.One, Amount.One, 1, prefab.name);
 
             foreach (Piece.Requirement requirement in piece.m_resources) {
@@ -201,12 +206,12 @@ namespace VNEI.Logic {
             }
         }
 
-        public RecipeInfo(GameObject piece, Pickable pickable) : this() {
-            AddIngredient(piece, Amount.One, Amount.One, 1, piece.name);
+        public RecipeInfo(GameObject prefab, Pickable pickable) : this() {
+            AddIngredient(prefab, Amount.One, Amount.One, 1, prefab.name);
             AddResult(pickable.m_itemPrefab, Amount.One, new Amount(pickable.m_amount), 1, pickable.name);
 
             if (pickable.m_extraDrops != null && pickable.m_extraDrops.m_drops.Count > 0) {
-                AddDropTable(piece, pickable.m_extraDrops);
+                AddDropTable(prefab, pickable.m_extraDrops);
             }
         }
 
@@ -259,7 +264,7 @@ namespace VNEI.Logic {
         }
 
         public RecipeInfo(Trader trader, Trader.TradeItem tradeItem) : this() {
-            SetStation(trader, 1);
+            AddStation(trader, 1);
             AddIngredient(StoreGui.instance.m_coinPrefab, Amount.One, new Amount(tradeItem.m_price), 1, trader.name);
             AddResult(tradeItem.m_prefab, Amount.One, new Amount(tradeItem.m_stack), 1, trader.name);
         }

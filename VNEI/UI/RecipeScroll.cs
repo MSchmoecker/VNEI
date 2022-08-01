@@ -67,7 +67,7 @@ namespace VNEI.UI {
             objects.Add(row);
 
             float sizeX = 25;
-            float deltaX;
+            float deltaX = 0;
 
             foreach (KeyValuePair<Amount, List<Part>> pair in recipe.Ingredients) {
                 if (recipe.Ingredients.Count > 1 || pair.Key.min != 1 || pair.Key.max != 1 || Math.Abs(pair.Key.chance - 1f) > 0.01f) {
@@ -83,19 +83,22 @@ namespace VNEI.UI {
                 }
             }
 
-            if (recipe.Station == null) {
+            if (recipe.Stations.Count == 0) {
                 SpawnRowElement(baseUI.arrowPrefab, row, new Vector2(-15f, -25f), ref sizeX, out deltaX);
             } else {
                 float tmp = sizeX;
                 SpawnRowElement(baseUI.arrowPrefab, row, new Vector2(-5f, -15f), ref tmp, out _);
-                tmp = sizeX;
-                RectTransform spawned = SpawnRowElement(baseUI.itemPrefab, row, new Vector2(-5f, -40f), ref tmp, out _);
-                spawned.sizeDelta = new Vector2(30f, 30f);
-                deltaX = 40f;
-                sizeX += deltaX;
-                DisplayItem displayItem = spawned.GetComponent<DisplayItem>();
-                displayItem.Init(baseUI);
-                displayItem.SetItem(recipe.Station.item, recipe.Station.quality);
+
+                foreach (Part station in recipe.Stations) {
+                    RectTransform spawned = SpawnRowElement(baseUI.itemPrefab, row, new Vector2(-5f, -40f), ref sizeX, out _);
+                    sizeX -= 15f;
+                    spawned.sizeDelta = new Vector2(30f, 30f);
+                    DisplayItem displayItem = spawned.GetComponent<DisplayItem>();
+                    displayItem.Init(baseUI);
+                    displayItem.SetItem(station.item, station.quality);
+                }
+
+                sizeX += 5f;
             }
 
             foreach (KeyValuePair<Amount, List<Part>> pair in recipe.Results) {
