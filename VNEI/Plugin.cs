@@ -92,7 +92,9 @@ namespace VNEI {
 
             // load embedded localisation
             string englishJson = AssetUtils.LoadTextFromResources("Localization.English.json", Assembly.GetExecutingAssembly());
+            string germanJson = AssetUtils.LoadTextFromResources("Localization.German.json", Assembly.GetExecutingAssembly());
             localization.AddJsonFile("English", englishJson);
+            localization.AddJsonFile("German", germanJson);
 
             LocalizationManager.Instance.AddLocalization(localization);
 

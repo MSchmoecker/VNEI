@@ -170,6 +170,7 @@
         <None Include="packages.config" />
     </ItemGroup>
     <ItemGroup>
+      <EmbeddedResource Include="Localization\German.json" />
       <EmbeddedResource Include="VNEI_AssetBundle" />
     </ItemGroup>
     <ItemGroup>
