@@ -38,7 +38,7 @@ namespace VNEI.Logic {
 
         public static void Save() {
             using (StreamWriter file = File.CreateText(GetFavouritesFilePath())) {
-                foreach (KeyValuePair<int, Item> pair in Indexing.GetActiveItems()) {
+                foreach (KeyValuePair<string, Item> pair in Indexing.GetActiveItems()) {
                     if (pair.Value.isFavorite) {
                         file.WriteLine(pair.Value.internalName);
                     }

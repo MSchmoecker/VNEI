@@ -93,7 +93,7 @@ namespace VNEI.UI {
         }
 
         public void UpdateOtherTabs() {
-            otherButtons.RemoveAll(i => i == null);
+            otherButtons.RemoveAll(i => !i);
 
             foreach (Button tab in InventoryGui.instance.m_tabCraft.transform.parent.GetComponentsInChildren<Button>()) {
                 if (tab == GetOrCreateVneiTabButton()) {

@@ -48,7 +48,9 @@ namespace VNEI.Logic {
 
         public static event Action IndexFinished;
 
-        private static Dictionary<int, Item> Items { get; } = new Dictionary<int, Item>();
+        private static Dictionary<string, Item> Items { get; } = new Dictionary<string, Item>();
+        private static Dictionary<string, Item> ItemsByPreLocalizedName { get; } = new Dictionary<string, Item>();
+        private static Dictionary<string, Item> ItemsByLocalizedName { get; } = new Dictionary<string, Item>();
 
         public static void IndexAll() {
             if (HasIndexed()) {
@@ -394,12 +396,20 @@ namespace VNEI.Logic {
                 }
             }
 
-            int key = CleanupName(item.internalName).GetStableHashCode();
+            string key = CleanupName(item.internalName);
 
-            if (Items.ContainsKey(key)) {
-                Log.LogDebug($"Items contains key already: {CleanupName(item.internalName)}");
-            } else {
+            if (!Items.ContainsKey(key)) {
                 Items.Add(key, item);
+            } else {
+                Log.LogDebug($"Items contains key already: {CleanupName(item.internalName)}");
+            }
+
+            if (!ItemsByPreLocalizedName.ContainsKey(item.preLocalizedName.ToLower())) {
+                ItemsByPreLocalizedName.Add(item.preLocalizedName.ToLower(), item);
+            }
+
+            if (!ItemsByLocalizedName.ContainsKey(item.localizedName.ToLower())) {
+                ItemsByLocalizedName.Add(item.localizedName.ToLower(), item);
             }
         }
 
@@ -453,18 +463,23 @@ namespace VNEI.Logic {
         [Obsolete]
         public static BepInPlugin GetModByPrefabName(string name) => ModNames.GetModByPrefabName(name);
 
-        public static IEnumerable<KeyValuePair<int, Item>> GetActiveItems() {
+        public static IEnumerable<KeyValuePair<string, Item>> GetActiveItems() {
             return Items.Where(i => i.Value.isActive);
         }
 
         public static Item GetItem(string name) {
-            int key = CleanupName(name).GetStableHashCode();
-
-            if (Items.ContainsKey(key)) {
-                return Items[key];
+            if (Items.TryGetValue(CleanupName(name), out Item item)) {
+                return item;
             }
 
-            Log.LogDebug($"cannot get item: '{CleanupName(name)}' is not indexed");
+            if (ItemsByPreLocalizedName.TryGetValue(name.ToLower(), out item)) {
+                return item;
+            }
+
+            if (ItemsByLocalizedName.TryGetValue(name.ToLower(), out item)) {
+                return item;
+            }
+
             return null;
         }
     }

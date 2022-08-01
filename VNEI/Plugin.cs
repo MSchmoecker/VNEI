@@ -37,6 +37,7 @@ namespace VNEI {
         public static ConfigEntry<int> columnCount;
         public static ConfigEntry<int> transparency;
         public static ConfigEntry<KeyboardShortcut> openHotkey;
+        public static ConfigEntry<KeyboardShortcut> viewRecipeHotkey;
         public static ConfigEntry<bool> showOnlyKnown;
 
         public static bool isUiOpen = true;
@@ -68,6 +69,7 @@ namespace VNEI {
 
             // Hotkeys
             openHotkey = Config.Bind("Hotkeys", "Open UI Hotkey", new KeyboardShortcut(KeyCode.H, KeyCode.LeftAlt), config["OpenUIHotkey"]);
+            viewRecipeHotkey = Config.Bind("Hotkeys", "View Recipe Hotkey", new KeyboardShortcut(KeyCode.R), config["ViewRecipeHotkey"]);
 
             // UI
             columnCount = Config.Bind("UI", "Items Horizontal", 12, new ConfigDescription(config["ItemsHorizontal"], rowRange));
@@ -149,6 +151,27 @@ namespace VNEI {
 
             if (!Indexing.HasIndexed() && Player.m_localPlayer) {
                 Indexing.IndexAll();
+            }
+
+            if (viewRecipeHotkey.Value.IsDown() && UITooltip.m_current) {
+                string topic = UITooltip.m_current.m_topic.Trim();
+                string text = UITooltip.m_current.m_text.Trim();
+                Item item = null;
+
+                if (topic.Length > 0) {
+                    item = Indexing.GetItem(topic);
+                }
+
+                if (item == null && text.Length > 0) {
+                    item = Indexing.GetItem(text);
+                }
+
+                if (item != null) {
+                    MainVneiHandler.Instance.SetVneiTabActive();
+                    BaseUI baseUI = MainVneiHandler.Instance.GetOrCreateBaseUI();
+                    baseUI.recipeUi.SetItem(item);
+                    baseUI.ShowRecipe();
+                }
             }
         }
 

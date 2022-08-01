@@ -67,7 +67,7 @@ namespace VNEI.UI {
         }
 
         public void Init() {
-            foreach (KeyValuePair<int, Item> item in Indexing.GetActiveItems()) {
+            foreach (KeyValuePair<string, Item> item in Indexing.GetActiveItems()) {
                 listItems.Add(new ListItem(item.Value));
             }
 
@@ -245,7 +245,7 @@ namespace VNEI.UI {
             }
 
             public static int Comparer(ListItem a, ListItem b) {
-                return string.Compare(a.item.GetPrimaryName(), b.item.GetPrimaryName(), StringComparison.InvariantCultureIgnoreCase);
+                return string.Compare(a.item.GetPrimaryName(), b.item.GetPrimaryName(), StringComparison.Ordinal);
             }
         }
     }

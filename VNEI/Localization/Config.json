@@ -8,5 +8,6 @@
   "Transparency": "Transparency of the background image. Values in percent, 0 = full visible, 100 = completely transparent. Only active when 'Attach To Crafting' is false. Can be changed while ingame.",
   "AttachToCrafting": "Bind the UI to the crafting tab instead of floating free. Can be toggled while ingame.",
   "HideGUIAtStart": "Hide the GUI at startup and use the Hotkey to open it. Only active when 'Attach To Crafting' is false.",
-  "ShowOnlyKnown": "Turn this on to hide unknown items."
+  "ShowOnlyKnown": "Turn this on to hide unknown items.",
+  "ViewRecipeHotkey": "Hotkey to quickly view the recipe of an item while hovering over it. Also works in the inventory"
 }
