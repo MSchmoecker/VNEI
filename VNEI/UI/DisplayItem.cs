@@ -99,14 +99,14 @@ namespace VNEI.UI {
 
             if (IsPlayerCheating() && eventData.button == PointerEventData.InputButton.Right) {
                 if (item.gameObject) {
-                    if (item.gameObject.GetComponent<ItemDrop>()) {
-                        ItemDrop itemDrop = item.gameObject.GetComponent<ItemDrop>();
+                    if (item.gameObject.TryGetComponent(out ItemDrop itemDrop)) {
                         bool isShiftKeyDown = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
                         int stackSize = isShiftKeyDown ? itemDrop.m_itemData.m_shared.m_maxStackSize : 1;
                         Player.m_localPlayer.PickupPrefab(item.gameObject, stackSize);
-                    } else {
-                        Transform playerTransform = Player.m_localPlayer.transform;
-                        Instantiate(item.gameObject, playerTransform.position + playerTransform.forward * 2f, Quaternion.identity);
+                    } else if (item.gameObject.TryGetComponent(out Piece piece)) {
+                        foreach (Piece.Requirement resource in piece.m_resources) {
+                            Player.m_localPlayer.PickupPrefab(resource.m_resItem.m_itemData.m_dropPrefab, resource.m_amount);
+                        }
                     }
                 }
             } else {
