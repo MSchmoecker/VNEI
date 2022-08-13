@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace VNEI.UI {
-    public class Styling {
+    public static class Styling {
         public static void ApplyAllComponents(Transform root) {
             foreach (Text text in root.GetComponentsInChildren<Text>(true)) {
                 if (text.name == "__Name_Text_Field__") {
@@ -14,7 +14,7 @@ namespace VNEI.UI {
             }
 
             foreach (InputField inputField in root.GetComponentsInChildren<InputField>(true)) {
-                GUIManager.Instance.ApplyInputFieldStyle(inputField);
+                GUIManager.Instance.ApplyInputFieldStyle(inputField, 16);
             }
 
             foreach (Toggle toggle in root.GetComponentsInChildren<Toggle>(true)) {
@@ -41,7 +41,7 @@ namespace VNEI.UI {
             text.fontSize = fontSize;
         }
 
-        public static void ApplyAllDarken(Transform root) {
+        private static void ApplyAllDarken(Transform root) {
             foreach (Image image in root.GetComponentsInChildren<Image>(true)) {
                 if (image.gameObject.name == "Darken") {
                     image.sprite = GUIManager.Instance.GetSprite("darken_blob");
@@ -50,7 +50,7 @@ namespace VNEI.UI {
             }
         }
 
-        public static void ApplyAllSunken(Transform root) {
+        private static void ApplyAllSunken(Transform root) {
             foreach (Image image in root.GetComponentsInChildren<Image>(true)) {
                 if (image.gameObject.name == "Sunken") {
                     image.sprite = GUIManager.Instance.GetSprite("sunken");
