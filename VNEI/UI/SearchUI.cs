@@ -28,7 +28,7 @@ namespace VNEI.UI {
         public void Awake() {
             hasInit = false;
             typeToggleOnChange = () => UpdateSearch(true);
-            updateKnownEventHandler = (sender, args) => UpdateKnown();
+            updateKnownEventHandler = (sender, args) => UpdateKnown(Player.m_localPlayer);
             TypeToggle.OnChange += typeToggleOnChange;
             KnownRecipesPatchs.OnUpdateKnownRecipes += UpdateKnown;
             Plugin.showOnlyKnown.SettingChanged += updateKnownEventHandler;
@@ -111,7 +111,7 @@ namespace VNEI.UI {
                 }
             }
 
-            UpdateKnown();
+            UpdateKnown(Player.m_localPlayer);
             UpdateSearch(true);
         }
 
@@ -157,9 +157,14 @@ namespace VNEI.UI {
             Parallel.ForEach(listItems, i => { i.isActive = CalculateActive(i.item, useBlacklist, searchKeys); });
         }
 
-        private void UpdateKnown() {
+        private void UpdateKnown(Player player) {
+            if (!player) {
+                Log.LogWarning("Cannot update known recipes, player is null");
+                return;
+            }
+
             foreach (ListItem listItem in listItems) {
-                listItem.item.UpdateSelfKnown();
+                listItem.item.UpdateSelfKnown(player);
             }
 
             foreach (RecipeInfo recipe in RecipeInfo.Recipes) {

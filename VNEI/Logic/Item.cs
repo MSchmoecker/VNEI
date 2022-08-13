@@ -153,7 +153,7 @@ namespace VNEI.Logic {
             onFavoriteChanged.Invoke();
         }
 
-        public void UpdateSelfKnown() {
+        public void UpdateSelfKnown(Player player) {
             isKnown = false;
 
             if (!Plugin.showOnlyKnown.Value) {
@@ -161,7 +161,7 @@ namespace VNEI.Logic {
                 return;
             }
 
-            IsSelfKnown = Player.m_localPlayer.m_knownMaterial.Contains(preLocalizedName) || Player.m_localPlayer.m_knownStations.ContainsKey(preLocalizedName);
+            IsSelfKnown = player.m_knownMaterial.Contains(preLocalizedName) || player.m_knownStations.ContainsKey(preLocalizedName);
         }
 
         public void UpdateKnown() {

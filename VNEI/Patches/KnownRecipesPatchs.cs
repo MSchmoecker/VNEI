@@ -4,11 +4,11 @@ using HarmonyLib;
 namespace VNEI.Patches {
     [HarmonyPatch]
     public class KnownRecipesPatchs {
-        public static event Action OnUpdateKnownRecipes;
+        public static event Action<Player> OnUpdateKnownRecipes;
 
         [HarmonyPatch(typeof(Player), nameof(Player.UpdateKnownRecipesList)), HarmonyPostfix]
-        public static void UpdateKnownRecipesListPatch() {
-            OnUpdateKnownRecipes?.Invoke();
+        public static void UpdateKnownRecipesListPatch(Player __instance) {
+            OnUpdateKnownRecipes?.Invoke(__instance);
         }
     }
 }
