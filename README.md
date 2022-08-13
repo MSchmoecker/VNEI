@@ -11,9 +11,9 @@ Basic Auga support
 
 ![Auga](https://raw.githubusercontent.com/MSchmoecker/VNEI/master/Docs/AugaSidebar.png)
 
-## Installation
+## Manual Installation
 This mod requires BepInEx and Jötunn.\
-Extract the content of `VNEI/plugins` into the `BepInEx/plugins` folder and `VNEI/patchers` into `BepInEx/patchers`
+Extract the content of `VNEI/plugins` into the `BepInEx/plugins` folder
 
 This is a client side mod and not everyone has to use it if you are playing in multiplayer.
 If items or recipes from other mods are missing, please contact me.
@@ -65,6 +65,12 @@ See more [here](https://github.com/MSchmoecker/VNEI/blob/master/API.md).
 - Discord: Margmas#9562
 
 ## Changelog
+0.7.2
+- Fixed error when player respawned while having 'Show Only Known' turned on
+- Fixed tab buttons had to be pressed twice to correctly switch tabs
+- Fixed view recipe shortcut has always switch to the VNEI tab, even when 'Attach To Crafting' is not enabled
+- Fixed cheating piece items didn't work sometimes
+
 0.7.1
 - Added shortcut to quickly view recipes, hover over an item an press 'R'. Works in the inventory, too
 - Added German translation
