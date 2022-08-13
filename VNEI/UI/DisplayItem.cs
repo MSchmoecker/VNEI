@@ -105,7 +105,8 @@ namespace VNEI.UI {
                         Player.m_localPlayer.PickupPrefab(item.gameObject, stackSize);
                     } else if (item.gameObject.TryGetComponent(out Piece piece)) {
                         foreach (Piece.Requirement resource in piece.m_resources) {
-                            Player.m_localPlayer.PickupPrefab(resource.m_resItem.m_itemData.m_dropPrefab, resource.m_amount);
+                            GameObject dropPrefab = ObjectDB.instance.GetItemPrefab(resource.m_resItem.name);
+                            Player.m_localPlayer.PickupPrefab(dropPrefab, resource.m_amount);
                         }
                     }
                 }
