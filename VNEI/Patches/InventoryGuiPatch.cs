@@ -29,12 +29,18 @@ namespace VNEI.Patches {
         [HarmonyAfter("org.bepinex.plugins.jewelcrafting")]
         public static void UpdateCraftingPanelPatch() {
             if (!Auga.API.IsLoaded()) {
+                MainVneiHandler.Instance.UpdateTabPosition();
+            }
+        }
+
+        [HarmonyPatch(typeof(InventoryGui), nameof(InventoryGui.SetupCrafting)), HarmonyPostfix]
+        [HarmonyAfter("org.bepinex.plugins.jewelcrafting")]
+        public static void SetupCraftingPatch() {
+            if (!Auga.API.IsLoaded()) {
                 // vanilla behaviour has set the vanilla tabs active
                 if (MainVneiHandler.Instance.VneiTabActive) {
                     MainVneiHandler.Instance.SetVneiTabActive();
                 }
-
-                MainVneiHandler.Instance.UpdateTabPosition();
             }
         }
     }

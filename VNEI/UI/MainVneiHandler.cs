@@ -8,11 +8,10 @@ namespace VNEI.UI {
         private static MainVneiHandler instance;
         private BaseUI baseUI;
         private Button vneiTab;
-        private bool vneiTabActive;
         private readonly List<Button> otherButtons = new List<Button>();
 
         public static MainVneiHandler Instance => instance ?? (instance = new MainVneiHandler());
-        public bool VneiTabActive => vneiTabActive;
+        public bool VneiTabActive { get; private set; }
 
         private MainVneiHandler() {
             Plugin.attachToCrafting.SettingChanged += (sender, e) => {
@@ -85,7 +84,7 @@ namespace VNEI.UI {
                     baseUI.dragHandler.GetComponent<Image>().enabled = false;
                     baseUI.SetVisibility(false);
                 } else {
-                    vneiTabActive = false;
+                    VneiTabActive = false;
                 }
             }
 
@@ -124,7 +123,7 @@ namespace VNEI.UI {
         }
 
         public void SetVneiTabActive() {
-            vneiTabActive = true;
+            VneiTabActive = true;
 
             GetOrCreateVneiTabButton().interactable = false;
             InventoryGui.instance.m_inventoryRoot.Find("Crafting/RecipeList").gameObject.SetActive(false);
@@ -138,7 +137,7 @@ namespace VNEI.UI {
         }
 
         public void SetVneiTabNotActive() {
-            vneiTabActive = false;
+            VneiTabActive = false;
 
             GetOrCreateVneiTabButton().interactable = true;
             if (Plugin.Instance.AttachToCrafting()) {
