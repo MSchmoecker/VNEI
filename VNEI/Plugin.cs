@@ -169,7 +169,10 @@ namespace VNEI {
                 }
 
                 if (item != null) {
-                    MainVneiHandler.Instance.SetVneiTabActive();
+                    if (attachToCrafting.Value) {
+                        MainVneiHandler.Instance.SetVneiTabActive();
+                    }
+
                     BaseUI baseUI = MainVneiHandler.Instance.GetOrCreateBaseUI();
                     baseUI.recipeUi.SetItem(item);
                     baseUI.ShowRecipe();
