@@ -31,8 +31,8 @@ namespace VNEI.UI {
             baseUI.SetSize(false, itemsX, itemsY);
 
             if (activeTypes != null) {
-                foreach (TypeToggle typeToggle in baseUI.typeToggles) {
-                    typeToggle.SetOn(activeTypes.Contains(typeToggle.itemType));
+                foreach (ItemTypeToggle typeToggle in baseUI.typeToggles) {
+                    typeToggle.IsOn = activeTypes.Contains(typeToggle.itemType);
                 }
             }
 

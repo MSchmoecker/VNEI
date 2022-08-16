@@ -29,7 +29,7 @@ namespace VNEI.UI {
             hasInit = false;
             typeToggleOnChange = () => UpdateSearch(true);
             updateKnownEventHandler = (sender, args) => UpdateKnown(Player.m_localPlayer);
-            TypeToggle.OnChange += typeToggleOnChange;
+            baseUI.typeToggleChange += typeToggleOnChange;
             KnownRecipesPatchs.OnUpdateKnownRecipes += UpdateKnown;
             Plugin.showOnlyKnown.SettingChanged += updateKnownEventHandler;
             baseUI.RebuildedSize += RebuildCells;
@@ -78,12 +78,7 @@ namespace VNEI.UI {
 
             searchField.onValueChanged.AddListener((_) => UpdateSearch(true));
 
-            foreach (TypeToggle typeToggle in baseUI.typeToggles) {
-                if (typeToggle.toggleFavorite) {
-                    typeToggle.image.sprite = typeToggle.isFavorite ? Plugin.Instance.starSprite : Plugin.Instance.noStarSprite;
-                    continue;
-                }
-
+            foreach (ItemTypeToggle typeToggle in baseUI.typeToggles) {
                 switch (typeToggle.itemType) {
                     case ItemType.Undefined:
                         typeToggle.image.sprite = Plugin.Instance.noIconSprite;
@@ -205,7 +200,7 @@ namespace VNEI.UI {
                 return false;
             }
 
-            if (baseUI.typeToggles.Any(typeToggle => typeToggle.IsDisabled(item.itemType, item.isFavorite))) {
+            if (baseUI.typeToggles.Any(toggle => toggle.IsDisabled(item.itemType)) || baseUI.favoriteToggle.IsOn && !item.isFavorite) {
                 return false;
             }
 
@@ -234,7 +229,7 @@ namespace VNEI.UI {
         }
 
         private void OnDestroy() {
-            TypeToggle.OnChange -= typeToggleOnChange;
+            baseUI.typeToggleChange -= typeToggleOnChange;
             baseUI.RebuildedSize -= RebuildCells;
             KnownRecipesPatchs.OnUpdateKnownRecipes -= UpdateKnown;
             Plugin.showOnlyKnown.SettingChanged -= updateKnownEventHandler;

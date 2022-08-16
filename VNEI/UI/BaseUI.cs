@@ -31,7 +31,9 @@ namespace VNEI.UI {
 
         private bool blockInput;
         private bool sizeDirty;
-        [HideInInspector] public List<TypeToggle> typeToggles = new List<TypeToggle>();
+        [HideInInspector] public List<ItemTypeToggle> typeToggles = new List<ItemTypeToggle>();
+        [HideInInspector] public FavoriteTypeToggle favoriteToggle;
+        public Action typeToggleChange;
         private bool canBeHidden;
 
         public int ItemSizeX { get; private set; }

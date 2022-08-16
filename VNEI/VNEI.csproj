@@ -161,8 +161,10 @@
         <Compile Include="UI\ScrollHandler.cs" />
         <Compile Include="UI\SearchUI.cs" />
         <Compile Include="UI\SelectUI.cs" />
-        <Compile Include="UI\TypeToggle.cs" />
         <Compile Include="UI\Styling.cs" />
+        <Compile Include="UI\TypeToggle\FavoriteTypeToggle.cs" />
+        <Compile Include="UI\TypeToggle\ItemTypeToggle.cs" />
+        <Compile Include="UI\TypeToggle\TypeToggle.cs" />
     </ItemGroup>
     <ItemGroup>
         <None Include="App.config" />
