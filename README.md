@@ -65,6 +65,10 @@ See more [here](https://github.com/MSchmoecker/VNEI/blob/master/API.md).
 - Discord: Margmas#9562
 
 ## Changelog
+0.7.3
+- Fixed plants (carrot/onion/...) were not shown in the search
+- Fixed right-click on type toggle was not working when favorites were enabled
+
 0.7.2
 - Fixed error when player respawned while having 'Show Only Known' turned on
 - Fixed tab buttons had to be pressed twice to correctly switch tabs
