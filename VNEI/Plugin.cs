@@ -146,7 +146,7 @@ namespace VNEI {
         }
 
         private void Update() {
-            if (openHotkey.Value.IsDown()) {
+            if (IsKeyDown(openHotkey.Value)) {
                 isUiOpen = !isUiOpen;
                 OnOpenHotkey?.Invoke();
             }
@@ -155,7 +155,7 @@ namespace VNEI {
                 Indexing.IndexAll();
             }
 
-            if (viewRecipeHotkey.Value.IsDown() && UITooltip.m_current) {
+            if (IsKeyDown(viewRecipeHotkey.Value) && UITooltip.m_current) {
                 string topic = UITooltip.m_current.m_topic.Trim();
                 string text = UITooltip.m_current.m_text.Trim();
                 Item item = null;
@@ -178,6 +178,10 @@ namespace VNEI {
                     baseUI.ShowRecipe();
                 }
             }
+        }
+
+        private static bool IsKeyDown(KeyboardShortcut shortcut) {
+            return shortcut.MainKey != KeyCode.None && Input.GetKeyDown(shortcut.MainKey) && shortcut.Modifiers.All(Input.GetKey);
         }
 
         public bool AttachToCrafting() {
