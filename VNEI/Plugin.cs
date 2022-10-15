@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using BepInEx;
 using BepInEx.Bootstrap;
 using BepInEx.Configuration;
@@ -48,6 +49,7 @@ namespace VNEI {
         public GameObject vneiUI;
         public GameObject displayItemTemplate;
 
+        private static readonly Regex RichTagRegex = new Regex(@"<[^>]*>");
         private Harmony harmony;
 
         private void Awake() {
@@ -166,6 +168,12 @@ namespace VNEI {
 
                 if (item == null && text.Length > 0) {
                     item = Indexing.GetItem(text);
+                }
+
+                // checks if the topic contains xml tags and removes them
+                if (item == null && RichTagRegex.IsMatch(topic)) {
+                    string cleanedTopic = RichTagRegex.Replace(topic, string.Empty).Trim();
+                    item = Indexing.GetItem(cleanedTopic);
                 }
 
                 if (item != null) {
