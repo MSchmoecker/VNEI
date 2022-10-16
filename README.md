@@ -65,6 +65,11 @@ See more [here](https://github.com/MSchmoecker/VNEI/blob/master/API.md).
 - Discord: Margmas#9562
 
 ## Changelog
+0.7.4
+- Fixed view recipe shortcut (R) was not working while other keys were pressed
+- Fixed view recipe shortcut (R) was not working for Jewelcrafting socketed items
+- Fixed known items, if enabled, were not updated the first time when the player used the view recipe shortcut
+
 0.7.3
 - Fixed plants (carrot/onion/...) were not shown in the search
 - Fixed right-click on type toggle was not working when favorites were enabled
