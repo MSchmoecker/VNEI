@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using BepInEx;
-using BepInEx.Bootstrap;
 using BepInEx.Configuration;
 using HarmonyLib;
 using Jotunn;
@@ -88,7 +87,7 @@ namespace VNEI {
             harmony.PatchAll();
 
             // load embedded asset bundle
-            AssetBundle = AssetUtils.LoadAssetBundleFromResources("VNEI_AssetBundle", Assembly.GetExecutingAssembly());
+            AssetBundle = AssetUtils.LoadAssetBundleFromResources("VNEI_AssetBundle");
 
             CustomLocalization localization = new CustomLocalization();
 
@@ -155,6 +154,9 @@ namespace VNEI {
 
             if (!Indexing.HasIndexed() && Player.m_localPlayer) {
                 Indexing.IndexAll();
+                Indexing.UpdateKnown(Player.m_localPlayer);
+                showOnlyKnown.SettingChanged += (sender, args) => Indexing.UpdateKnown(Player.m_localPlayer);
+                KnownRecipesPatchs.OnUpdateKnownRecipes += Indexing.UpdateKnown;
             }
 
             if (IsKeyDown(viewRecipeHotkey.Value) && UITooltip.m_current) {

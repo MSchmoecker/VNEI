@@ -6,7 +6,6 @@ using Jotunn.Managers;
 using UnityEngine;
 using UnityEngine.UI;
 using VNEI.Logic;
-using VNEI.Patches;
 
 namespace VNEI.UI {
     public class SearchUI : MonoBehaviour {
@@ -21,18 +20,23 @@ namespace VNEI.UI {
         private bool hasInit;
         private readonly Vector2 itemSpacing = new Vector2(50f, 50f);
         private Action typeToggleOnChange;
-        private EventHandler updateKnownEventHandler;
+        private Action updateKnownHandler;
         private int currentPage;
         private int maxPages;
 
         public void Awake() {
             hasInit = false;
             typeToggleOnChange = () => UpdateSearch(true);
-            updateKnownEventHandler = (sender, args) => UpdateKnown(Player.m_localPlayer);
             baseUI.typeToggleChange += typeToggleOnChange;
-            KnownRecipesPatchs.OnUpdateKnownRecipes += UpdateKnown;
-            Plugin.showOnlyKnown.SettingChanged += updateKnownEventHandler;
             baseUI.RebuildedSize += RebuildCells;
+
+            updateKnownHandler = () => {
+                if (gameObject.activeSelf) {
+                    UpdateSearch(true);
+                }
+            };
+
+            Indexing.AfterUpdateKnownItems += updateKnownHandler;
 
             for (int i = 0; i < spawnRect.childCount; i++) {
                 Destroy(spawnRect.GetChild(i).gameObject);
@@ -106,7 +110,6 @@ namespace VNEI.UI {
                 }
             }
 
-            UpdateKnown(Player.m_localPlayer);
             UpdateSearch(true);
         }
 
@@ -150,29 +153,6 @@ namespace VNEI.UI {
             string[] searchKeys = searchField.text.Split();
 
             Parallel.ForEach(listItems, i => { i.isActive = CalculateActive(i.item, useBlacklist, searchKeys); });
-        }
-
-        private void UpdateKnown(Player player) {
-            if (!player) {
-                Log.LogWarning("Cannot update known recipes, player is null");
-                return;
-            }
-
-            foreach (ListItem listItem in listItems) {
-                listItem.item.UpdateSelfKnown(player);
-            }
-
-            foreach (RecipeInfo recipe in RecipeInfo.Recipes) {
-                recipe.UpdateKnown();
-            }
-
-            foreach (ListItem listItem in listItems) {
-                listItem.item.UpdateKnown();
-            }
-
-            if (gameObject.activeSelf) {
-                UpdateSearch(true);
-            }
         }
 
         public void SwitchPage(int skip = 1) {
@@ -231,8 +211,7 @@ namespace VNEI.UI {
         private void OnDestroy() {
             baseUI.typeToggleChange -= typeToggleOnChange;
             baseUI.RebuildedSize -= RebuildCells;
-            KnownRecipesPatchs.OnUpdateKnownRecipes -= UpdateKnown;
-            Plugin.showOnlyKnown.SettingChanged -= updateKnownEventHandler;
+            Indexing.AfterUpdateKnownItems -= updateKnownHandler;
         }
 
         private class ListItem {

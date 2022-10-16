@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using BepInEx;
-using BepInEx.Bootstrap;
-using Jotunn.Entities;
-using Jotunn.Utils;
 using UnityEngine;
 
 namespace VNEI.Logic {
@@ -47,6 +44,8 @@ namespace VNEI.Logic {
         public static event Action<GameObject> OnIndexingItemRecipes;
 
         public static event Action IndexFinished;
+
+        public static event Action AfterUpdateKnownItems;
 
         private static Dictionary<string, Item> Items { get; } = new Dictionary<string, Item>();
         private static Dictionary<string, Item> ItemsByPreLocalizedName { get; } = new Dictionary<string, Item>();
@@ -482,6 +481,27 @@ namespace VNEI.Logic {
             }
 
             return null;
+        }
+
+        public static void UpdateKnown(Player player) {
+            if (!player) {
+                Log.LogWarning("Cannot update known recipes, player is null");
+                return;
+            }
+
+            foreach (Item item in Items.Values) {
+                item.UpdateSelfKnown(player);
+            }
+
+            foreach (RecipeInfo recipe in RecipeInfo.Recipes) {
+                recipe.UpdateKnown();
+            }
+
+            foreach (Item item in Items.Values) {
+                item.UpdateKnown();
+            }
+
+            AfterUpdateKnownItems?.Invoke();
         }
     }
 }
