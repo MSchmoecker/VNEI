@@ -126,26 +126,31 @@ namespace VNEI.Logic {
             if (internalName == null) return " -- invalid item -- ";
             string descriptionOneLine = GetDescription().Replace('\n', ' ');
             string mappedItemType = itemType.ToString();
-            return $"InternalName='{internalName}'; " +
-                   $"PrimaryName='{GetPrimaryName()}'; " +
-                   $"MappedItemType='{mappedItemType}'; " +
-                   $"Description='{descriptionOneLine}'; " +
-                   $"SourceMod='{GetModName()}'";
+            string text = $"Internal Name: {internalName}, Localized Name: {GetPrimaryName()}, Item Type: {mappedItemType}";
+
+            if (!string.IsNullOrEmpty(descriptionOneLine)) {
+                text += $", Description: {descriptionOneLine}";
+            }
+
+            if (!string.IsNullOrEmpty(GetModName())) {
+                text += $", Source Mod: {GetModName()}";
+            }
+
+            return text;
         }
 
-        public string PrintItemCSV() {
+        public string PrintItemCSV(string separator) {
             if (internalName == null) return " -- invalid item -- ";
             string descriptionOneLine = GetDescription().Replace('\n', ' ');
-            string mappedItemType = itemType.ToString();
-            return $"{internalName};" +
-                   $"{GetPrimaryName()};" +
-                   $"{mappedItemType};" +
-                   $"{descriptionOneLine};" +
+            return $"{internalName}{separator}" +
+                   $"{GetPrimaryName()}{separator}" +
+                   $"{itemType}{separator}" +
+                   $"{descriptionOneLine}{separator}" +
                    $"{GetModName()}";
         }
 
-        public static string PrintCSVHeader() {
-            return $"internalName;PrimaryName;MappedItemType;Description;SourceModName";
+        public static string PrintCSVHeader(string separator) {
+            return $"Internal Name{separator}Localized Name{separator}Item Type{separator}Description{separator}Source Mod";
         }
 
         public void UpdateFavorite(bool favorite) {

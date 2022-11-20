@@ -112,8 +112,11 @@ namespace VNEI {
                     MainVneiHandler.Instance.GetOrCreateBaseUI();
                 }
             };
+
             CommandManager.Instance.AddConsoleCommand(new SelectUITest.ToggleUIConsoleCommand());
-            CommandManager.Instance.AddConsoleCommand(new FileWriterController());
+            CommandManager.Instance.AddConsoleCommand(new FileWriterControllerCSV());
+            CommandManager.Instance.AddConsoleCommand(new FileWriterControllerYAML());
+            CommandManager.Instance.AddConsoleCommand(new FileWriterControllerText());
 
             PrefabManager.OnVanillaPrefabsAvailable += ApplyMocks;
 

@@ -86,6 +86,11 @@ namespace VNEI.Logic {
             AddItem(new Item("vnei_any_item", "$vnei_any_item", string.Empty, null, ItemType.Undefined, null));
             AddItem(new Item("vnei_unknown_item", "$vnei_unknown_item", string.Empty, null, ItemType.Undefined, null));
 
+            if (!ZNetScene.instance) {
+                Log.LogWarning("Cannot index items: ZNetScene.instance is null");
+                return;
+            }
+
             foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
                 if (!prefab) {
                     Log.LogDebug("IndexItems: prefab is null!");
@@ -150,6 +155,11 @@ namespace VNEI.Logic {
         }
 
         private static void DisableItems() {
+            if (!ZNetScene.instance) {
+                Log.LogWarning("Cannot disable items: ZNetScene.instance is null");
+                return;
+            }
+
             foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
                 if (!prefab) {
                     Log.LogDebug("DisableItems: prefab is null!");
@@ -224,6 +234,11 @@ namespace VNEI.Logic {
         }
 
         private static void IndexRecipes() {
+            if (!ObjectDB.instance) {
+                Log.LogWarning("Cannot index recipes: ObjectDB.instance is null");
+                return;
+            }
+
             foreach (Recipe recipe in ObjectDB.instance.m_recipes) {
                 if (!recipe.m_enabled) {
                     Log.LogDebug($"skipping {recipe.name}: not enabled");
@@ -248,6 +263,11 @@ namespace VNEI.Logic {
         }
 
         private static void IndexItemRecipes(Dictionary<string, PieceTable> pieceTables) {
+            if (!ZNetScene.instance) {
+                Log.LogWarning("Cannot index item recipes: ZNetScene.instance is null");
+                return;
+            }
+
             foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
                 if (!prefab) {
                     Log.LogDebug("IndexItemRecipes: prefab is null!");

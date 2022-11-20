@@ -23,15 +23,12 @@ namespace VNEI.Logic {
             File.WriteAllLines(file, items.Select(item => item.PrintItem()).ToArray());
         }
 
-        public static void PrintCSVFile(List<Item> items) {
+        public static void PrintCSVFile(List<Item> items, string separator) {
             string file = BuildFullFilePath("csv");
             Log.LogInfo($"Writing indexed items to file {file}");
-            string[] itemsWithoutHeader = items.Select(x => x.PrintItemCSV()).ToArray();
-            string[] header = { Item.PrintCSVHeader() };
-            string[] itemsWithHeader = new string[itemsWithoutHeader.Length + 1];
-            header.CopyTo(itemsWithHeader, 0);
-            itemsWithoutHeader.CopyTo(itemsWithHeader, 1);
-            File.WriteAllLines(file, itemsWithHeader);
+            string header = Item.PrintCSVHeader(separator);
+            string[] lines = items.Select(x => x.PrintItemCSV(separator)).ToArray();
+            File.WriteAllLines(file, new[] { header }.Concat(lines).ToArray());
         }
 
         public static void PrintCLLCItemConfigYaml(
@@ -78,48 +75,67 @@ namespace VNEI.Logic {
     }
 
     public class AllGroups {
-        [UsedImplicitly]
-        public readonly Dictionary<string, List<string>> Groups;
+        [UsedImplicitly] public readonly Dictionary<string, List<string>> Groups;
 
         public AllGroups(Dictionary<string, List<string>> groups) {
             Groups = groups;
         }
     }
 
-    public class FileWriterController : ConsoleCommand {
+    public abstract class FileWriterController : ConsoleCommand {
+        public override string Help => "Writes all indexed items to a file";
+
+        protected static List<Item> GetItems() {
+            return Indexing.GetActiveItems().Select(tuple => tuple.Value).ToList();
+        }
+    }
+
+    public class FileWriterControllerCSV : FileWriterController {
+        public override string Name => "vnei_export_csv";
+
         public override void Run(string[] args) {
-            List<Item> items = Indexing.GetActiveItems().Select(tuple => tuple.Value).ToList();
-            if (args.Length == 0) {
-                FileWriter.PrintCSVFile(items);
-                return;
+            string separatorArg = args.Length > 0 ? args[0] : string.Empty;
+            string separator;
+
+            switch (separatorArg) {
+                case "comma":
+                    separator = ",";
+                    break;
+                case "tab":
+                    separator = "\t";
+                    break;
+                case "semicolon":
+                    separator = ";";
+                    break;
+                default:
+                    separator = ",";
+                    break;
             }
 
-            switch (args[0].ToLower()) {
-                case "csv":
-                    FileWriter.PrintCSVFile(items);
-                    break;
-                case "yaml":
-                    Log.LogInfo($"args '{string.Join(" - ", args)}'");
-                    List<string> itemNamesFilterExcluded;
-                    if (args.Length >= 2) itemNamesFilterExcluded = args[1].Split(',').ToList();
-                    else itemNamesFilterExcluded = new List<string>();
-                    List<string> modNamesFilterExcluded;
-                    if (args.Length >= 3) modNamesFilterExcluded = args[2].Split(',').ToList();
-                    else modNamesFilterExcluded = new List<string>();
-                    FileWriter.PrintCLLCItemConfigYaml(items, itemNamesFilterExcluded, modNamesFilterExcluded);
-                    break;
-                case "text":
-                    FileWriter.PrintSimpleTextFile(items);
-                    break;
-            }
+            FileWriter.PrintCSVFile(GetItems(), separator);
         }
 
-        public override string Name => "vnei_write_items_file";
-
-        public override string Help => "[csv/yaml/text] - default is csv - Writes all indexed items to file";
-
         public override List<string> CommandOptionList() {
-            return new List<string> { "csv", "yaml", "text" };
+            return new List<string> { "comma", "semicolon", "tab" };
+        }
+    }
+
+    public class FileWriterControllerYAML : FileWriterController {
+        public override string Name => "vnei_export_yaml";
+
+        public override void Run(string[] args) {
+            Log.LogInfo($"args '{string.Join(" - ", args)}'");
+            List<string> itemNamesFilterExcluded = args.Length > 0 ? args[0].Split(',').ToList() : new List<string>();
+            List<string> modNamesFilterExcluded = args.Length > 1 ? args[1].Split(',').ToList() : new List<string>();
+            FileWriter.PrintCLLCItemConfigYaml(GetItems(), itemNamesFilterExcluded, modNamesFilterExcluded);
+        }
+    }
+
+    public class FileWriterControllerText : FileWriterController {
+        public override string Name => "vnei_export_text";
+
+        public override void Run(string[] args) {
+            FileWriter.PrintSimpleTextFile(GetItems());
         }
     }
 }
