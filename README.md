@@ -41,15 +41,13 @@ This is only possible at a local game or when the user is an admin at a server.
 Shift + RightClick spawns a whole stack.
 
 ## Ingame Commands
-Export all indexed items with `vnei_write_items_file [format]` as a file to the BepInEx root path
+Export all indexed items as a file to the BepInEx root path:
 
-format:
-- `csv` (default) -> csv can be used with excel or other tools
-- `yaml` -> yaml creates a CLLC ItemConfig.yml like file
-   yaml optional extra args (both provided as list, separated by ','):
-   - a. strings to scan item prefab names for and exclude them from results e.g. RRR,someotherfilter
-   - b. strings to scan mod names for and exclude them from results e.g. MonsterMobs,someothermod
-- `text` -> simple text
+| Command                                                                            | Description                                                                                              |
+|------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
+| vnei_export_csv [comma&#124;semicolon&#124;tab]                                    | table format, can be read by Excel or similar programs. The separator is optional and `comma` by default |
+| vnei_export_yaml [exclude_item1,exclude_item2,...] [exclude_mod1,exclude_mod2,...] | creates a CLLC ItemConfig.yml like file with the option to exclude certain items or mods                 |
+| vnei_export_text                                                                   | simple text                                                                                              |
 
 ## Development
 See [contributing](https://github.com/MSchmoecker/VNEI/blob/master/CONTRIBUTING.md).
@@ -62,9 +60,14 @@ See more [here](https://github.com/MSchmoecker/VNEI/blob/master/API.md).
 - Thunderstore: https://valheim.thunderstore.io/package/MSchmoecker/VNEI/
 - Nexus: https://www.nexusmods.com/valheim/mods/1457
 - Github: https://github.com/MSchmoecker/VNEI
-- Discord: Margmas#9562
+- Discord: Margmas#9562. Feel free to DM or ping me in the [Jötunn discord](https://discord.gg/DdUt6g7gyA)
 
 ## Changelog
+0.7.5
+- Changed the export command to separate commands for all file types. See the Ingame Commands section of the Readme for more information.
+- Changed the yaml export command to write all item types and not exclude creatures and pieces
+- Added a separator option (comma, semicolon, tab) to the csv export command
+
 0.7.4
 - Fixed view recipe shortcut (R) was not working while other keys were pressed
 - Fixed view recipe shortcut (R) was not working for Jewelcrafting socketed items
