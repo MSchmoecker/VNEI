@@ -117,5 +117,9 @@ namespace VNEI.Logic {
         public override string Name => "vnei_write_items_file";
 
         public override string Help => "[csv/yaml/text] - default is csv - Writes all indexed items to file";
+
+        public override List<string> CommandOptionList() {
+            return new List<string> { "csv", "yaml", "text" };
+        }
     }
 }
