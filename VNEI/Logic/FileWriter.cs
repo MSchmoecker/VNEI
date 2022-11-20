@@ -7,19 +7,11 @@ using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 using Jotunn.Entities;
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-
 namespace VNEI.Logic {
     public static class FileWriter {
         private static readonly string FileOutputPath = BepInEx.Paths.BepInExRootPath;
         private const string FileName = "VNEI.indexed.items";
         private const string MissingType = "missing-type";
-
-        private static readonly List<ItemType> BadItemTypes = new List<ItemType> {
-            ItemType.Undefined,
-            ItemType.Creature,
-            ItemType.Piece
-        };
 
         private static string BuildFullFilePath(string fileSuffix) {
             return $"{FileOutputPath}{Path.DirectorySeparatorChar}{FileName}.{fileSuffix}";
@@ -50,6 +42,7 @@ namespace VNEI.Logic {
             string file = BuildFullFilePath("yml");
             Log.LogInfo($"Writing indexed items to file {file}");
             Log.LogInfo($"Excluding items via match terms '{string.Join(",", itemNamesFilterExcluded)}' and mods with names matching '{string.Join(",", modNamesFilterExcluded)}'");
+
             ISerializer serializer = new SerializerBuilder()
                                      .WithNamingConvention(CamelCaseNamingConvention.Instance)
                                      .Build();
@@ -57,9 +50,7 @@ namespace VNEI.Logic {
             List<(string itemType, string internalName, string modName)> validItems =
                 FilterInvalidItems(items, itemNamesFilterExcluded, modNamesFilterExcluded)
                     .Select(item => (
-                                item.gameObject.TryGetComponent(out ItemDrop itemDrop)
-                                    ? itemDrop.m_itemData.m_shared.m_itemType.ToString()
-                                    : MissingType,
+                                item.gameObject.TryGetComponent(out ItemDrop itemDrop) ? itemDrop.m_itemData.m_shared.m_itemType.ToString() : item.itemType.ToString(),
                                 item.internalName,
                                 item.GetModName()))
                     .ToList();
@@ -67,23 +58,18 @@ namespace VNEI.Logic {
             groupedItems = validItems
                            .GroupBy(item => item.modName != string.Empty ? $"{item.itemType}_{CleanModName(item.modName)}" : item.itemType)
                            .Where(group => group.Key != MissingType)
-                           .ToDictionary(group => group.Key
-                                         , group => group.Select(groupedItem => groupedItem.internalName).ToList());
+                           .ToDictionary(group => group.Key,
+                                         group => group.Select(groupedItem => groupedItem.internalName).ToList());
 
             string yamlContent = serializer.Serialize(new AllGroups(groupedItems));
             File.WriteAllText(file, yamlContent);
         }
 
-        private static List<Item> FilterInvalidItems(
-            List<Item> items,
-            List<string> itemNamesFilterExcluded,
-            List<string> modNamesFilterExcluded) {
+        private static List<Item> FilterInvalidItems(List<Item> items, List<string> itemNamesFilterExcluded, List<string> modNamesFilterExcluded) {
             return items
                    .Where(item => item.gameObject != null)
-                   .Where(item => !BadItemTypes.Contains(item.itemType))
                    .Where(item => itemNamesFilterExcluded.All(filterExclude => !item.internalName.Contains(filterExclude)))
-                   .Where(item => modNamesFilterExcluded.All(filterExclude => !item.GetModName()
-                                                                 .Contains(filterExclude))).ToList();
+                   .Where(item => modNamesFilterExcluded.All(filterExclude => !item.GetModName().Contains(filterExclude))).ToList();
         }
 
         private static string CleanModName(string modNameOriginal) {
