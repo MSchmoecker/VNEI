@@ -119,7 +119,7 @@ namespace VNEI {
             CommandManager.Instance.AddConsoleCommand(new FileWriterControllerYAML());
             CommandManager.Instance.AddConsoleCommand(new FileWriterControllerText());
 
-            PrefabManager.OnVanillaPrefabsAvailable += ApplyMocks;
+            PrefabManager.OnPrefabsRegistered += ApplyMocks;
 
             ModQuery.Enable();
         }
@@ -206,7 +206,7 @@ namespace VNEI {
             vneiUI.FixReferences(true);
             displayItemTemplate.FixReferences(true);
 
-            PrefabManager.OnVanillaPrefabsAvailable -= ApplyMocks;
+            PrefabManager.OnPrefabsRegistered -= ApplyMocks;
         }
 
         public static bool IsItemBlacklisted(Item item) {
