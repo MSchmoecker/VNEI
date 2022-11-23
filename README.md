@@ -63,6 +63,9 @@ See more [here](https://github.com/MSchmoecker/VNEI/blob/master/API.md).
 - Discord: Margmas#9562. Feel free to DM or ping me in the [Jötunn discord](https://discord.gg/DdUt6g7gyA)
 
 ## Changelog
+0.7.6
+- Fixed compatibility with Valheim 0.212.6 (Mistlands). This versions still works with the stable release as well
+
 0.7.5
 - Changed the export command to separate commands for all file types. See the Ingame Commands section of the Readme for more information.
 - Changed the yaml export command to write all item types and not exclude creatures and pieces
