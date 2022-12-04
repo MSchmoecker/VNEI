@@ -52,20 +52,13 @@ namespace VNEI.Logic {
                 if (prefab) {
                     RenderManager.RenderRequest renderRequest = new RenderManager.RenderRequest(prefab) {
                         Rotation = RenderManager.IsometricRotation,
+                        TargetPlugin = mod,
+                        UseCache = true,
                     };
-
-                    if (Chainloader.PluginInfos["com.jotunn.jotunn"].Metadata.Version.CompareTo(new System.Version(2, 4, 10)) >= 0) {
-                        RenderWithCache(renderRequest);
-                    }
 
                     SetIcon(RenderManager.Instance.Render(renderRequest));
                 }
             }
-        }
-
-        private void RenderWithCache(RenderManager.RenderRequest renderRequest) {
-            renderRequest.TargetPlugin = mod;
-            renderRequest.UseCache = true;
         }
 
         public string GetName() {
