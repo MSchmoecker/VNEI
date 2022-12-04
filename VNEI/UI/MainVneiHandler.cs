@@ -46,7 +46,7 @@ namespace VNEI.UI {
                 SetVneiTabNotActive();
             }
 
-            if (!Plugin.Instance.AttachToCrafting()) {
+            if (!Plugin.AttachToCrafting()) {
                 vneiTab.gameObject.SetActive(false);
                 SetVneiTabNotActive();
             }
@@ -69,9 +69,9 @@ namespace VNEI.UI {
             }
 
             if (!baseUI) {
-                baseUI = BaseUI.CreateBaseUI(true, !Plugin.Instance.AttachToCrafting(), !Plugin.Instance.AttachToCrafting());
+                baseUI = BaseUI.CreateBaseUI(true, !Plugin.AttachToCrafting(), !Plugin.AttachToCrafting());
 
-                if (Plugin.Instance.AttachToCrafting()) {
+                if (Plugin.AttachToCrafting()) {
                     RectTransform craftingPanel = (RectTransform)InventoryGui.instance.m_inventoryRoot.Find("Crafting");
                     RectTransform baseUIRect = (RectTransform)baseUI.transform;
                     Vector2 craftingPanelSize = craftingPanel.sizeDelta;
@@ -140,7 +140,7 @@ namespace VNEI.UI {
             VneiTabActive = false;
 
             GetOrCreateVneiTabButton().interactable = true;
-            if (Plugin.Instance.AttachToCrafting()) {
+            if (Plugin.AttachToCrafting()) {
                 GetOrCreateBaseUI().SetVisibility(false);
             }
 

@@ -12,6 +12,7 @@ using Jotunn.Entities;
 using Jotunn.Utils;
 using Jotunn.Managers;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using VNEI.Logic;
 using VNEI.Patches;
 using VNEI.UI;
@@ -39,6 +40,7 @@ namespace VNEI {
         public static ConfigEntry<int> transparency;
         public static ConfigEntry<KeyboardShortcut> openHotkey;
         public static ConfigEntry<KeyboardShortcut> viewRecipeHotkey;
+        public static ConfigEntry<InputButtonWrapper> itemCheatHotkey;
         public static ConfigEntry<bool> showOnlyKnown;
 
         public static bool isUiOpen = true;
@@ -55,8 +57,8 @@ namespace VNEI {
         private void Awake() {
             Instance = this;
             Log.Init(Logger);
-            AcceptableValueRange<int> rowRange = new AcceptableValueRange<int>(1, 25);
 
+            AcceptableValueRange<int> rowRange = new AcceptableValueRange<int>(1, 25);
             AcceptableValueRange<int> percentRange = new AcceptableValueRange<int>(0, 100);
 
             string configText = AssetUtils.LoadTextFromResources("Localization.Config.json", Assembly.GetExecutingAssembly());
@@ -72,6 +74,7 @@ namespace VNEI {
             // Hotkeys
             openHotkey = Config.Bind("Hotkeys", "Open UI Hotkey", new KeyboardShortcut(KeyCode.H, KeyCode.LeftAlt), config["OpenUIHotkey"]);
             viewRecipeHotkey = Config.Bind("Hotkeys", "View Recipe Hotkey", new KeyboardShortcut(KeyCode.R), config["ViewRecipeHotkey"]);
+            itemCheatHotkey = Config.Bind("Hotkeys", "Item Cheat Mouse Button", InputButtonWrapper.Right, config["ItemCheatMouseButton"]);
 
             // UI
             columnCount = Config.Bind("UI", "Items Horizontal", 12, new ConfigDescription(config["ItemsHorizontal"], rowRange));
@@ -194,7 +197,7 @@ namespace VNEI {
             }
         }
 
-        public bool AttachToCrafting() {
+        public static bool AttachToCrafting() {
             return attachToCrafting.Value;
         }
 
@@ -207,6 +210,13 @@ namespace VNEI {
 
         public static bool IsItemBlacklisted(Item item) {
             return ItemBlacklist.Contains(item.internalName) || ItemBlacklist.Contains(Indexing.CleanupName(item.internalName));
+        }
+
+        public enum InputButtonWrapper {
+            Left = PointerEventData.InputButton.Left,
+            Right = PointerEventData.InputButton.Right,
+            Middle = PointerEventData.InputButton.Middle,
+            None = -1
         }
     }
 }

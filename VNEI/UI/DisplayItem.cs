@@ -97,7 +97,7 @@ namespace VNEI.UI {
                 return;
             }
 
-            if (IsPlayerCheating() && eventData.button == PointerEventData.InputButton.Right) {
+            if (IsPlayerCheating() && (int)Plugin.itemCheatHotkey.Value == (int)eventData.button) {
                 if (item.gameObject) {
                     if (item.gameObject.TryGetComponent(out ItemDrop itemDrop)) {
                         bool isShiftKeyDown = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);

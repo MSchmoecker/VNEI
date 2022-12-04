@@ -13,7 +13,7 @@ namespace VNEI.UI {
         public static MainVneiHandlerAuga Instance => instance ?? (instance = new MainVneiHandlerAuga());
 
         public MainVneiHandlerAuga() {
-            Plugin.attachToCrafting.SettingChanged += (sender, e) => { CreateWindow(true); };
+            Plugin.attachToCrafting.SettingChanged += (sender, e) => CreateWindow(true);
         }
 
         public void CreateWindow(bool forceRecreate = false) {
@@ -27,14 +27,14 @@ namespace VNEI.UI {
             }
 
             if (!baseUI) {
-                baseUI = BaseUI.CreateBaseUI(true, !Plugin.Instance.AttachToCrafting(), !Plugin.Instance.AttachToCrafting());
+                baseUI = BaseUI.CreateBaseUI(true, !Plugin.AttachToCrafting(), !Plugin.AttachToCrafting());
             }
 
             if (!API.PlayerPanel_HasTab("VNEI tab")) {
                 panelData = API.PlayerPanel_AddTab("VNEI tab", null, "VNEI", i => { });
             }
 
-            if (Plugin.Instance.AttachToCrafting()) {
+            if (Plugin.AttachToCrafting()) {
                 RectTransform craftingPanel = (RectTransform)panelData.ContentGO.transform;
                 RectTransform baseUIRect = (RectTransform)baseUI.transform;
                 Vector2 craftingPanelSize = craftingPanel.sizeDelta;
