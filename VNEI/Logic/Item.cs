@@ -42,22 +42,20 @@ namespace VNEI.Logic {
             this.itemType = itemType;
             this.maxQuality = maxQuality;
 
-            if (prefab != null) {
+            if (prefab) {
                 mod = ModNames.GetModByPrefabName(prefab.name);
             }
 
-            if (icon != null) {
+            if (icon) {
                 SetIcon(icon);
-            } else {
-                if (prefab) {
-                    RenderManager.RenderRequest renderRequest = new RenderManager.RenderRequest(prefab) {
-                        Rotation = RenderManager.IsometricRotation,
-                        TargetPlugin = mod,
-                        UseCache = true,
-                    };
+            } else if (prefab) {
+                RenderManager.RenderRequest renderRequest = new RenderManager.RenderRequest(prefab) {
+                    Rotation = RenderManager.IsometricRotation,
+                    TargetPlugin = mod,
+                    UseCache = true,
+                };
 
-                    SetIcon(RenderManager.Instance.Render(renderRequest));
-                }
+                SetIcon(RenderManager.Instance.Render(renderRequest));
             }
         }
 
@@ -96,10 +94,8 @@ namespace VNEI.Logic {
         }
 
         public void SetIcon(Sprite sprite) {
-            if (icon == null) {
+            if (!icon) {
                 icon = sprite;
-            } else {
-                Log.LogDebug($"cannot set sprite for '{internalName}', icon already exists");
             }
         }
 

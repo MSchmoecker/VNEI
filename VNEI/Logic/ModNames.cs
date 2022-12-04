@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace VNEI.Logic {
     public class ModNames {
-        private static Dictionary<string, BepInPlugin> sourceMod = new Dictionary<string, BepInPlugin>();
+        private static readonly Dictionary<string, BepInPlugin> SourceMod = new Dictionary<string, BepInPlugin>();
 
         public static void IndexModNames() {
             foreach (IModPrefab modPrefab in ModQuery.GetPrefabs()) {
@@ -23,14 +23,14 @@ namespace VNEI.Logic {
         /// <param name="prefabName"></param>
         /// <param name="mod"></param>
         public static void SetModOfPrefab(string prefabName, BepInPlugin mod) {
-            if (!sourceMod.ContainsKey(prefabName)) {
-                sourceMod[prefabName] = mod;
+            if (!SourceMod.ContainsKey(prefabName)) {
+                SourceMod[prefabName] = mod;
             }
         }
 
         public static BepInPlugin GetModByPrefabName(string name) {
-            if (sourceMod.ContainsKey(name)) {
-                return sourceMod[name];
+            if (SourceMod.TryGetValue(name, out BepInPlugin mod)) {
+                return mod;
             }
 
             return null;
