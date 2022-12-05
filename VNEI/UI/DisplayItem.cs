@@ -110,6 +110,8 @@ namespace VNEI.UI {
                         }
                     }
                 }
+            } else if ((int)Plugin.removeRecentHotkey.Value == (int)eventData.button) {
+                baseUI.RemoveItemFromLastViewedQueue(item);
             } else {
                 baseUI.recipeUi.SetItem(item);
                 baseUI.ShowRecipe();

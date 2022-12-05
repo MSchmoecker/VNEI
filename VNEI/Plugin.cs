@@ -41,6 +41,7 @@ namespace VNEI {
         public static ConfigEntry<KeyboardShortcut> openHotkey;
         public static ConfigEntry<KeyboardShortcut> viewRecipeHotkey;
         public static ConfigEntry<InputButtonWrapper> itemCheatHotkey;
+        public static ConfigEntry<InputButtonWrapper> removeRecentHotkey;
         public static ConfigEntry<bool> showOnlyKnown;
 
         public static bool isUiOpen = true;
@@ -75,6 +76,7 @@ namespace VNEI {
             openHotkey = Config.Bind("Hotkeys", "Open UI Hotkey", new KeyboardShortcut(KeyCode.H, KeyCode.LeftAlt), config["OpenUIHotkey"]);
             viewRecipeHotkey = Config.Bind("Hotkeys", "View Recipe Hotkey", new KeyboardShortcut(KeyCode.R), config["ViewRecipeHotkey"]);
             itemCheatHotkey = Config.Bind("Hotkeys", "Item Cheat Mouse Button", InputButtonWrapper.Right, config["ItemCheatMouseButton"]);
+            removeRecentHotkey = Config.Bind("Hotkeys", "Remove Recent Item Mouse Button", InputButtonWrapper.Middle, config["RemoveRecentMouseButton"]);
 
             // UI
             columnCount = Config.Bind("UI", "Items Horizontal", 12, new ConfigDescription(config["ItemsHorizontal"], rowRange));

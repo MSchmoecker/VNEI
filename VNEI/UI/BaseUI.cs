@@ -182,11 +182,16 @@ namespace VNEI.UI {
             }
 
             // remove overflowing items
-            if (lastViewedItems.Count > 25) {
+            if (lastViewedItems.Count > 50) {
                 lastViewedItems.RemoveAt(lastViewedItems.Count - 1);
             }
 
             // display items at corresponding slots
+            UpdateDisplayItemRow(lastViewedDisplayItems, lastViewedItems);
+        }
+
+        public void RemoveItemFromLastViewedQueue(Item item) {
+            lastViewedItems.Remove(item);
             UpdateDisplayItemRow(lastViewedDisplayItems, lastViewedItems);
         }
 

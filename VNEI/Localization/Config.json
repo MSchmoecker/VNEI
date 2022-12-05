@@ -10,5 +10,6 @@
   "ShowOnlyKnown": "Hide unknown items and recipes.",
   "OpenUIHotkey": "Hotkey to open and close the UI. Only active when 'Attach To Crafting' is false.",
   "ViewRecipeHotkey": "Hotkey to quickly view the recipe of an item while hovering over it. Works in the inventory, too.",
-  "ItemCheatMouseButton": "Mouse button to to cheat items. Only works if devcommands are enabled and when the user is in a local game or an admin at a server"
+  "ItemCheatMouseButton": "Mouse button to to cheat items. Only works if devcommands are enabled and when the user is in a local game or an admin at a server.",
+  "RemoveRecentMouseButton": "Mouse button to remove an item from the recent viewed item list."
 }
