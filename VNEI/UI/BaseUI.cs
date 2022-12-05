@@ -83,6 +83,12 @@ namespace VNEI.UI {
             recipeUi.OnSetItem += AddItemToLastViewedQueue;
             Plugin.OnOpenHotkey += UpdateVisibility;
 
+            lastViewItemsParent.gameObject.SetActive(Plugin.showRecentItems.Value);
+
+            Plugin.showRecentItems.SettingChanged += (sender, args) => {
+                lastViewItemsParent.gameObject.SetActive(Plugin.showRecentItems.Value);
+            };
+
             RebuildSize();
             RebuildDisplayItemRows();
         }

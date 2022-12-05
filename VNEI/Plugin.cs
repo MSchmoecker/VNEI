@@ -43,6 +43,7 @@ namespace VNEI {
         public static ConfigEntry<InputButtonWrapper> itemCheatHotkey;
         public static ConfigEntry<InputButtonWrapper> removeRecentHotkey;
         public static ConfigEntry<bool> showOnlyKnown;
+        public static ConfigEntry<bool> showRecentItems;
 
         public static bool isUiOpen = true;
         public static event Action OnOpenHotkey;
@@ -69,8 +70,8 @@ namespace VNEI {
             fixPlants = Config.Bind("General", "Fix Cultivate Plants", true, new ConfigDescription(config["FixCultivatePlants"]));
             useBlacklist = Config.Bind("General", "Use Item Blacklist", true, new ConfigDescription(config["UseItemBlacklist"]));
             invertScroll = Config.Bind("General", "Invert Scroll", false, new ConfigDescription(config["InvertScroll"]));
-
             showOnlyKnown = Config.Bind("General", "Show Only Known", false, new ConfigDescription(config["ShowOnlyKnown"]));
+            showRecentItems = Config.Bind("General", "Show Recent Items", true, new ConfigDescription(config["ShowRecentItems"]));
 
             // Hotkeys
             openHotkey = Config.Bind("Hotkeys", "Open UI Hotkey", new KeyboardShortcut(KeyCode.H, KeyCode.LeftAlt), config["OpenUIHotkey"]);
