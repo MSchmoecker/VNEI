@@ -30,6 +30,7 @@ namespace VNEI.Logic {
 
         public readonly ComponentEvent onFavoriteChanged = new ComponentEvent();
         public readonly ComponentEvent onKnownChanged = new ComponentEvent();
+        public static event Action OnAnyFavoriteChanged;
         private Sprite icon;
 
         public Item(string name, string localizeName, string description, Sprite icon, ItemType itemType, GameObject prefab, int maxQuality = 1) {
@@ -145,6 +146,7 @@ namespace VNEI.Logic {
         public void UpdateFavorite(bool favorite) {
             isFavorite = favorite;
             onFavoriteChanged.Invoke();
+            OnAnyFavoriteChanged?.Invoke();
         }
 
         public void UpdateSelfKnown(Player player) {

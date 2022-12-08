@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine.EventSystems;
 using VNEI.Logic;
 
@@ -5,18 +6,24 @@ namespace VNEI.UI {
     public class ItemTypeToggle : TypeToggle, IPointerDownHandler {
         public ItemType itemType;
 
-        private void Awake() {
-            baseUI = GetComponentInParent<BaseUI>();
+        protected override void Awake() {
+            base.Awake();
             baseUI.typeToggles.Add(this);
-            UpdateToggle();
         }
 
-        private void OnDestroy() {
+        protected override void OnDestroy() {
+            base.OnDestroy();
             baseUI.typeToggles.Remove(this);
         }
 
         public bool IsDisabled(ItemType type) {
             return !IsOn && type == itemType;
+        }
+
+        protected override void UpdateItemCount() {
+            int activeItems = Indexing.GetActiveItems().Count(i => i.Value.itemType == itemType);
+            tooltip.m_text = Localization.instance.Localize("$vnei_items_in_category", activeItems.ToString());
+            IsEnabled = activeItems > 0;
         }
 
         public void OnPointerDown(PointerEventData eventData) {
