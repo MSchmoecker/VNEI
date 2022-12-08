@@ -69,8 +69,11 @@ namespace VNEI.UI {
             }
 
             GUIManager.Instance.ApplyWoodpanelStyle(dragHandler);
-            UpdateTransparency(null, EventArgs.Empty);
+
+            recipeUi.OnSetItem += AddItemToLastViewedQueue;
+            Plugin.OnOpenHotkey += UpdateVisibility;
             Plugin.transparency.SettingChanged += UpdateTransparency;
+            Plugin.showRecentItems.SettingChanged += UpdateLastViewItemsParent;
 
             if ((bool)InventoryGui.instance) {
                 transform.SetParent(InventoryGui.instance.m_player);
@@ -80,15 +83,8 @@ namespace VNEI.UI {
                 SetVisibility(false);
             }
 
-            recipeUi.OnSetItem += AddItemToLastViewedQueue;
-            Plugin.OnOpenHotkey += UpdateVisibility;
-
-            lastViewItemsParent.gameObject.SetActive(Plugin.showRecentItems.Value);
-
-            Plugin.showRecentItems.SettingChanged += (sender, args) => {
-                lastViewItemsParent.gameObject.SetActive(Plugin.showRecentItems.Value);
-            };
-
+            UpdateTransparency(null, EventArgs.Empty);
+            UpdateLastViewItemsParent(null, EventArgs.Empty);
             RebuildSize();
             RebuildDisplayItemRows();
         }
@@ -216,6 +212,7 @@ namespace VNEI.UI {
             recipeUi.OnSetItem -= AddItemToLastViewedQueue;
             Plugin.OnOpenHotkey -= UpdateVisibility;
             Plugin.transparency.SettingChanged -= UpdateTransparency;
+            Plugin.showRecentItems.SettingChanged -= UpdateLastViewItemsParent;
         }
 
         public void SetSize(bool usePluginSize, int itemsX, int itemsY) {
@@ -239,6 +236,10 @@ namespace VNEI.UI {
 
         private void UpdateTransparency(object sender, EventArgs args) {
             dragHandler.GetComponent<Image>().color = new Color(1f, 1f, 1f, 1f - Plugin.transparency.Value / 100f);
+        }
+
+        private void UpdateLastViewItemsParent(object sender, EventArgs args) {
+            lastViewItemsParent.gameObject.SetActive(Plugin.showRecentItems.Value);
         }
     }
 }
