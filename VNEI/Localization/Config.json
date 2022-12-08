@@ -12,5 +12,6 @@
   "ViewRecipeHotkey": "Hotkey to quickly view the recipe of an item while hovering over it. Works in the inventory, too.",
   "ItemCheatMouseButton": "Mouse button to to cheat items. Only works if devcommands are enabled and when the user is in a local game or an admin at a server.",
   "RemoveRecentMouseButton": "Mouse button to remove an item from the recent viewed item list.",
-  "ShowRecentItems": "Show the recent viewed items bar in the UI."
+  "ShowRecentItems": "Show the recent viewed items bar in the UI.",
+  "TabName": "Visible name of the tab in the crafting menu."
 }

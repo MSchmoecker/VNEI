@@ -44,6 +44,7 @@ namespace VNEI {
         public static ConfigEntry<InputButtonWrapper> removeRecentHotkey;
         public static ConfigEntry<bool> showOnlyKnown;
         public static ConfigEntry<bool> showRecentItems;
+        public static ConfigEntry<string> tabName;
 
         public static bool isUiOpen = true;
         public static event Action OnOpenHotkey;
@@ -87,6 +88,7 @@ namespace VNEI {
 
             // Visual
             transparency = Config.Bind("Visual", "Background Transparency", 0, new ConfigDescription(config["Transparency"], percentRange));
+            tabName = Config.Bind("Visual", "Tab Name", "VNEI", new ConfigDescription(config["TabName"]));
 
             isUiOpen = !hideUIAtStartup.Value;
 
