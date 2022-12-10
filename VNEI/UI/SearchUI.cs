@@ -85,25 +85,25 @@ namespace VNEI.UI {
             foreach (ItemTypeToggle typeToggle in baseUI.typeToggles) {
                 switch (typeToggle.itemType) {
                     case ItemType.Undefined:
-                        typeToggle.image.sprite = Plugin.Instance.noIconSprite;
+                        typeToggle.SetIcon(Plugin.Instance.noIconSprite);
                         break;
                     case ItemType.Creature:
-                        typeToggle.image.sprite = GUIManager.Instance.GetSprite("texts_button");
+                        typeToggle.SetIcon(GUIManager.Instance.GetSprite("texts_button"));
                         break;
                     case ItemType.Piece:
-                        typeToggle.image.sprite = GUIManager.Instance.GetSprite("mapicon_bed");
+                        typeToggle.SetIcon(GUIManager.Instance.GetSprite("mapicon_bed"));
                         break;
                     case ItemType.Item:
-                        typeToggle.image.sprite = GUIManager.Instance.GetSprite("mapicon_trader");
+                        typeToggle.SetIcon(GUIManager.Instance.GetSprite("mapicon_trader"));
                         break;
                     case ItemType.Food:
-                        typeToggle.image.sprite = GUIManager.Instance.GetSprite("food_icon");
+                        typeToggle.SetIcon(GUIManager.Instance.GetSprite("food_icon"));
                         break;
                     case ItemType.Weapon:
-                        typeToggle.image.sprite = GUIManager.Instance.GetSprite("pvp_on");
+                        typeToggle.SetIcon(GUIManager.Instance.GetSprite("pvp_on"));
                         break;
                     case ItemType.Armor:
-                        typeToggle.image.sprite = GUIManager.Instance.GetSprite("ac_bkg");
+                        typeToggle.SetIcon(GUIManager.Instance.GetSprite("ac_bkg"));
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
