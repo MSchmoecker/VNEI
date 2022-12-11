@@ -13,7 +13,6 @@ namespace VNEI.UI {
         [Header("Local References")] public RectTransform root;
         public RectTransform dragHandler;
         public RectTransform lastViewItemsParent;
-        public RectTransform favoriteItemsParent;
 
         public SearchUI searchUi;
         public RecipeUI recipeUi;
@@ -24,10 +23,7 @@ namespace VNEI.UI {
         public GameObject arrowPrefab;
 
         private List<DisplayItem> lastViewedDisplayItems = new List<DisplayItem>();
-        private List<DisplayItem> favoriteItemsDisplayItems = new List<DisplayItem>();
-
         private List<Item> lastViewedItems = new List<Item>();
-        // private List<Item> favoriteItems = new List<Item>();
 
         private bool blockInput;
         private bool sizeDirty;
@@ -122,9 +118,6 @@ namespace VNEI.UI {
         private void RebuildDisplayItemRows() {
             RebuildDisplayItemRow(lastViewedDisplayItems, lastViewItemsParent);
             UpdateDisplayItemRow(lastViewedDisplayItems, lastViewedItems);
-
-            // RebuildDisplayItemRow(favoriteItemsDisplayItems, favoriteItemsParent);
-            // UpdateDisplayItemRow(favoriteItemsDisplayItems, favoriteItems);
         }
 
         private void RebuildDisplayItemRow(List<DisplayItem> displayItems, RectTransform parent) {
