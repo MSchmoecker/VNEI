@@ -1,10 +1,12 @@
 using System.Linq;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using VNEI.Logic;
 
 namespace VNEI.UI {
     public class ItemTypeToggle : TypeToggle, IPointerDownHandler {
         public ItemType itemType;
+        public int order;
 
         protected override void Awake() {
             base.Awake();
@@ -24,6 +26,7 @@ namespace VNEI.UI {
             int activeItems = Indexing.GetActiveItems().Count(i => i.Value.itemType == itemType);
             tooltip.m_text = Localization.instance.Localize("$vnei_items_in_category", activeItems.ToString());
             IsEnabled = activeItems > 0;
+            baseUI.searchUi.UpdateFilters();
         }
 
         public void OnPointerDown(PointerEventData eventData) {

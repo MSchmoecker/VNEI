@@ -4,8 +4,8 @@ using VNEI.Logic;
 
 namespace VNEI.UI {
     public abstract class TypeToggle : MonoBehaviour {
-        public Image image;
-        public Image background;
+        protected Image image;
+        protected Image background;
         protected BaseUI baseUI;
         protected UITooltip tooltip;
 
@@ -16,6 +16,7 @@ namespace VNEI.UI {
             baseUI = GetComponentInParent<BaseUI>();
             tooltip = GetComponent<UITooltip>();
             background = transform.Find("Background").GetComponent<Image>();
+            image = transform.Find("Checkmark").GetComponent<Image>();
 
             UpdateToggle();
 

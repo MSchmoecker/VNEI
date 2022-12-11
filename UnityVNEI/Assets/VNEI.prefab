@@ -69,10 +69,8 @@ MonoBehaviour:
   m_Script: {fileID: 1409699083, guid: c09b8d6d0746d374d9f0b1a7470d1e74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  image: {fileID: 1633404660}
-  background: {fileID: 0}
-  isOn: 1
   itemType: 1
+  order: 1
 --- !u!1 &1586427026
 GameObject:
   m_ObjectHideFlags: 0
@@ -636,10 +634,8 @@ MonoBehaviour:
   m_Script: {fileID: 1409699083, guid: c09b8d6d0746d374d9f0b1a7470d1e74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  image: {fileID: 8086395811935559085}
-  background: {fileID: 0}
-  isOn: 1
   itemType: 0
+  order: 0
 --- !u!1 &474549442713803913
 GameObject:
   m_ObjectHideFlags: 0
@@ -935,10 +931,8 @@ MonoBehaviour:
   m_Script: {fileID: 1409699083, guid: c09b8d6d0746d374d9f0b1a7470d1e74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  image: {fileID: 324590988620639791}
-  background: {fileID: 0}
-  isOn: 1
   itemType: 5
+  order: 3
 --- !u!1 &549469994623510247
 GameObject:
   m_ObjectHideFlags: 0
@@ -1210,10 +1204,8 @@ MonoBehaviour:
   m_Script: {fileID: 1409699083, guid: c09b8d6d0746d374d9f0b1a7470d1e74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  image: {fileID: 8722763457723192432}
-  background: {fileID: 0}
-  isOn: 1
   itemType: 4
+  order: 5
 --- !u!1 &801548643943206221
 GameObject:
   m_ObjectHideFlags: 0
@@ -3602,10 +3594,8 @@ MonoBehaviour:
   m_Script: {fileID: 1409699083, guid: c09b8d6d0746d374d9f0b1a7470d1e74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  image: {fileID: 4516718911861534325}
-  background: {fileID: 0}
-  isOn: 1
   itemType: 2
+  order: 2
 --- !u!1 &3294064930735195163
 GameObject:
   m_ObjectHideFlags: 0
@@ -3984,9 +3974,6 @@ MonoBehaviour:
   m_Script: {fileID: -238743669, guid: c09b8d6d0746d374d9f0b1a7470d1e74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  image: {fileID: 5206619555925309110}
-  background: {fileID: 0}
-  isOn: 0
 --- !u!1 &3439930533972513430
 GameObject:
   m_ObjectHideFlags: 0
@@ -6355,10 +6342,8 @@ MonoBehaviour:
   m_Script: {fileID: 1409699083, guid: c09b8d6d0746d374d9f0b1a7470d1e74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  image: {fileID: 1974566826572098718}
-  background: {fileID: 0}
-  isOn: 1
   itemType: 3
+  order: 6
 --- !u!1 &6374390310398871373
 GameObject:
   m_ObjectHideFlags: 0
@@ -8131,10 +8116,8 @@ MonoBehaviour:
   m_Script: {fileID: 1409699083, guid: c09b8d6d0746d374d9f0b1a7470d1e74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  image: {fileID: 2138127157273728535}
-  background: {fileID: 0}
-  isOn: 1
   itemType: 6
+  order: 4
 --- !u!1 &8800094102535100953
 GameObject:
   m_ObjectHideFlags: 0

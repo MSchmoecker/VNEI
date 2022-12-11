@@ -23,6 +23,7 @@ namespace VNEI.UI {
         private Action updateKnownHandler;
         private int currentPage;
         private int maxPages;
+        private bool isFilterDirty;
 
         public void Awake() {
             hasInit = false;
@@ -40,6 +41,30 @@ namespace VNEI.UI {
 
             for (int i = 0; i < spawnRect.childCount; i++) {
                 Destroy(spawnRect.GetChild(i).gameObject);
+            }
+        }
+
+        private void LateUpdate() {
+            if (isFilterDirty) {
+                isFilterDirty = false;
+
+                float posX = -20f;
+                foreach (ItemTypeToggle typeToggle in baseUI.typeToggles.OrderBy(i => i.order)) {
+                    typeToggle.gameObject.SetActive(typeToggle.IsEnabled);
+
+                    if (!typeToggle.IsEnabled) {
+                        continue;
+                    }
+
+                    RectTransform rectTransform = (RectTransform)typeToggle.transform;
+                    float y = rectTransform.anchoredPosition.y;
+                    rectTransform.anchoredPosition = new Vector2(posX, y);
+                    posX -= 30f;
+                }
+
+                RectTransform favoriteRectTransform = (RectTransform)baseUI.favoriteToggle.transform;
+                float favoriteY = favoriteRectTransform.anchoredPosition.y;
+                favoriteRectTransform.anchoredPosition = new Vector2(posX, favoriteY);
             }
         }
 
@@ -226,6 +251,10 @@ namespace VNEI.UI {
             public static int Comparer(ListItem a, ListItem b) {
                 return string.Compare(a.item.GetPrimaryName(), b.item.GetPrimaryName(), StringComparison.Ordinal);
             }
+        }
+
+        public void UpdateFilters() {
+            isFilterDirty = true;
         }
     }
 }
