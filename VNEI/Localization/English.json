@@ -16,6 +16,6 @@
   "vnei_unknown_item": "Unknown item",
   "vnei_items_in_category": "$1 items in this filter",
   "copy_display_name": "Copy display name",
-  "copy_internal_name": "Copy itemID",
+  "copy_internal_name": "Copy ItemID",
   "copy_mod_name": "Copy mod name"
 }
