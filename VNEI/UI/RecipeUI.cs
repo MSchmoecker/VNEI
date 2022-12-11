@@ -115,5 +115,9 @@ namespace VNEI.UI {
             currentView = view;
             UpdateRecipeView();
         }
+
+        public Item GetItem() {
+            return currentItem;
+        }
     }
 }

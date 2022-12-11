@@ -16,6 +16,7 @@ namespace VNEI.UI {
 
         public SearchUI searchUi;
         public RecipeUI recipeUi;
+        private Window activeWindow;
 
         [Header("Prefabs")] public GameObject itemPrefab;
         public GameObject rowPrefab;
@@ -24,6 +25,8 @@ namespace VNEI.UI {
 
         private List<DisplayItem> lastViewedDisplayItems = new List<DisplayItem>();
         private List<Item> lastViewedItems = new List<Item>();
+
+        public const string HistoryQueueKey = "VNEI_History";
 
         private bool blockInput;
         private bool sizeDirty;
@@ -56,7 +59,7 @@ namespace VNEI.UI {
         }
 
         private void Awake() {
-            ShowSearch();
+            ShowSearch(true);
 
             Styling.ApplyAllComponents(root);
 
@@ -113,6 +116,16 @@ namespace VNEI.UI {
                 RebuildSize();
                 RebuildDisplayItemRows();
             }
+
+            if (Input.GetKeyDown(KeyCode.PageUp)) {
+                UndoManager.Instance.Undo(HistoryQueueKey);
+            } else if (Input.GetKeyDown(KeyCode.PageDown)) {
+                if (UndoManager.Instance.GetQueue(HistoryQueueKey).GetIndex() == -1) {
+                    UndoManager.Instance.Redo(HistoryQueueKey);
+                }
+
+                UndoManager.Instance.Redo(HistoryQueueKey);
+            }
         }
 
         private void RebuildDisplayItemRows() {
@@ -155,12 +168,27 @@ namespace VNEI.UI {
             root.anchoredPosition = dragHandler.anchoredPosition;
         }
 
-        public void ShowSearch() {
+        public void ShowSearch(bool trackHistory) {
+            if (trackHistory) {
+                HistorySnapshot previous = new HistorySnapshot(this, activeWindow, recipeUi.GetItem());
+                HistorySnapshot next = new HistorySnapshot(this, Window.Search, null);
+                UndoManager.Instance.Add(HistoryQueueKey, new HistoryElement(previous, next));
+            }
+
+            activeWindow = Window.Search;
             recipeUi.gameObject.SetActive(false);
             searchUi.gameObject.SetActive(true);
         }
 
-        public void ShowRecipe() {
+        public void ShowRecipe(Item item, bool trackHistory) {
+            if (trackHistory) {
+                HistorySnapshot previous = new HistorySnapshot(this, activeWindow, recipeUi.GetItem());
+                HistorySnapshot next = new HistorySnapshot(this, Window.Recipe, item);
+                UndoManager.Instance.Add(HistoryQueueKey, new HistoryElement(previous, next));
+            }
+
+            activeWindow = Window.Recipe;
+            recipeUi.SetItem(item);
             recipeUi.gameObject.SetActive(true);
             searchUi.gameObject.SetActive(false);
         }

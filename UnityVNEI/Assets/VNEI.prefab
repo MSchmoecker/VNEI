@@ -554,8 +554,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6895736452569038743}
-        m_MethodName: UpdateSearch
+      - m_Target: {fileID: 1812281494192956357}
+        m_MethodName: ShowSearch
         m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

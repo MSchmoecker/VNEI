@@ -196,8 +196,7 @@ namespace VNEI {
                     }
 
                     BaseUI baseUI = MainVneiHandler.Instance.GetOrCreateBaseUI();
-                    baseUI.recipeUi.SetItem(item);
-                    baseUI.ShowRecipe();
+                    baseUI.ShowRecipe(item, true);
                 }
             }
         }

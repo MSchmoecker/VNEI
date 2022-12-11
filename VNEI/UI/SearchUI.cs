@@ -139,7 +139,7 @@ namespace VNEI.UI {
         }
 
         public void UpdateSearch(bool recalculateActive) {
-            baseUI.ShowSearch();
+            baseUI.ShowSearch(false);
 
             if (recalculateActive) {
                 RecalculateActive();
