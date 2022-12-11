@@ -13,5 +13,7 @@
   "ItemCheatMouseButton": "Mouse button to to cheat items. Only works if devcommands are enabled and when the user is in a local game or an admin at a server.",
   "RemoveRecentMouseButton": "Mouse button to remove an item from the recent viewed item list.",
   "ShowRecentItems": "Show the recent viewed items bar in the UI.",
-  "TabName": "Visible name of the tab in the crafting menu."
+  "TabName": "Visible name of the tab in the crafting menu.",
+  "GoForwardHotkey": "Hotkey to go forward to the last viewed page in history.",
+  "GoBackHotkey": "Hotkey to go back to the last viewed page in history."
 }

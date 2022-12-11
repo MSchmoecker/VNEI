@@ -117,15 +117,23 @@ namespace VNEI.UI {
                 RebuildDisplayItemRows();
             }
 
-            if (Input.GetKeyDown(KeyCode.PageUp)) {
-                UndoManager.Instance.Undo(HistoryQueueKey);
-            } else if (Input.GetKeyDown(KeyCode.PageDown)) {
-                if (UndoManager.Instance.GetQueue(HistoryQueueKey).GetIndex() == -1) {
-                    UndoManager.Instance.Redo(HistoryQueueKey);
-                }
+            if (Plugin.goForwardHotkey.Value.IsKeyDown()) {
+                PreviousView();
+            } else if (Plugin.goBackHotkey.Value.IsKeyDown()) {
+                NextView();
+            }
+        }
 
+        public void PreviousView() {
+            UndoManager.Instance.Undo(HistoryQueueKey);
+        }
+
+        public void NextView() {
+            if (UndoManager.Instance.GetQueue(HistoryQueueKey).GetIndex() == -1) {
                 UndoManager.Instance.Redo(HistoryQueueKey);
             }
+
+            UndoManager.Instance.Redo(HistoryQueueKey);
         }
 
         private void RebuildDisplayItemRows() {
