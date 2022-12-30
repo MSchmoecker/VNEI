@@ -81,8 +81,8 @@ namespace VNEI {
             viewRecipeHotkey = Config.Bind("Hotkeys", "View Recipe Hotkey", new KeyboardShortcut(KeyCode.R), config["ViewRecipeHotkey"]);
             itemCheatHotkey = Config.Bind("Hotkeys", "Item Cheat Mouse Button", InputButtonWrapper.Right, config["ItemCheatMouseButton"]);
             removeRecentHotkey = Config.Bind("Hotkeys", "Remove Recent Item Mouse Button", InputButtonWrapper.Middle, config["RemoveRecentMouseButton"]);
-            goForwardHotkey = Config.Bind("Hotkeys", "Go Forward Hotkey", new KeyboardShortcut(KeyCode.PageUp), config["GoForwardHotkey"]);
-            goBackHotkey = Config.Bind("Hotkeys", "Go Back Hotkey", new KeyboardShortcut(KeyCode.PageDown), config["GoBackHotkey"]);
+            goForwardHotkey = Config.Bind("Hotkeys", "Go Forward Hotkey", new KeyboardShortcut(KeyCode.RightArrow), config["GoForwardHotkey"]);
+            goBackHotkey = Config.Bind("Hotkeys", "Go Back Hotkey", new KeyboardShortcut(KeyCode.LeftArrow), config["GoBackHotkey"]);
 
             // UI
             columnCount = Config.Bind("UI", "Items Horizontal", 12, new ConfigDescription(config["ItemsHorizontal"], rowRange));

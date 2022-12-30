@@ -118,9 +118,9 @@ namespace VNEI.UI {
             }
 
             if (Plugin.goForwardHotkey.Value.IsKeyDown()) {
-                PreviousView();
-            } else if (Plugin.goBackHotkey.Value.IsKeyDown()) {
                 NextView();
+            } else if (Plugin.goBackHotkey.Value.IsKeyDown()) {
+                PreviousView();
             }
         }
 
