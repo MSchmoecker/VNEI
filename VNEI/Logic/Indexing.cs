@@ -93,7 +93,7 @@ namespace VNEI.Logic {
 
             foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
                 if (!prefab) {
-                    Log.LogDebug("IndexItems: prefab is null!");
+                    Log.LogDebug("IndexItems: prefab in ZNetScene.m_prefabs is null");
                     continue;
                 }
 
@@ -162,7 +162,7 @@ namespace VNEI.Logic {
 
             foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
                 if (!prefab) {
-                    Log.LogDebug("DisableItems: prefab is null!");
+                    Log.LogDebug("DisableItems: prefab in ZNetScene.m_prefabs is null");
                     continue;
                 }
 
@@ -270,7 +270,7 @@ namespace VNEI.Logic {
 
             foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
                 if (!prefab) {
-                    Log.LogDebug("IndexItemRecipes: prefab is null!");
+                    Log.LogDebug("IndexItemRecipes: prefab in ZNetScene.m_prefabs is null");
                     continue;
                 }
 
@@ -340,7 +340,17 @@ namespace VNEI.Logic {
             }
 
             foreach (KeyValuePair<string, PieceTable> pair in pieceTables) {
+                if (!pair.Value) {
+                    Log.LogDebug($"IndexItemRecipes: pieceTable {pair.Key} is null");
+                    continue;
+                }
+
                 foreach (GameObject prefab in pair.Value.m_pieces) {
+                    if (!prefab) {
+                        Log.LogDebug($"IndexItemRecipes: prefab in pieceTables {pair.Key} is null");
+                        continue;
+                    }
+
                     if (prefab.TryGetComponent(out Piece piece)) {
                         AddRecipeToItems(new RecipeInfo(prefab, piece, GetItem(pair.Key)));
                     }
@@ -420,8 +430,6 @@ namespace VNEI.Logic {
 
             if (!Items.ContainsKey(key)) {
                 Items.Add(key, item);
-            } else {
-                Log.LogDebug($"Items contains key already: {CleanupName(item.internalName)}");
             }
 
             if (!ItemsByPreLocalizedName.ContainsKey(item.preLocalizedName.ToLower())) {
