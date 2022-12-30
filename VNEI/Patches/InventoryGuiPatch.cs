@@ -9,10 +9,10 @@ namespace VNEI.Patches {
         [HarmonyPatch(typeof(InventoryGui), nameof(InventoryGui.Awake)), HarmonyPostfix, HarmonyPriority(Priority.Low)]
         public static void AwakePatch(InventoryGui __instance) {
             if (!Auga.API.IsLoaded()) {
-                MainVneiHandler.Instance.GetOrCreateVneiTabButton();
+                MainVneiHandler.Instance.GetTabButton();
                 __instance.StartCoroutine(UpdateOtherTabs());
             } else {
-                MainVneiHandlerAuga.Instance.CreateWindow();
+                MainVneiHandlerAuga.Instance.CreateBaseUI();
             }
         }
 
@@ -39,7 +39,7 @@ namespace VNEI.Patches {
             if (!Auga.API.IsLoaded()) {
                 // vanilla behaviour has set the vanilla tabs active
                 if (MainVneiHandler.Instance.VneiTabActive) {
-                    MainVneiHandler.Instance.SetVneiTabActive();
+                    MainVneiHandler.Instance.SetTabActive();
                 }
             }
         }

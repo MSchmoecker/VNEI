@@ -155,6 +155,7 @@
         <Compile Include="UI\BaseUI.cs" />
         <Compile Include="UI\History\HistoryElement.cs" />
         <Compile Include="UI\History\HistorySnapshot.cs" />
+        <Compile Include="UI\VneiHandler.cs" />
         <Compile Include="UI\MainVneiHandler.cs" />
         <Compile Include="UI\DisplayItem.cs" />
         <Compile Include="UI\MainVneiHandlerAuga.cs" />

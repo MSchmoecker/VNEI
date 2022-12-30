@@ -121,9 +121,7 @@ namespace VNEI {
             displayItemTemplate = AssetBundle.LoadAsset<GameObject>("_Template");
 
             GUIManager.OnCustomGUIAvailable += () => {
-                if (!Auga.API.IsLoaded()) {
-                    MainVneiHandler.Instance.GetOrCreateBaseUI();
-                }
+                GetMainUI().CreateBaseUI();
             };
 
             CommandManager.Instance.AddConsoleCommand(new SelectUITest.ToggleUIConsoleCommand());
@@ -196,10 +194,10 @@ namespace VNEI {
 
                 if (item != null) {
                     if (attachToCrafting.Value) {
-                        MainVneiHandler.Instance.SetVneiTabActive();
+                        GetMainUI().SetTabActive();
                     }
 
-                    BaseUI baseUI = MainVneiHandler.Instance.GetOrCreateBaseUI();
+                    BaseUI baseUI = GetMainUI().GetBaseUI();
                     baseUI.ShowRecipe(item, true);
                 }
             }
@@ -225,6 +223,14 @@ namespace VNEI {
             Right = PointerEventData.InputButton.Right,
             Middle = PointerEventData.InputButton.Middle,
             None = -1
+        }
+
+        public static VneiHandler GetMainUI() {
+            if (Auga.API.IsLoaded()) {
+                return MainVneiHandlerAuga.Instance;
+            }
+
+            return MainVneiHandler.Instance;
         }
     }
 }

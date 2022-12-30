@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace VNEI.UI {
-    public class MainVneiHandlerAuga {
+    public class MainVneiHandlerAuga : VneiHandler {
         private BaseUI baseUI;
 
         private static MainVneiHandlerAuga instance;
@@ -13,12 +13,26 @@ namespace VNEI.UI {
         public static MainVneiHandlerAuga Instance => instance ?? (instance = new MainVneiHandlerAuga());
 
         public MainVneiHandlerAuga() {
-            Plugin.attachToCrafting.SettingChanged += (sender, e) => CreateWindow(true);
+            Plugin.attachToCrafting.SettingChanged += (sender, e) => CreateBaseUI(true);
         }
 
-        public void CreateWindow(bool forceRecreate = false) {
+        public BaseUI GetBaseUI() {
+            if (!baseUI) {
+                CreateBaseUI();
+            }
+
+            return baseUI;
+        }
+
+        public void SetTabActive() {
+            if (!API.PlayerPanel_IsTabActive(panelData.TabButtonGO)) {
+                API.PlayerPanel_GetTabButton(panelData.Index).onClick.Invoke();
+            }
+        }
+
+        public BaseUI CreateBaseUI(bool forceRecreate = false) {
             if (!InventoryGui.instance) {
-                return;
+                return null;
             }
 
             if (baseUI && forceRecreate) {
@@ -47,6 +61,8 @@ namespace VNEI.UI {
                 baseUI.dragHandler.GetComponent<Image>().enabled = false;
                 baseUI.SetVisibility(true);
             }
+
+            return baseUI;
         }
     }
 }

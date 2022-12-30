@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
 namespace VNEI.UI {
-    public class MainVneiHandler {
+    public class MainVneiHandler : VneiHandler {
         private static MainVneiHandler instance;
         private BaseUI baseUI;
         private Button vneiTab;
@@ -15,12 +15,16 @@ namespace VNEI.UI {
 
         private MainVneiHandler() {
             Plugin.attachToCrafting.SettingChanged += (sender, e) => {
-                GetOrCreateVneiTabButton(true);
-                GetOrCreateBaseUI(true);
+                GetTabButton(true);
+                CreateBaseUI(true);
             };
         }
 
-        public Button GetOrCreateVneiTabButton(bool forceRecreate = false) {
+        public BaseUI GetBaseUI() {
+            return CreateBaseUI();
+        }
+
+        public Button GetTabButton(bool forceRecreate = false) {
             if (!InventoryGui.instance) {
                 return null;
             }
@@ -42,19 +46,19 @@ namespace VNEI.UI {
                 vneiTab.transform.SetSiblingIndex(vneiTab.transform.parent.childCount - 2);
                 vneiTab.name = "VNEI";
                 vneiTab.onClick.RemoveAllListeners();
-                vneiTab.onClick.AddListener(SetVneiTabActive);
-                SetVneiTabNotActive();
+                vneiTab.onClick.AddListener(SetTabActive);
+                SetTabInactive();
             }
 
             if (!Plugin.AttachToCrafting()) {
                 vneiTab.gameObject.SetActive(false);
-                SetVneiTabNotActive();
+                SetTabInactive();
             }
 
             return vneiTab;
         }
 
-        public BaseUI GetOrCreateBaseUI(bool forceRecreate = false) {
+        public BaseUI CreateBaseUI(bool forceRecreate = false) {
             if (!InventoryGui.instance) {
                 return null;
             }
@@ -95,7 +99,7 @@ namespace VNEI.UI {
             otherButtons.RemoveAll(i => !i);
 
             foreach (Button tab in InventoryGui.instance.m_tabCraft.transform.parent.GetComponentsInChildren<Button>()) {
-                if (tab == GetOrCreateVneiTabButton()) {
+                if (tab == GetTabButton()) {
                     continue;
                 }
 
@@ -103,13 +107,13 @@ namespace VNEI.UI {
                     continue;
                 }
 
-                tab.onClick.AddListener(SetVneiTabNotActive);
+                tab.onClick.AddListener(SetTabInactive);
                 otherButtons.Add(tab);
             }
         }
 
         public void UpdateTabPosition() {
-            RectTransform tab = (RectTransform)GetOrCreateVneiTabButton().transform;
+            RectTransform tab = (RectTransform)GetTabButton().transform;
 
             for (int i = tab.GetSiblingIndex() - 1; i >= 0; i--) {
                 if (!tab.parent.GetChild(i).gameObject.activeSelf) {
@@ -122,13 +126,13 @@ namespace VNEI.UI {
             }
         }
 
-        public void SetVneiTabActive() {
+        public void SetTabActive() {
             VneiTabActive = true;
 
-            GetOrCreateVneiTabButton().interactable = false;
+            GetTabButton().interactable = false;
             InventoryGui.instance.m_inventoryRoot.Find("Crafting/RecipeList").gameObject.SetActive(false);
             InventoryGui.instance.m_inventoryRoot.Find("Crafting/Decription").gameObject.SetActive(false);
-            GetOrCreateBaseUI().SetVisibility(true);
+            GetBaseUI().SetVisibility(true);
 
             InventoryGui.instance.m_tabCraft.interactable = true;
             InventoryGui.instance.m_tabUpgrade.interactable = true;
@@ -136,12 +140,12 @@ namespace VNEI.UI {
             UpdateTabPosition();
         }
 
-        public void SetVneiTabNotActive() {
+        public void SetTabInactive() {
             VneiTabActive = false;
 
-            GetOrCreateVneiTabButton().interactable = true;
+            GetTabButton().interactable = true;
             if (Plugin.AttachToCrafting()) {
-                GetOrCreateBaseUI().SetVisibility(false);
+                GetBaseUI().SetVisibility(false);
             }
 
             InventoryGui.instance.m_inventoryRoot.Find("Crafting/RecipeList").gameObject.SetActive(true);
