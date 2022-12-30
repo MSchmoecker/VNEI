@@ -177,26 +177,31 @@ namespace VNEI.UI {
         }
 
         public void ShowSearch(bool trackHistory) {
-            if (trackHistory) {
-                HistorySnapshot previous = GetCurrentView();
-                HistorySnapshot next = new HistorySnapshotSearch(this);
-                UndoManager.Instance.Add(HistoryQueueKey, new HistoryElement(previous, next));
-            }
-
-            recipeUi.gameObject.SetActive(false);
-            searchUi.gameObject.SetActive(true);
+            SwitchView(() => {
+                recipeUi.gameObject.SetActive(false);
+                searchUi.gameObject.SetActive(true);
+            }, trackHistory);
         }
 
         public void ShowRecipe(Item item, bool trackHistory) {
+            SwitchView(() => {
+                recipeUi.SetItem(item);
+                recipeUi.gameObject.SetActive(true);
+                searchUi.gameObject.SetActive(false);
+            }, trackHistory && item != recipeUi.GetItem());
+        }
+
+        private void SwitchView(Action changeView, bool trackHistory) {
             if (trackHistory) {
                 HistorySnapshot previous = GetCurrentView();
-                HistorySnapshot next = new HistorySnapshotRecipe(this, item);
-                UndoManager.Instance.Add(HistoryQueueKey, new HistoryElement(previous, next));
-            }
 
-            recipeUi.SetItem(item);
-            recipeUi.gameObject.SetActive(true);
-            searchUi.gameObject.SetActive(false);
+                changeView?.Invoke();
+
+                HistorySnapshot next = GetCurrentView();
+                UndoManager.Instance.Add(HistoryQueueKey, new HistoryElement(previous, next));
+            } else {
+                changeView?.Invoke();
+            }
         }
 
         private HistorySnapshot GetCurrentView() {
