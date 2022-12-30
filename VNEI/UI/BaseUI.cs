@@ -16,7 +16,6 @@ namespace VNEI.UI {
 
         public SearchUI searchUi;
         public RecipeUI recipeUi;
-        private Window activeWindow;
 
         [Header("Prefabs")] public GameObject itemPrefab;
         public GameObject rowPrefab;
@@ -59,6 +58,7 @@ namespace VNEI.UI {
         }
 
         private void Awake() {
+            ShowSearch(false);
             ShowSearch(true);
 
             Styling.ApplyAllComponents(root);
@@ -178,27 +178,33 @@ namespace VNEI.UI {
 
         public void ShowSearch(bool trackHistory) {
             if (trackHistory) {
-                HistorySnapshot previous = new HistorySnapshot(this, activeWindow, recipeUi.GetItem());
-                HistorySnapshot next = new HistorySnapshot(this, Window.Search, null);
+                HistorySnapshot previous = GetCurrentView();
+                HistorySnapshot next = new HistorySnapshotSearch(this);
                 UndoManager.Instance.Add(HistoryQueueKey, new HistoryElement(previous, next));
             }
 
-            activeWindow = Window.Search;
             recipeUi.gameObject.SetActive(false);
             searchUi.gameObject.SetActive(true);
         }
 
         public void ShowRecipe(Item item, bool trackHistory) {
             if (trackHistory) {
-                HistorySnapshot previous = new HistorySnapshot(this, activeWindow, recipeUi.GetItem());
-                HistorySnapshot next = new HistorySnapshot(this, Window.Recipe, item);
+                HistorySnapshot previous = GetCurrentView();
+                HistorySnapshot next = new HistorySnapshotRecipe(this, item);
                 UndoManager.Instance.Add(HistoryQueueKey, new HistoryElement(previous, next));
             }
 
-            activeWindow = Window.Recipe;
             recipeUi.SetItem(item);
             recipeUi.gameObject.SetActive(true);
             searchUi.gameObject.SetActive(false);
+        }
+
+        private HistorySnapshot GetCurrentView() {
+            if (recipeUi.gameObject.activeSelf) {
+                return new HistorySnapshotRecipe(this, recipeUi.GetItem());
+            }
+
+            return new HistorySnapshotSearch(this);
         }
 
         private void AddItemToLastViewedQueue(Item item) {

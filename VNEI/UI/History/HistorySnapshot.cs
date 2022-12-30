@@ -1,31 +1,47 @@
 using VNEI.Logic;
 
 namespace VNEI.UI {
-    public class HistorySnapshot {
-        private readonly BaseUI targetUI;
-        private readonly Window window;
+    public abstract class HistorySnapshot {
+        protected readonly BaseUI targetUI;
+
+        public HistorySnapshot(BaseUI targetUI) {
+            this.targetUI = targetUI;
+        }
+
+        public abstract void Show();
+        public abstract string Description();
+    }
+
+    public class HistorySnapshotSearch : HistorySnapshot {
+        public HistorySnapshotSearch(BaseUI targetUI) : base(targetUI) {
+        }
+
+        public override void Show() {
+            if (targetUI) {
+                targetUI.ShowSearch(false);
+            }
+        }
+
+        public override string Description() {
+            return $"Search";
+        }
+    }
+
+    public class HistorySnapshotRecipe : HistorySnapshot {
         private readonly Item item;
 
-        public HistorySnapshot(BaseUI targetUI, Window window, Item item) {
-            this.targetUI = targetUI;
-            this.window = window;
+        public HistorySnapshotRecipe(BaseUI targetUI, Item item) : base(targetUI) {
             this.item = item;
         }
 
-        public void Show() {
-            if (!targetUI) {
-                return;
-            }
-
-            if (window == Window.Search) {
-                targetUI.ShowSearch(false);
-            } else if (window == Window.Recipe) {
+        public override void Show() {
+            if (targetUI) {
                 targetUI.ShowRecipe(item, false);
             }
         }
 
-        public string Description() {
-            return $"Window: {window}, Item: {item?.GetName() ?? "-"}";
+        public override string Description() {
+            return $"Recipe: {item?.GetName() ?? "-"}";
         }
     }
 }
