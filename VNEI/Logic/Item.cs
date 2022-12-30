@@ -25,8 +25,8 @@ namespace VNEI.Logic {
         public bool IsSelfKnown { get; private set; }
         private readonly Dictionary<int, string> tooltipsCache = new Dictionary<int, string>();
 
-        public readonly List<RecipeInfo> result = new List<RecipeInfo>();
-        public readonly List<RecipeInfo> ingredient = new List<RecipeInfo>();
+        public readonly HashSet<RecipeInfo> result = new HashSet<RecipeInfo>();
+        public readonly HashSet<RecipeInfo> ingredient = new HashSet<RecipeInfo>();
 
         public readonly ComponentEvent onFavoriteChanged = new ComponentEvent();
         public readonly ComponentEvent onKnownChanged = new ComponentEvent();
