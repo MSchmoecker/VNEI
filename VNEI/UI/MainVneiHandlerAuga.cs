@@ -45,7 +45,11 @@ namespace VNEI.UI {
             }
 
             if (!API.PlayerPanel_HasTab("VNEI tab")) {
-                panelData = API.PlayerPanel_AddTab("VNEI tab", null, "VNEI", i => { });
+                panelData = API.PlayerPanel_AddTab("VNEI tab", null, Plugin.tabName.Value, i => { });
+
+                Plugin.tabName.SettingChanged += (sender, e) => {
+                    panelData.TabTitle.text = Plugin.tabName.Value;
+                };
             }
 
             if (Plugin.AttachToCrafting()) {
