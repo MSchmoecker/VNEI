@@ -1,16 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Jotunn.Managers;
 using UnityEngine;
 using UnityEngine.UI;
 using VNEI.Logic;
-using Object = UnityEngine.Object;
 
 namespace VNEI.UI {
     public class RecipeScroll : MonoBehaviour {
         [SerializeField] private ScrollRect scrollRect;
         [SerializeField] private Text title;
-        private List<RectTransform> rows = new List<RectTransform>();
+        private List<RecipeInfo> recipes = new List<RecipeInfo>();
+        private readonly Dictionary<RecipeInfo, RectTransform> rows = new Dictionary<RecipeInfo, RectTransform>();
         private const float RowHeight = 70f;
         private BaseUI baseUI;
 
@@ -20,51 +21,52 @@ namespace VNEI.UI {
         }
 
         public void Clear() {
-            foreach (RectTransform row in rows) {
+            foreach (RectTransform row in rows.Values) {
                 Destroy(row.gameObject);
             }
 
             rows.Clear();
+            recipes.Clear();
         }
 
-        public void SpawnRows(IEnumerable<RecipeInfo> recipes) {
-            bool useBlacklist = Plugin.useBlacklist.Value;
-            float maxSizeX = 0;
-            float posY = -RowHeight / 2f;
+        public void SetRecipes(List<RecipeInfo> newRecipes) {
+            recipes = new List<RecipeInfo>(newRecipes);
+            float width = 0;
+            float height = 0;
 
-            foreach (RecipeInfo recipe in recipes) {
-                if (useBlacklist && recipe.IsOnBlacklist) {
-                    continue;
-                }
-
-                float sizeX = SpawnRecipe(recipe, scrollRect.content, rows, posY);
-
-                maxSizeX = Mathf.Max(sizeX, maxSizeX);
-                posY -= RowHeight;
+            foreach (RecipeInfo recipe in GetActiveRecipes()) {
+                width = Mathf.Max(width, recipe.Width);
+                height += RowHeight;
             }
 
-            scrollRect.content.sizeDelta = new Vector2(maxSizeX, -(posY + RowHeight / 2f - 10f));
+            scrollRect.content.sizeDelta = new Vector2(width, height + 5f);
             UpdateHidden();
         }
 
         public void UpdateHidden() {
             Rect rect = ((RectTransform)scrollRect.transform).rect;
             Vector2 scrollPos = scrollRect.content.anchoredPosition;
+            float posY = -RowHeight / 2f;
 
-            foreach (RectTransform obtainingItem in rows) {
-                RectTransform rectTransform = (RectTransform)obtainingItem.transform;
-
-                float posY = rectTransform.anchoredPosition.y;
+            foreach (RecipeInfo recipe in GetActiveRecipes()) {
                 bool invisible = posY > -scrollPos.y + 40 || posY < -scrollPos.y - rect.height - 40;
 
-                obtainingItem.gameObject.SetActive(!invisible);
+                if (invisible && rows.ContainsKey(recipe)) {
+                    Destroy(rows[recipe].gameObject);
+                    rows.Remove(recipe);
+                } else if (!invisible && !rows.ContainsKey(recipe)) {
+                    RectTransform row = SpawnRecipe(recipe, scrollRect.content, posY);
+                    row.gameObject.SetActive(true);
+                    rows.Add(recipe, row);
+                }
+
+                posY -= RowHeight;
             }
         }
 
-        public float SpawnRecipe(RecipeInfo recipe, RectTransform root, List<RectTransform> objects, float posY) {
+        public RectTransform SpawnRecipe(RecipeInfo recipe, RectTransform root, float posY) {
             RectTransform row = (RectTransform)Instantiate(baseUI.rowPrefab, root).transform;
             row.anchoredPosition = new Vector2(25f, posY);
-            objects.Add(row);
 
             float sizeX = 25;
             float deltaX = 0;
@@ -115,7 +117,7 @@ namespace VNEI.UI {
                 }
             }
 
-            return sizeX - deltaX / 2f;
+            return row;
         }
 
         private void SpawnItem(Part part, Transform root, Vector2 relPos, ref float posX, out float deltaX) {
@@ -144,6 +146,14 @@ namespace VNEI.UI {
 
         public void SetTitle(string titleText) {
             title.text = Localization.instance.Localize(titleText);
+        }
+
+        private List<RecipeInfo> GetActiveRecipes() {
+            if (Plugin.useBlacklist.Value) {
+                return recipes.Where(recipe => !recipe.IsOnBlacklist).ToList();
+            }
+
+            return recipes;
         }
     }
 }

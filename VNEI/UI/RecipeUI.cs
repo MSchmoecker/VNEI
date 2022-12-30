@@ -76,16 +76,16 @@ namespace VNEI.UI {
 
             switch (view) {
                 case RecipeView.Obtaining:
-                    bothScroll.SpawnRows(currentItem.result);
+                    bothScroll.SetRecipes(currentItem.result);
                     bothScroll.SetTitle("$vnei_obtaining");
                     break;
                 case RecipeView.Using:
-                    bothScroll.SpawnRows(currentItem.ingredient);
+                    bothScroll.SetRecipes(currentItem.ingredient);
                     bothScroll.SetTitle("$vnei_using");
                     break;
                 case RecipeView.ObtainingAndUsing:
-                    obtainingScroll.SpawnRows(currentItem.result);
-                    usingScroll.SpawnRows(currentItem.ingredient);
+                    obtainingScroll.SetRecipes(currentItem.result);
+                    usingScroll.SetRecipes(currentItem.ingredient);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

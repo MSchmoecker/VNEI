@@ -14,6 +14,7 @@ namespace VNEI.Logic {
         public static List<RecipeInfo> Recipes { get; private set; } = new List<RecipeInfo>();
 
         public bool IsSelfKnown { get; private set; }
+        public float Width { get; private set; }
 
         public void UpdateKnown() {
             IsSelfKnown = CalcSelfKnown();
@@ -287,6 +288,30 @@ namespace VNEI.Logic {
 
         public bool IngredientsAndResultSame() {
             return Ingredients.SequenceEqual(Results);
+        }
+
+        public void CalculateWidth() {
+            const float elementWidth = 50f;
+            float width = 0;
+            width += Mathf.Max(1, Stations.Count) * elementWidth;
+
+            foreach (KeyValuePair<Amount, List<Part>> pair in Ingredients) {
+                if (Ingredients.Count > 1 || pair.Key.min != 1 || pair.Key.max != 1 || Math.Abs(pair.Key.chance - 1f) > 0.01f) {
+                    width += elementWidth;
+                }
+
+                width += pair.Value.Count * elementWidth;
+            }
+
+            foreach (KeyValuePair<Amount, List<Part>> pair in Results) {
+                if (Results.Count > 1 || pair.Key.min != 1 || pair.Key.max != 1 || Math.Abs(pair.Key.chance - 1f) > 0.01f) {
+                    width += elementWidth;
+                }
+
+                width += pair.Value.Count * elementWidth;
+            }
+
+            Width = width;
         }
     }
 }

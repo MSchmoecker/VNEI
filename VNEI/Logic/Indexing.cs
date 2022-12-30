@@ -69,6 +69,7 @@ namespace VNEI.Logic {
 
             foreach (RecipeInfo recipe in RecipeInfo.Recipes) {
                 recipe.CalculateIsOnBlacklist();
+                recipe.CalculateWidth();
             }
 
             FavouritesSave.Load();
