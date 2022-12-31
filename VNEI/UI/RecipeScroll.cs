@@ -11,7 +11,7 @@ namespace VNEI.UI {
         [SerializeField] private ScrollRect scrollRect;
         [SerializeField] private Text title;
         private HashSet<RecipeInfo> recipes = new HashSet<RecipeInfo>();
-        private readonly Dictionary<RecipeInfo, RectTransform> rows = new Dictionary<RecipeInfo, RectTransform>();
+        [NonSerialized] private readonly Dictionary<RecipeInfo, RectTransform> rows = new Dictionary<RecipeInfo, RectTransform>();
         private const float RowHeight = 70f;
         private BaseUI baseUI;
 
