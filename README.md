@@ -29,6 +29,8 @@ Show Only Known: Hide unknown items and recipes to discover them while playing t
 Press 'R' to view a recipe of an item while hovering over it.
 Works in the inventory, too.
 
+Press `LeftArrow`/`RightArrow` to navigate through the history of last viewed items.
+
 ### Item Blacklist
 Items can be blacklisted at `BepInEx/config/com.maxsch.valheim.vnei.blacklist.txt`.
 The internal item name has to be used, one name on every line.
@@ -63,6 +65,20 @@ See more [here](https://github.com/MSchmoecker/VNEI/blob/master/API.md).
 - Discord: Margmas#9562. Feel free to DM or ping me in the [Jötunn discord](https://discord.gg/DdUt6g7gyA)
 
 ## Changelog
+0.8.0
+- Added a history of the last viewed pages between search and recipes. The default hotkeys to navigate the history are RightArrow and LeftArrow
+- Added the option to remove items from the last viewed list by middle clicking. The mouse button can be changed in the config
+- Added a option option to set the mouse button for item cheating
+- Added a config option to disable the last viewed list
+- Added a config option to rename the attached tab
+- Added a visual separation between the last viewed list and the item view
+- Added item count on filter button hover and disable filter with zero items
+- Fixed double recipes where shown for some items
+- Fixed quick recipe selection was not working in Auga
+- Fixed hotkeys were pressed while typing in the search field
+- Disabled some Dvergr weapons that could not be disabled automatically
+- Improved performance of items with a lot of recipes
+
 0.7.6
 - Fixed compatibility with Valheim 0.212.6 (Mistlands). This versions still works with the stable release as well
 
