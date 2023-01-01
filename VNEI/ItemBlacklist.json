@@ -11,5 +11,9 @@
   "FirTree_oldLog",
   "TrophyDraugrFem",
   "Rock_destructible_test",
-  "CapeTest"
+  "CapeTest",
+  "DvergerArbalest",
+  "DvergerArbalest_shoot",
+  "DvergerStaffSupport",
+  "DvergerTest"
 ]
