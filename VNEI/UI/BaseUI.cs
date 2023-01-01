@@ -27,7 +27,7 @@ namespace VNEI.UI {
 
         public const string HistoryQueueKey = "VNEI_History";
 
-        private bool blockInput;
+        public bool BlockInput { get; private set; }
         private bool sizeDirty;
         [HideInInspector] public List<ItemTypeToggle> typeToggles = new List<ItemTypeToggle>();
         [HideInInspector] public FavoriteTypeToggle favoriteToggle;
@@ -58,6 +58,7 @@ namespace VNEI.UI {
         }
 
         private void Awake() {
+            BlockInput = false;
             ShowSearch(false);
             ShowSearch(true);
 
@@ -103,12 +104,12 @@ namespace VNEI.UI {
         }
 
         private void Update() {
-            if (searchUi.searchField.isFocused && !blockInput) {
+            if (searchUi.searchField.isFocused && !BlockInput) {
                 GUIManager.BlockInput(true);
-                blockInput = true;
-            } else if (!searchUi.searchField.isFocused && blockInput) {
+                BlockInput = true;
+            } else if (!searchUi.searchField.isFocused && BlockInput) {
                 GUIManager.BlockInput(false);
-                blockInput = false;
+                BlockInput = false;
             }
 
             if (sizeDirty) {

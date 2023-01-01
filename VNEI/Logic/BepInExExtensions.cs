@@ -1,6 +1,7 @@
 using System.Linq;
 using BepInEx.Configuration;
 using UnityEngine;
+using VNEI.UI;
 
 namespace VNEI.Logic {
     public static class BepInExExtensions {
@@ -11,6 +12,12 @@ namespace VNEI.Logic {
         /// <param name="shortcut"></param>
         /// <returns></returns>
         public static bool IsKeyDown(this KeyboardShortcut shortcut) {
+            BaseUI baseUI = Plugin.GetMainUI().GetBaseUI();
+
+            if (baseUI && baseUI.BlockInput) {
+                return false;
+            }
+
             return shortcut.MainKey != KeyCode.None && Input.GetKeyDown(shortcut.MainKey) && shortcut.Modifiers.All(Input.GetKey);
         }
     }
