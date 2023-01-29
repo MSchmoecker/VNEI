@@ -30,7 +30,6 @@ namespace VNEI {
         public static AssetBundle AssetBundle { get; private set; }
         private static HashSet<string> ItemBlacklist { get; set; } = new HashSet<string>();
 
-        public static ConfigEntry<bool> fixPlants;
         public static ConfigEntry<bool> useBlacklist;
         public static ConfigEntry<bool> invertScroll;
         public static ConfigEntry<bool> attachToCrafting;
@@ -70,7 +69,6 @@ namespace VNEI {
             Dictionary<string, string> config = SimpleJson.SimpleJson.DeserializeObject<Dictionary<string, string>>(configText);
 
             // General
-            fixPlants = Config.Bind("General", "Fix Cultivate Plants", true, new ConfigDescription(config["FixCultivatePlants"]));
             useBlacklist = Config.Bind("General", "Use Item Blacklist", true, new ConfigDescription(config["UseItemBlacklist"]));
             invertScroll = Config.Bind("General", "Invert Scroll", false, new ConfigDescription(config["InvertScroll"]));
             showOnlyKnown = Config.Bind("General", "Show Only Known", false, new ConfigDescription(config["ShowOnlyKnown"]));

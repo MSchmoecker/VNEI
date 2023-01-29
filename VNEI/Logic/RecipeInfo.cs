@@ -200,10 +200,18 @@ namespace VNEI.Logic {
                 Stations.Add(new Part(Indexing.GetItem(piece.m_craftingStation.m_name), new Amount(1), 1));
             }
 
-            AddResult(prefab, Amount.One, Amount.One, 1, prefab.name);
-
             foreach (Piece.Requirement requirement in piece.m_resources) {
                 AddIngredient(requirement.m_resItem, Amount.One, new Amount(requirement.m_amount), 1, prefab.name);
+            }
+
+            if (piece.TryGetComponent(out Plant plant) && plant.m_grownPrefabs?.Length >= 1) {
+                foreach (GameObject grownPrefab in plant.m_grownPrefabs) {
+                    AddResult(grownPrefab, Amount.One, Amount.One, 1, prefab.name);
+                }
+
+                Indexing.DisableItem(prefab.name, "Plant has grownPrefabs");
+            } else {
+                AddResult(prefab, Amount.One, Amount.One, 1, prefab.name);
             }
         }
 

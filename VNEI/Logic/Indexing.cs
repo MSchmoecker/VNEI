@@ -301,18 +301,6 @@ namespace VNEI.Logic {
 
                 prefab.TryGetComponent(out Piece piece);
 
-                if ((bool)piece && prefab.TryGetComponent(out Plant plant)) {
-                    foreach (GameObject grownPrefab in plant.m_grownPrefabs) {
-                        if (grownPrefab.TryGetComponent(out Pickable pickablePlant)) {
-                            RecipeInfo recipeInfo = new RecipeInfo(prefab, pickablePlant);
-                            if (!recipeInfo.IngredientsAndResultSame()) {
-                                ItemUsedInRecipe(prefab.name, recipeInfo);
-                                ItemObtainedInRecipe(pickablePlant.m_itemPrefab.name, recipeInfo);
-                            }
-                        }
-                    }
-                }
-
                 if ((bool)piece && prefab.TryGetComponent(out Container container)) {
                     if (container.m_defaultItems.m_drops.Count > 0) {
                         AddRecipeToItems(new RecipeInfo(container.gameObject, container.m_defaultItems));
@@ -421,12 +409,6 @@ namespace VNEI.Logic {
         }
 
         public static void AddItem(Item item) {
-            if (Plugin.fixPlants.Value) {
-                if (item.internalName.ToLower().Contains("sapling_") && !item.internalName.ToLower().Contains("seed")) {
-                    return;
-                }
-            }
-
             string key = CleanupName(item.internalName);
 
             if (!Items.ContainsKey(key)) {
@@ -477,13 +459,7 @@ namespace VNEI.Logic {
         }
 
         public static string CleanupName(string name) {
-            name = name.Replace("JVLmock_", "");
-
-            if (Plugin.fixPlants.Value) {
-                name = name.Replace("sapling_", "");
-            }
-
-            return name.ToLower();
+            return name.Replace("JVLmock_", "").ToLower();
         }
 
         [Obsolete]
