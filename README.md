@@ -62,9 +62,14 @@ See more [here](https://github.com/MSchmoecker/VNEI/blob/master/API.md).
 - Thunderstore: https://valheim.thunderstore.io/package/MSchmoecker/VNEI/
 - Nexus: https://www.nexusmods.com/valheim/mods/1457
 - Github: https://github.com/MSchmoecker/VNEI
-- Discord: Margmas#9562. Feel free to DM or ping me in the [Jötunn discord](https://discord.gg/DdUt6g7gyA)
+- Discord: Margmas#9562. Feel free to DM or ping me, for example in the [Jötunn discord](https://discord.gg/DdUt6g7gyA)
 
 ## Changelog
+0.8.1
+- Added some more unused dev items to the internal blacklist
+- Fixed recipes for Mistlands mushrooms (combined amounts and plant recipe changes, see below)
+- Changed how plant recipes are displayed. The harvestable plant is always shown instead of the end result, as it appears in the game. This also removes the 'Fix Cultivate Plants' option
+
 0.8.0
 - Added a history of the last viewed pages between search and recipes. The default hotkeys to navigate the history are RightArrow and LeftArrow
 - Added the option to remove items from the last viewed list by middle clicking. The mouse button can be changed in the config
