@@ -141,7 +141,7 @@ namespace VNEI.Logic {
                 TryAddItem<MineRock>(prefab, i => i.m_name, ItemType.Undefined);
                 TryAddItem<MineRock5>(prefab, i => i.m_name, ItemType.Undefined);
                 TryAddItem<DropOnDestroyed>(prefab, i => fallbackLocalizedName, ItemType.Undefined);
-                TryAddItem<Pickable>(prefab, i => i.m_overrideName, ItemType.Undefined);
+                TryAddItem<Pickable>(prefab, i => i.GetHoverName(), ItemType.Undefined);
                 TryAddItem<SpawnArea>(prefab, i => fallbackLocalizedName, ItemType.Creature);
                 TryAddItem<Destructible>(prefab, i => fallbackLocalizedName, ItemType.Undefined);
                 TryAddItem<TreeBase>(prefab, i => fallbackLocalizedName, ItemType.Undefined);

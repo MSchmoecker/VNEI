@@ -206,7 +206,7 @@ namespace VNEI.Logic {
 
             if (piece.TryGetComponent(out Plant plant) && plant.m_grownPrefabs?.Length >= 1) {
                 foreach (GameObject grownPrefab in plant.m_grownPrefabs) {
-                    AddResult(grownPrefab, Amount.One, Amount.One, 1, prefab.name);
+                    AddResult(grownPrefab, Amount.One, new Amount(1, 1f / plant.m_grownPrefabs.Length), 1, prefab.name);
                 }
 
                 Indexing.DisableItem(prefab.name, "Plant has grownPrefabs");
@@ -222,6 +222,8 @@ namespace VNEI.Logic {
             if (pickable.m_extraDrops != null && pickable.m_extraDrops.m_drops.Count > 0) {
                 AddDropTable(prefab, pickable.m_extraDrops);
             }
+
+            CombineGroupAmounts(Results);
         }
 
         public RecipeInfo(GameObject from, DropTable dropTable) : this() {
@@ -320,6 +322,22 @@ namespace VNEI.Logic {
             }
 
             Width = width;
+        }
+
+        private void CombineGroupAmounts(Dictionary<Amount, List<Part>> groups) {
+            if (groups.Keys.Count <= 1 || groups.Keys.Any(i => Math.Abs(i.chance - groups.Keys.First().chance) > 0.001f)) {
+                return;
+            }
+
+            if (groups.Values.Count <= 1 || groups.Values.Any(i => !i.SequenceEqual(groups.Values.First()))) {
+                return;
+            }
+
+            Amount amount = new Amount(groups.Keys.Sum(i => i.min), groups.Keys.Sum(i => i.max), groups.Keys.First().chance);
+            List<Part> parts = groups.Values.First();
+
+            groups.Clear();
+            groups.Add(amount, parts);
         }
     }
 }
