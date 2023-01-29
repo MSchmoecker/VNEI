@@ -340,7 +340,7 @@ namespace VNEI.Logic {
                         continue;
                     }
 
-                    if (prefab.TryGetComponent(out Piece piece)) {
+                    if (prefab.TryGetComponent(out Piece piece) && !piece.m_repairPiece) {
                         AddRecipeToItems(new RecipeInfo(prefab, piece, GetItem(pair.Key)));
                     }
                 }

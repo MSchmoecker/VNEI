@@ -4,6 +4,9 @@
   "TrainingDummy",
   "HealthUpgrade_Bonemass",
   "HealthUpgrade_GDKing",
+  "StaminaUpgrade_Greydwarf",
+  "StaminaUpgrade_Troll",
+  "StaminaUpgrade_Wraith",
   "IronOre",
   "MineRock_Iron",
   "Pickable_BogIronOre",
@@ -15,5 +18,7 @@
   "DvergerArbalest",
   "DvergerArbalest_shoot",
   "DvergerStaffSupport",
-  "DvergerTest"
+  "DvergerTest",
+  "EvilHeart_Forest",
+  "EvilHeart_Swamp"
 ]
