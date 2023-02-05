@@ -47,7 +47,7 @@ namespace VNEI.Logic {
             List<(string itemType, string internalName, string modName)> validItems =
                 FilterInvalidItems(items, itemNamesFilterExcluded, modNamesFilterExcluded)
                     .Select(item => (
-                                item.gameObject.TryGetComponent(out ItemDrop itemDrop) ? itemDrop.m_itemData.m_shared.m_itemType.ToString() : item.itemType.ToString(),
+                                item.prefab.TryGetComponent(out ItemDrop itemDrop) ? itemDrop.m_itemData.m_shared.m_itemType.ToString() : item.itemType.ToString(),
                                 item.internalName,
                                 item.GetModName()))
                     .ToList();
@@ -64,7 +64,7 @@ namespace VNEI.Logic {
 
         private static List<Item> FilterInvalidItems(List<Item> items, List<string> itemNamesFilterExcluded, List<string> modNamesFilterExcluded) {
             return items
-                   .Where(item => item.gameObject != null)
+                   .Where(item => item.prefab != null)
                    .Where(item => itemNamesFilterExcluded.All(filterExclude => !item.internalName.Contains(filterExclude)))
                    .Where(item => modNamesFilterExcluded.All(filterExclude => !item.GetModName().Contains(filterExclude))).ToList();
         }

@@ -12,7 +12,7 @@ namespace VNEI.Logic {
         public readonly string preLocalizedName;
         public readonly string localizedName;
         public readonly string description;
-        public readonly GameObject gameObject;
+        public readonly GameObject prefab;
         public readonly bool isOnBlacklist;
         public readonly ItemType itemType;
         public readonly BepInPlugin mod;
@@ -38,7 +38,7 @@ namespace VNEI.Logic {
             preLocalizedName = localizeName;
             localizedName = Localization.instance.Localize(localizeName);
             this.description = description;
-            gameObject = prefab;
+            this.prefab = prefab;
             isOnBlacklist = Plugin.IsItemBlacklisted(this);
             this.itemType = itemType;
             this.maxQuality = maxQuality;
@@ -83,9 +83,9 @@ namespace VNEI.Logic {
         }
 
         private string GenerateTooltip(int quality) {
-            if ((bool)gameObject && gameObject.TryGetComponent(out ItemDrop itemDrop)) {
+            if ((bool)prefab && prefab.TryGetComponent(out ItemDrop itemDrop)) {
                 if (!itemDrop.m_itemData.m_dropPrefab) {
-                    itemDrop.m_itemData.m_dropPrefab = gameObject;
+                    itemDrop.m_itemData.m_dropPrefab = prefab;
                 }
 
                 return ItemDrop.ItemData.GetTooltip(itemDrop.m_itemData, quality, true);
