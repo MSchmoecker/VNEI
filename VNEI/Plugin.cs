@@ -25,7 +25,7 @@ namespace VNEI {
     public class Plugin : BaseUnityPlugin {
         public const string ModName = "VNEI";
         public const string ModGuid = "com.maxsch.valheim.vnei";
-        public const string ModVersion = "0.8.1";
+        public const string ModVersion = "0.8.2";
 
         public static Plugin Instance { get; private set; }
         public static AssetBundle AssetBundle { get; private set; }
