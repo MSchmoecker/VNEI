@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using BepInEx;
+using BepInEx.Bootstrap;
 using BepInEx.Configuration;
 using HarmonyLib;
 using Jotunn;
@@ -224,11 +225,15 @@ namespace VNEI {
         }
 
         public static VneiHandler GetMainUI() {
-            if (Auga.API.IsLoaded()) {
+            if (IsAugaLoaded()) {
                 return MainVneiHandlerAuga.Instance;
             }
 
             return MainVneiHandler.Instance;
+        }
+
+        public static bool IsAugaLoaded() {
+            return Chainloader.PluginInfos.ContainsKey("randyknapp.mods.auga");
         }
     }
 }

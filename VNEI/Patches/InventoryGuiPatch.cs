@@ -8,7 +8,7 @@ namespace VNEI.Patches {
     public class InventoryGuiPatch {
         [HarmonyPatch(typeof(InventoryGui), nameof(InventoryGui.Awake)), HarmonyPostfix, HarmonyPriority(Priority.Low)]
         public static void AwakePatch(InventoryGui __instance) {
-            if (!Auga.API.IsLoaded()) {
+            if (!Plugin.IsAugaLoaded()) {
                 MainVneiHandler.Instance.GetTabButton();
                 __instance.StartCoroutine(UpdateOtherTabs());
             } else {
@@ -28,7 +28,7 @@ namespace VNEI.Patches {
         [HarmonyPatch(typeof(InventoryGui), nameof(InventoryGui.UpdateCraftingPanel)), HarmonyPostfix]
         [HarmonyAfter("org.bepinex.plugins.jewelcrafting")]
         public static void UpdateCraftingPanelPatch() {
-            if (!Auga.API.IsLoaded()) {
+            if (!Plugin.IsAugaLoaded()) {
                 MainVneiHandler.Instance.UpdateTabPosition();
             }
         }
@@ -36,7 +36,7 @@ namespace VNEI.Patches {
         [HarmonyPatch(typeof(InventoryGui), nameof(InventoryGui.SetupCrafting)), HarmonyPostfix]
         [HarmonyAfter("org.bepinex.plugins.jewelcrafting")]
         public static void SetupCraftingPatch() {
-            if (!Auga.API.IsLoaded()) {
+            if (!Plugin.IsAugaLoaded()) {
                 // vanilla behaviour has set the vanilla tabs active
                 if (MainVneiHandler.Instance.VneiTabActive) {
                     MainVneiHandler.Instance.SetTabActive();
