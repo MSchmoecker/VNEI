@@ -141,7 +141,7 @@ namespace VNEI.Logic {
                 TryAddItem<MineRock>(prefab, i => i.m_name, ItemType.Undefined);
                 TryAddItem<MineRock5>(prefab, i => i.m_name, ItemType.Undefined);
                 TryAddItem<DropOnDestroyed>(prefab, i => fallbackLocalizedName, ItemType.Undefined);
-                TryAddItem<Pickable>(prefab, i => i.GetHoverName(), ItemType.Undefined);
+                TryAddItem<Pickable>(prefab, i => string.Empty, ItemType.Undefined);
                 TryAddItem<SpawnArea>(prefab, i => fallbackLocalizedName, ItemType.Creature);
                 TryAddItem<Destructible>(prefab, i => fallbackLocalizedName, ItemType.Undefined);
                 TryAddItem<TreeBase>(prefab, i => fallbackLocalizedName, ItemType.Undefined);
@@ -412,16 +412,24 @@ namespace VNEI.Logic {
             string key = CleanupName(item.internalName);
 
             if (!Items.ContainsKey(key)) {
-                Items.Add(key, item);
+                Items[key] = item;
             }
 
-            if (!ItemsByPreLocalizedName.ContainsKey(item.preLocalizedName.ToLower())) {
-                ItemsByPreLocalizedName.Add(item.preLocalizedName.ToLower(), item);
+            if (!string.IsNullOrEmpty(item.preLocalizedName)) {
+                if (!ItemsByPreLocalizedName.TryGetValue(item.preLocalizedName, out Item existing) || IsSaplingItem(existing)) {
+                    ItemsByPreLocalizedName[item.preLocalizedName] = item;
+                }
             }
 
-            if (!ItemsByLocalizedName.ContainsKey(item.localizedName.ToLower())) {
-                ItemsByLocalizedName.Add(item.localizedName.ToLower(), item);
+            if (!string.IsNullOrEmpty(item.localizedName)) {
+                if (!ItemsByLocalizedName.TryGetValue(item.localizedName, out Item existing) || IsSaplingItem(existing)) {
+                    ItemsByLocalizedName[item.localizedName] = item;
+                }
             }
+        }
+
+        private static bool IsSaplingItem(Item item) {
+            return item.internalName.StartsWith("sapling_") || item.prefab.GetComponent<Plant>();
         }
 
         public static void ItemObtainedInRecipe(string name, RecipeInfo recipeInfo) {
@@ -477,11 +485,11 @@ namespace VNEI.Logic {
                 return item;
             }
 
-            if (ItemsByPreLocalizedName.TryGetValue(name.ToLower(), out item)) {
+            if (ItemsByPreLocalizedName.TryGetValue(name, out item)) {
                 return item;
             }
 
-            if (ItemsByLocalizedName.TryGetValue(name.ToLower(), out item)) {
+            if (ItemsByLocalizedName.TryGetValue(name, out item)) {
                 return item;
             }
 
