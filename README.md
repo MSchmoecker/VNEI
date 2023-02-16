@@ -65,6 +65,9 @@ See more [here](https://github.com/MSchmoecker/VNEI/blob/master/API.md).
 - Discord: Margmas#9562. Feel free to DM or ping me, for example in the [Jötunn discord](https://discord.gg/DdUt6g7gyA)
 
 ## Changelog
+0.8.3
+- Disabled PlanBuild plan pieces from showing in the search. They are only copies of the original pieces and have no ingredients/use
+
 0.8.2
 - Fixed performance issues with big mod packs caused by the Auga-API when Auga is not installed
 - Fixed quick recipe selection was not selecting the correct items of some plants
