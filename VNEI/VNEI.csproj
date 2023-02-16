@@ -137,6 +137,7 @@
         <Compile Include="Log.cs" />
         <Compile Include="Logic\Amount.cs" />
         <Compile Include="Logic\BepInExExtensions.cs" />
+        <Compile Include="Logic\Compatibility\PlanBuild.cs" />
         <Compile Include="Logic\ComponentEvent.cs" />
         <Compile Include="Logic\FavouritesSave.cs" />
         <Compile Include="Logic\FileWriter.cs" />

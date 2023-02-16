@@ -20,6 +20,12 @@ namespace VNEI.Logic {
         public static event Action<GameObject> OnDisableItems;
 
         /// <summary>
+        ///     Called after added all items. Disabled items are not shown inside any UI.
+        ///     Usually use <see cref="DisableItem"/> to disable a given item.
+        /// </summary>
+        public static event Action AfterDisableItems;
+
+        /// <summary>
         ///     Called after adding a Valheim <see cref="Recipe"/>.
         /// </summary>
         public static event Action<Recipe> OnIndexingRecipes;
@@ -205,6 +211,12 @@ namespace VNEI.Logic {
                 } catch (Exception e) {
                     Log.LogError(e);
                 }
+            }
+
+            try {
+                AfterDisableItems?.Invoke();
+            } catch (Exception e) {
+                Log.LogError(e);
             }
         }
 

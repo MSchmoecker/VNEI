@@ -15,6 +15,7 @@ using Jotunn.Managers;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using VNEI.Logic;
+using VNEI.Logic.Compatibility;
 using VNEI.Patches;
 using VNEI.UI;
 
@@ -157,6 +158,7 @@ namespace VNEI {
 
         private void Start() {
             ModCompat.Init(harmony);
+            PlanBuild.Init();
         }
 
         private void Update() {
