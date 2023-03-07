@@ -35,8 +35,8 @@ namespace VNEI.Logic {
 
         public Item(string name, string localizeName, string description, Sprite icon, ItemType itemType, GameObject prefab, int maxQuality = 1) {
             internalName = name;
-            preLocalizedName = localizeName;
-            localizedName = Localization.instance.Localize(localizeName);
+            preLocalizedName = localizeName ?? "";
+            localizedName = Localization.instance.Localize(preLocalizedName);
             this.description = description;
             this.prefab = prefab;
             isOnBlacklist = Plugin.IsItemBlacklisted(this);
