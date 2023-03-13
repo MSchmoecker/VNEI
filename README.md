@@ -65,6 +65,10 @@ See more [here](https://github.com/MSchmoecker/VNEI/blob/master/API.md).
 - Discord: Margmas#9562. Feel free to DM or ping me, for example in the [Jötunn discord](https://discord.gg/DdUt6g7gyA)
 
 ## Changelog
+0.8.4
+- Fixed compatibility with Valheim 0.214.2
+- Fixed an error with modded items that have a null name
+
 0.8.3
 - Disabled PlanBuild plan pieces from showing in the search. They are only copies of the original pieces and have no ingredients/use
 
