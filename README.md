@@ -32,6 +32,11 @@ Works in the inventory, too.
 Press `LeftArrow`/`RightArrow` to navigate through the history of last viewed items.
 
 
+### UI Changes
+The mod name of every item is added to the tooltip.
+Can be disabled in the config file.
+
+
 ### Item Blacklist
 Items can be blacklisted at `BepInEx/config/com.maxsch.valheim.vnei.blacklist.txt`.
 The internal item name has to be used, one name on every line.

@@ -1,5 +1,11 @@
 # Changelog
 
+0.9.0
+- Added mod name to the item tooltip. Can be disabled in the config
+- Moved the "Invert Scroll" config option to the "Hotkeys" section. The old config entry is no longer used and has to be set again
+- Fixed page scrolling skipped pages. This includes a config option "Normalize Scroll" which restores the old behavior
+- Fixed some UI localisation was not reloaded when the language was changed
+
 0.8.4
 - Fixed compatibility with Valheim 0.214.2
 - Fixed an error with modded items that have a null name
