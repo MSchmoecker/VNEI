@@ -109,7 +109,13 @@ namespace VNEI.Logic {
                 return string.Empty;
             }
 
-            return $"\n\n<color=orange>{GetModName()}</color>";
+            string color = "orange";
+
+            if (Chainloader.PluginInfos.ContainsKey("randyknapp.mods.epicloot")) {
+                color = "lightblue";
+            }
+
+            return $"\n\n<color={color}>{GetModName()}</color>";
         }
 
         public void SetIcon(Sprite sprite) {

@@ -6,7 +6,7 @@ namespace VNEI.Patches {
     [HarmonyPatch]
     public static class TooltipPatches {
         [HarmonyPatch(typeof(ItemDrop.ItemData), nameof(ItemDrop.ItemData.GetTooltip), new Type[] { typeof(ItemDrop.ItemData), typeof(int), typeof(bool) })]
-        [HarmonyPostfix, HarmonyPriority(Priority.Last)]
+        [HarmonyPostfix, HarmonyPriority(Priority.Last), HarmonyAfter("randyknapp.mods.epicloot")]
         public static void AppendModName(ref string __result, ItemDrop.ItemData item) {
             if (!Plugin.showModTooltip.Value) {
                 return;
