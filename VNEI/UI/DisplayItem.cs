@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using BepInEx.Bootstrap;
 using Jotunn.Managers;
 using UnityEngine;
@@ -29,6 +30,14 @@ namespace VNEI.UI {
             favorite.color = GUIManager.Instance.ValheimOrange;
         }
 
+        private void OnEnable() {
+            Plugin.showModTooltip.SettingChanged += UpdateIconAndTooltip;
+        }
+
+        private void OnDestroy() {
+            Plugin.showModTooltip.SettingChanged -= UpdateIconAndTooltip;
+        }
+
         public void Update() {
             uiTooltip.m_showTimer = 1;
         }
@@ -54,6 +63,8 @@ namespace VNEI.UI {
                 item.onKnownChanged.AddListener(this, UpdateIconAndTooltip);
             }
         }
+
+        private void UpdateIconAndTooltip(object sender, EventArgs e) => UpdateIconAndTooltip();
 
         private void UpdateIconAndTooltip() {
             if (item != null) {

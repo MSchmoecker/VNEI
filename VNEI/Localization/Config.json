@@ -14,5 +14,6 @@
   "ShowRecentItems": "Show the recent viewed items bar in the UI.",
   "TabName": "Visible name of the tab in the crafting menu.",
   "GoForwardHotkey": "Hotkey to go forward to the last viewed page in history.",
-  "GoBackHotkey": "Hotkey to go back to the last viewed page in history."
+  "GoBackHotkey": "Hotkey to go back to the last viewed page in history.",
+  "ShowModTooltip": "Show the mod name in the description tooltip of an item"
 }

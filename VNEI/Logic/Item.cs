@@ -37,7 +37,7 @@ namespace VNEI.Logic {
             internalName = name;
             preLocalizedName = localizeName ?? "";
             localizedName = Localization.instance.Localize(preLocalizedName);
-            this.description = description;
+            this.description = description.Trim();
             this.prefab = prefab;
             isOnBlacklist = Plugin.IsItemBlacklisted(this);
             this.itemType = itemType;
@@ -46,6 +46,8 @@ namespace VNEI.Logic {
             if (prefab) {
                 mod = ModNames.GetModByPrefabName(prefab.name);
             }
+
+            Plugin.showModTooltip.SettingChanged += ClearTooltipCache;
 
             if (icon) {
                 SetIcon(icon);
@@ -58,6 +60,10 @@ namespace VNEI.Logic {
 
                 SetIcon(RenderManager.Instance.Render(renderRequest));
             }
+        }
+
+        ~Item() {
+            Plugin.showModTooltip.SettingChanged -= ClearTooltipCache;
         }
 
         public string GetName() {
@@ -82,6 +88,10 @@ namespace VNEI.Logic {
             return tooltip;
         }
 
+        private void ClearTooltipCache(object sender, EventArgs e) {
+            tooltipsCache.Clear();
+        }
+
         private string GenerateTooltip(int quality) {
             if ((bool)prefab && prefab.TryGetComponent(out ItemDrop itemDrop)) {
                 if (!itemDrop.m_itemData.m_dropPrefab) {
@@ -91,7 +101,15 @@ namespace VNEI.Logic {
                 return ItemDrop.ItemData.GetTooltip(itemDrop.m_itemData, quality, true);
             }
 
-            return description;
+            return description + GetTooltipModName();
+        }
+
+        public string GetTooltipModName() {
+            if (!Plugin.showModTooltip.Value) {
+                return string.Empty;
+            }
+
+            return $"\n\n<color=orange>{GetModName()}</color>";
         }
 
         public void SetIcon(Sprite sprite) {
@@ -109,7 +127,7 @@ namespace VNEI.Logic {
         }
 
         public string GetModName() {
-            return mod != null ? mod.Name : string.Empty;
+            return mod != null ? mod.Name : "Valheim";
         }
 
         public string PrintItem() {
