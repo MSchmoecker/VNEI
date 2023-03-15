@@ -10,7 +10,15 @@ namespace VNEI.UI {
                 return;
             }
 
-            int scroll = -Mathf.RoundToInt(eventData.scrollDelta.y);
+            float scrollY;
+
+            if (Plugin.normalizeScroll.Value) {
+                scrollY = eventData.scrollDelta.normalized.y;
+            } else {
+                scrollY = eventData.scrollDelta.y;
+            }
+
+            int scroll = -Mathf.RoundToInt(scrollY);
             scroll *= Plugin.invertScroll.Value ? -1 : 1;
 
             if (scroll != 0) {

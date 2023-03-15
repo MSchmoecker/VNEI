@@ -34,6 +34,7 @@ namespace VNEI {
 
         public static ConfigEntry<bool> useBlacklist;
         public static ConfigEntry<bool> invertScroll;
+        public static ConfigEntry<bool> normalizeScroll;
         public static ConfigEntry<bool> attachToCrafting;
         public static ConfigEntry<bool> hideUIAtStartup;
         public static ConfigEntry<int> rowCount;
@@ -73,11 +74,12 @@ namespace VNEI {
 
             // General
             useBlacklist = Config.Bind("General", "Use Item Blacklist", true, new ConfigDescription(config["UseItemBlacklist"]));
-            invertScroll = Config.Bind("General", "Invert Scroll", false, new ConfigDescription(config["InvertScroll"]));
             showOnlyKnown = Config.Bind("General", "Show Only Known", false, new ConfigDescription(config["ShowOnlyKnown"]));
             showRecentItems = Config.Bind("General", "Show Recent Items", true, new ConfigDescription(config["ShowRecentItems"]));
 
             // Hotkeys
+            invertScroll = Config.Bind("General", "Invert Scroll", false, new ConfigDescription(config["InvertScroll"]));
+            normalizeScroll = Config.Bind("General", "Normalize Scroll", true, new ConfigDescription(config["NormalizeScroll"]));
             openHotkey = Config.Bind("Hotkeys", "Open UI Hotkey", new KeyboardShortcut(KeyCode.H, KeyCode.LeftAlt), config["OpenUIHotkey"]);
             viewRecipeHotkey = Config.Bind("Hotkeys", "View Recipe Hotkey", new KeyboardShortcut(KeyCode.R), config["ViewRecipeHotkey"]);
             itemCheatHotkey = Config.Bind("Hotkeys", "Item Cheat Mouse Button", InputButtonWrapper.Right, config["ItemCheatMouseButton"]);

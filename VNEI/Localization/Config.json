@@ -1,6 +1,7 @@
 {
   "UseItemBlacklist": "Disables items that are not used currently in the game. This doesn't include placeholder items but testing objects for the devs or not obtainable items/effects. This list is manual, so please contact me if an item is missing/not on the list.",
   "InvertScroll": "Inverts scrolling for page switching.",
+  "NormalizeScroll": "Normalize scrolling for page switching. This means that the scroll wheel will only switch one page, even when scrolling faster in one frame. Depending on your Hardware this may not be needed.",
   "ItemsHorizontal": "Count of visible horizontal items. Determines the width of the UI. Only active when 'Attach To Crafting' is false. Can be changed while ingame.",
   "ItemsVertical": "Count of visible vertical items. Determines the height of the UI. Only active when 'Attach To Crafting' is false. Can be changed while ingame.",
   "Transparency": "Transparency of the background image. Values in percent, 0 = full visible, 100 = completely transparent. Only active when 'Attach To Crafting' is false. Can be changed while ingame.",
@@ -15,5 +16,5 @@
   "TabName": "Visible name of the tab in the crafting menu.",
   "GoForwardHotkey": "Hotkey to go forward to the last viewed page in history.",
   "GoBackHotkey": "Hotkey to go back to the last viewed page in history.",
-  "ShowModTooltip": "Show the mod name in the description tooltip of an item"
+  "ShowModTooltip": "Show the mod name in the description tooltip of an item."
 }
