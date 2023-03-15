@@ -71,7 +71,7 @@ namespace VNEI.UI {
                 if (item.IsKnown) {
                     image.color = Color.white;
                     image.sprite = item.GetIcon();
-                    uiTooltip.Set(item.GetPrimaryName(), item.GetTooltip(quality));
+                    uiTooltip.Set(item.preLocalizeName, item.GetTooltip(quality));
                     qualityText.text = item.maxQuality > 1 || quality > 1 ? $"{quality}" : "";
                 } else {
                     image.color = unknownColor;

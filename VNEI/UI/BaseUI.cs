@@ -63,11 +63,6 @@ namespace VNEI.UI {
             ShowSearch(true);
 
             Styling.ApplyAllComponents(root);
-
-            foreach (Text text in root.GetComponentsInChildren<Text>(true)) {
-                text.text = Localization.instance.Localize(text.text);
-            }
-
             GUIManager.Instance.ApplyWoodpanelStyle(dragHandler);
 
             recipeUi.OnSetItem += AddItemToLastViewedQueue;

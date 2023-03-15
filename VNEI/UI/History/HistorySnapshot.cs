@@ -41,7 +41,7 @@ namespace VNEI.UI {
         }
 
         public override string Description() {
-            return $"Recipe: {item?.GetName() ?? "-"}";
+            return $"Recipe: {item?.GetPrimaryName() ?? "-"}";
         }
     }
 }

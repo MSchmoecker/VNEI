@@ -43,11 +43,13 @@ namespace VNEI.UI {
 
             UpdateRecipeView();
 
-            infoName.text = currentItem.GetName();
+            infoName.text = currentItem.preLocalizeName;
             infoInternalName.text = currentItem.internalName;
             infoModName.text = currentItem.GetModName();
-            infoDescription.text = Localization.instance.Localize(currentItem.GetDescription());
+            infoDescription.text = currentItem.GetDescription();
             infoIcon.SetItem(currentItem, 1);
+
+            Localization.instance.Localize(transform);
 
             UpdateFavoriteButton();
         }

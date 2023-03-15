@@ -427,9 +427,9 @@ namespace VNEI.Logic {
                 Items[key] = item;
             }
 
-            if (!string.IsNullOrEmpty(item.preLocalizedName)) {
-                if (!ItemsByPreLocalizedName.TryGetValue(item.preLocalizedName, out Item existing) || IsSaplingItem(existing)) {
-                    ItemsByPreLocalizedName[item.preLocalizedName] = item;
+            if (!string.IsNullOrEmpty(item.preLocalizeName)) {
+                if (!ItemsByPreLocalizedName.TryGetValue(item.preLocalizeName, out Item existing) || IsSaplingItem(existing)) {
+                    ItemsByPreLocalizedName[item.preLocalizeName] = item;
                 }
             }
 

@@ -52,6 +52,8 @@ cp "$VALHEIM_INSTALL/valheim_Data/Managed/assembly_steamworks.dll" "$ModNameUnit
 cp "$VALHEIM_INSTALL/valheim_Data/Managed/assembly_googleanalytics.dll" "$ModNameUnity/Assets/Assemblies"
 cp "$VALHEIM_INSTALL/valheim_Data/Managed/PlayFab.dll" "$ModNameUnity/Assets/Assemblies"
 cp "$VALHEIM_INSTALL/valheim_Data/Managed/PlayFabParty.dll" "$ModNameUnity/Assets/Assemblies"
+cp "$VALHEIM_INSTALL/valheim_Data/Managed/Fishlabs.Core.dll" "$ModNameUnity/Assets/Assemblies"
+cp "$VALHEIM_INSTALL/valheim_Data/Managed/Fishlabs.Common.dll" "$ModNameUnity/Assets/Assemblies"
 
 echo "$ModDir"
 

@@ -9,8 +9,8 @@ using UnityEngine;
 namespace VNEI.Logic {
     public class Item {
         public readonly string internalName;
-        public readonly string preLocalizedName;
-        public readonly string localizedName;
+        public readonly string preLocalizeName;
+        public string localizedName;
         public readonly string description;
         public readonly GameObject prefab;
         public readonly bool isOnBlacklist;
@@ -33,21 +33,22 @@ namespace VNEI.Logic {
         public static event Action OnAnyFavoriteChanged;
         private Sprite icon;
 
-        public Item(string name, string localizeName, string description, Sprite icon, ItemType itemType, GameObject prefab, int maxQuality = 1) {
-            internalName = name;
-            preLocalizedName = localizeName ?? "";
-            localizedName = Localization.instance.Localize(preLocalizedName);
-            this.description = description.Trim();
+        public Item(string name, string preLocalizeName, string description, Sprite icon, ItemType itemType, GameObject prefab, int maxQuality = 1) {
+            this.internalName = name;
+            this.preLocalizeName = preLocalizeName ?? "";
+            this.description = description;
             this.prefab = prefab;
-            isOnBlacklist = Plugin.IsItemBlacklisted(this);
             this.itemType = itemType;
             this.maxQuality = maxQuality;
+
+            isOnBlacklist = Plugin.IsItemBlacklisted(this);
+            Plugin.showModTooltip.SettingChanged += ClearTooltipCache;
+            Localization.OnLanguageChange += UpdateLocalizedName;
+            UpdateLocalizedName();
 
             if (prefab) {
                 mod = ModNames.GetModByPrefabName(prefab.name);
             }
-
-            Plugin.showModTooltip.SettingChanged += ClearTooltipCache;
 
             if (icon) {
                 SetIcon(icon);
@@ -64,10 +65,7 @@ namespace VNEI.Logic {
 
         ~Item() {
             Plugin.showModTooltip.SettingChanged -= ClearTooltipCache;
-        }
-
-        public string GetName() {
-            return localizedName;
+            Localization.OnLanguageChange -= UpdateLocalizedName;
         }
 
         public string GetNameContext() {
@@ -88,6 +86,10 @@ namespace VNEI.Logic {
             return tooltip;
         }
 
+        private void UpdateLocalizedName() {
+            localizedName = Localization.instance.Localize(preLocalizeName);
+        }
+
         private void ClearTooltipCache(object sender, EventArgs e) {
             tooltipsCache.Clear();
         }
@@ -101,7 +103,7 @@ namespace VNEI.Logic {
                 return ItemDrop.ItemData.GetTooltip(itemDrop.m_itemData, quality, true);
             }
 
-            return description + GetTooltipModName();
+            return description.TrimEnd() + GetTooltipModName();
         }
 
         public string GetTooltipModName() {
@@ -137,7 +139,10 @@ namespace VNEI.Logic {
         }
 
         public string PrintItem() {
-            if (internalName == null) return " -- invalid item -- ";
+            if (string.IsNullOrEmpty(internalName)) {
+                return " -- invalid item -- ";
+            }
+
             string descriptionOneLine = GetDescription().Replace('\n', ' ');
             string mappedItemType = itemType.ToString();
             string text = $"Internal Name: {internalName}, Localized Name: {GetPrimaryName()}, Item Type: {mappedItemType}";
@@ -154,7 +159,10 @@ namespace VNEI.Logic {
         }
 
         public string PrintItemCSV(string separator) {
-            if (internalName == null) return " -- invalid item -- ";
+            if (string.IsNullOrEmpty(internalName)) {
+                return " -- invalid item -- ";
+            }
+
             string descriptionOneLine = GetDescription().Replace('\n', ' ');
             return $"{internalName}{separator}" +
                    $"{GetPrimaryName()}{separator}" +
@@ -181,7 +189,7 @@ namespace VNEI.Logic {
                 return;
             }
 
-            IsSelfKnown = player.m_knownMaterial.Contains(preLocalizedName) || player.m_knownStations.ContainsKey(preLocalizedName);
+            IsSelfKnown = player.m_knownMaterial.Contains(preLocalizeName) || player.m_knownStations.ContainsKey(preLocalizeName);
         }
 
         public void UpdateKnown() {
