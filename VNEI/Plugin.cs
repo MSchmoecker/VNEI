@@ -78,8 +78,8 @@ namespace VNEI {
             showRecentItems = Config.Bind("General", "Show Recent Items", true, new ConfigDescription(config["ShowRecentItems"]));
 
             // Hotkeys
-            invertScroll = Config.Bind("General", "Invert Scroll", false, new ConfigDescription(config["InvertScroll"]));
-            normalizeScroll = Config.Bind("General", "Normalize Scroll", true, new ConfigDescription(config["NormalizeScroll"]));
+            invertScroll = Config.Bind("Hotkeys", "Invert Scroll", false, new ConfigDescription(config["InvertScroll"]));
+            normalizeScroll = Config.Bind("Hotkeys", "Normalize Scroll", true, new ConfigDescription(config["NormalizeScroll"]));
             openHotkey = Config.Bind("Hotkeys", "Open UI Hotkey", new KeyboardShortcut(KeyCode.H, KeyCode.LeftAlt), config["OpenUIHotkey"]);
             viewRecipeHotkey = Config.Bind("Hotkeys", "View Recipe Hotkey", new KeyboardShortcut(KeyCode.R), config["ViewRecipeHotkey"]);
             itemCheatHotkey = Config.Bind("Hotkeys", "Item Cheat Mouse Button", InputButtonWrapper.Right, config["ItemCheatMouseButton"]);
