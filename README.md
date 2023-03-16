@@ -16,20 +16,26 @@ This is a client side mod and not everyone has to use it if you are playing in m
 If items or recipes from other mods are missing, please contact me.
 
 
-## Controls and settings
+## Feature Overview
 
 ### BepInEx config
 The config file is generated at `BepInEx/config/com.maxsch.valheim.vnei.cfg` after the first launch, see there for detailed information.
 
-Interesting configs:\
-Show Only Known: Hide unknown items and recipes to discover them while playing the game
-
+Some interesting configs
+- Show Only Known: Hide unknown items and recipes to discover them while playing the game
 
 ### Shortcuts
 Press 'R' to view a recipe of an item while hovering over it.
 Works in the inventory, too.
 
 Press `LeftArrow`/`RightArrow` to navigate through the history of last viewed items.
+
+
+### Search
+The search bar can be used to filter items by name.
+It is case insensitive and searches through the localized name, the internal ID and description of the item.
+The search is separated by spaces and each word must be contained somewhere in the item to be displayed.
+With `@ModName` the search can be limited to a specific mod.
 
 
 ### UI Changes
