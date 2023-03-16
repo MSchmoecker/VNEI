@@ -1,5 +1,8 @@
 # Changelog
 
+0.9.1
+- Fixed a bug where item IDs were wrongly localized and cached, resulting in the wrong item ID being shown for certain items
+
 0.9.0
 - Added mod name to the item tooltip. Can be disabled in the config
 - Moved the "Invert Scroll" config option to the "Hotkeys" section. The old config entry is no longer used and has to be set again
