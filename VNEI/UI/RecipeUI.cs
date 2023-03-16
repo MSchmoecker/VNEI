@@ -49,9 +49,16 @@ namespace VNEI.UI {
             infoDescription.text = currentItem.GetDescription();
             infoIcon.SetItem(currentItem, 1);
 
-            Localization.instance.Localize(transform);
+            Localize(infoName);
+            Localize(infoDescription);
 
             UpdateFavoriteButton();
+        }
+
+        private static void Localize(Text text) {
+            // not using Localization.instance(text) because it will cache the key only if the localization is found, which can cause issues on re-opening the UI
+            Localization.instance.textStrings[text] = text.text;
+            text.text = Localization.instance.Localize(text.text);
         }
 
         private void UpdateRecipeView() {
