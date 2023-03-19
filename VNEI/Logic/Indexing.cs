@@ -62,16 +62,22 @@ namespace VNEI.Logic {
                 return;
             }
 
+            if (!ZNetScene.instance) {
+                Log.LogWarning("Cannot index: ZNetScene.instance is null");
+                return;
+            }
+
             Log.LogInfo("Index items and recipes");
 
             ModNames.IndexModNames();
 
             Dictionary<string, PieceTable> pieceTables = new Dictionary<string, PieceTable>();
+            List<GameObject> prefabs = GetPrefabs();
 
-            IndexItems(pieceTables);
-            DisableItems();
+            IndexItems(prefabs, pieceTables);
+            DisableItems(prefabs);
             IndexRecipes();
-            IndexItemRecipes(pieceTables);
+            IndexItemRecipes(prefabs, pieceTables);
 
             foreach (RecipeInfo recipe in RecipeInfo.Recipes) {
                 recipe.CalculateIsOnBlacklist();
@@ -89,21 +95,21 @@ namespace VNEI.Logic {
             }
         }
 
-        private static void IndexItems(Dictionary<string, PieceTable> pieceTables) {
+        private static List<GameObject> GetPrefabs() {
+            HashSet<GameObject> prefabs = new HashSet<GameObject>(ZNetScene.instance.m_prefabs);
+            HashSet<GameObject> namedPrefabs = new HashSet<GameObject>(ZNetScene.instance.m_namedPrefabs.Values);
+
+            List<GameObject> combinedPrefabs = prefabs.Union(namedPrefabs).ToList();
+            combinedPrefabs.RemoveAll(prefab => !prefab);
+
+            return combinedPrefabs;
+        }
+
+        private static void IndexItems(List<GameObject> prefabs, Dictionary<string, PieceTable> pieceTables) {
             AddItem(new Item("vnei_any_item", "$vnei_any_item", string.Empty, null, ItemType.Undefined, null));
             AddItem(new Item("vnei_unknown_item", "$vnei_unknown_item", string.Empty, null, ItemType.Undefined, null));
 
-            if (!ZNetScene.instance) {
-                Log.LogWarning("Cannot index items: ZNetScene.instance is null");
-                return;
-            }
-
-            foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
-                if (!prefab) {
-                    Log.LogDebug("IndexItems: prefab in ZNetScene.m_prefabs is null");
-                    continue;
-                }
-
+            foreach (GameObject prefab in prefabs) {
                 string prefabName = prefab.name;
                 string fallbackLocalizedName = string.Empty;
 
@@ -161,18 +167,8 @@ namespace VNEI.Logic {
             }
         }
 
-        private static void DisableItems() {
-            if (!ZNetScene.instance) {
-                Log.LogWarning("Cannot disable items: ZNetScene.instance is null");
-                return;
-            }
-
-            foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
-                if (!prefab) {
-                    Log.LogDebug("DisableItems: prefab in ZNetScene.m_prefabs is null");
-                    continue;
-                }
-
+        private static void DisableItems(List<GameObject> prefabs) {
+            foreach (GameObject prefab in prefabs) {
                 if (prefab.TryGetComponent(out Piece piece)) {
                     if (GetItem(prefab.name) == null) {
                         Log.LogDebug($"not indexed piece {piece.name}: not buildable");
@@ -275,18 +271,8 @@ namespace VNEI.Logic {
             }
         }
 
-        private static void IndexItemRecipes(Dictionary<string, PieceTable> pieceTables) {
-            if (!ZNetScene.instance) {
-                Log.LogWarning("Cannot index item recipes: ZNetScene.instance is null");
-                return;
-            }
-
-            foreach (GameObject prefab in ZNetScene.instance.m_prefabs) {
-                if (!prefab) {
-                    Log.LogDebug("IndexItemRecipes: prefab in ZNetScene.m_prefabs is null");
-                    continue;
-                }
-
+        private static void IndexItemRecipes(List<GameObject> prefabs, Dictionary<string, PieceTable> pieceTables) {
+            foreach (GameObject prefab in prefabs) {
                 TryAddRecipeToItemsForEach<Smelter, Smelter.ItemConversion>(prefab, i => i.m_conversion, (s, i) => new RecipeInfo(i, s));
                 TryAddRecipeToItemsForEach<Fermenter, Fermenter.ItemConversion>(prefab, i => i.m_conversion, (f, i) => new RecipeInfo(i, f));
                 TryAddRecipeToItemsForEach<CookingStation, CookingStation.ItemConversion>(prefab, i => i.m_conversion, (c, i) => new RecipeInfo(i, c));

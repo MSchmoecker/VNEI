@@ -24,6 +24,7 @@ The config file is generated at `BepInEx/config/com.maxsch.valheim.vnei.cfg` aft
 Some interesting configs
 - Show Only Known: Hide unknown items and recipes to discover them while playing the game
 
+
 ### Shortcuts
 Press 'R' to view a recipe of an item while hovering over it.
 Works in the inventory, too.
