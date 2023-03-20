@@ -110,21 +110,45 @@ namespace VNEI.UI {
 
             if (IsPlayerCheating() && (int)Plugin.itemCheatHotkey.Value == (int)eventData.button) {
                 if (item.prefab) {
-                    if (item.prefab.TryGetComponent(out ItemDrop itemDrop)) {
-                        bool isShiftKeyDown = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
-                        int stackSize = isShiftKeyDown ? itemDrop.m_itemData.m_shared.m_maxStackSize : 1;
-                        Player.m_localPlayer.PickupPrefab(item.prefab, stackSize);
-                    } else if (item.prefab.TryGetComponent(out Piece piece)) {
-                        foreach (Piece.Requirement resource in piece.m_resources) {
-                            GameObject dropPrefab = ObjectDB.instance.GetItemPrefab(resource.m_resItem.name);
-                            Player.m_localPlayer.PickupPrefab(dropPrefab, resource.m_amount);
-                        }
-                    }
+                    CheatItem();
                 }
             } else if ((int)Plugin.removeRecentHotkey.Value == (int)eventData.button) {
                 baseUI.RemoveItemFromLastViewedQueue(item);
             } else {
                 baseUI.ShowRecipe(item, true);
+            }
+        }
+
+        private void CheatItem() {
+            bool isShiftKeyDown = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+            bool isControlKeyDown = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
+
+            if (item.prefab.TryGetComponent(out ItemDrop itemDrop)) {
+                Recipe recipe = ObjectDB.instance.GetRecipe(itemDrop.m_itemData);
+
+                if (isControlKeyDown && recipe) {
+                    foreach (Piece.Requirement resource in recipe.m_resources) {
+                        SpawnItem(resource.m_resItem, resource.GetAmount(1), isShiftKeyDown);
+                    }
+                } else {
+                    SpawnItem(item.prefab.GetComponent<ItemDrop>(), 1, isShiftKeyDown);
+                }
+            } else if (item.prefab.TryGetComponent(out Piece piece)) {
+                foreach (Piece.Requirement resource in piece.m_resources) {
+                    SpawnItem(resource.m_resItem, resource.GetAmount(1), isShiftKeyDown);
+                }
+            }
+        }
+
+        private static void SpawnItem(ItemDrop item, int amount, bool fullStack) {
+            if (!item) {
+                return;
+            }
+
+            int stackSize = fullStack ? item.m_itemData.m_shared.m_maxStackSize : amount;
+
+            if (stackSize > 0) {
+                Player.m_localPlayer.PickupPrefab(item.gameObject, stackSize);
             }
         }
 
