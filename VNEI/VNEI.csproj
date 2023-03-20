@@ -139,8 +139,10 @@
         <Compile Include="Logic\BepInExExtensions.cs" />
         <Compile Include="Logic\Compatibility\PlanBuild.cs" />
         <Compile Include="Logic\ComponentEvent.cs" />
+        <Compile Include="Logic\Export\ExportPaths.cs" />
+        <Compile Include="Logic\Export\FileWriter.cs" />
+        <Compile Include="Logic\Export\IconExport.cs" />
         <Compile Include="Logic\FavouritesSave.cs" />
-        <Compile Include="Logic\FileWriter.cs" />
         <Compile Include="Logic\Indexing.cs" />
         <Compile Include="Logic\Item.cs" />
         <Compile Include="Logic\ItemType.cs" />

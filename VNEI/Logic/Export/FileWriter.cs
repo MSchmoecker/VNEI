@@ -14,7 +14,7 @@ namespace VNEI.Logic {
         private const string MissingType = "missing-type";
 
         private static string BuildFullFilePath(string fileSuffix) {
-            return $"{FileOutputPath}{Path.DirectorySeparatorChar}{FileName}.{fileSuffix}";
+            return Path.Combine(ExportPaths.GetMainExportFolder(), $"{FileName}.{fileSuffix}");
         }
 
         public static void PrintSimpleTextFile(List<Item> items) {

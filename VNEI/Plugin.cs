@@ -134,6 +134,7 @@ namespace VNEI {
             CommandManager.Instance.AddConsoleCommand(new FileWriterControllerCSV());
             CommandManager.Instance.AddConsoleCommand(new FileWriterControllerYAML());
             CommandManager.Instance.AddConsoleCommand(new FileWriterControllerText());
+            CommandManager.Instance.AddConsoleCommand(new IconExport());
 
             PrefabManager.OnPrefabsRegistered += ApplyMocks;
 
