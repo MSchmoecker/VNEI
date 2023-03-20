@@ -53,18 +53,19 @@ Requires a restart to take effect.
 
 ### Cheating
 If devcommands are enabled, items can be right clicked to spawn them.
-This is only possible at a local game or when the user is an admin at a server.
-Shift + RightClick spawns a whole stack.
-
+This is only possible at a local game or when the user is an admin at a server.\
+Shift + RightClick spawns a whole stack.\
+Ctrl + RightClick spawns the item ingredients instead of the item itself.
 
 ## Ingame Commands
 Export all indexed items as a file to the BepInEx root path:
 
-| Command                                                                            | Description                                                                                              |
-|------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
-| vnei_export_csv [comma&#124;semicolon&#124;tab]                                    | table format, can be read by Excel or similar programs. The separator is optional and `comma` by default |
-| vnei_export_yaml [exclude_item1,exclude_item2,...] [exclude_mod1,exclude_mod2,...] | creates a CLLC ItemConfig.yml like file with the option to exclude certain items or mods                 |
-| vnei_export_text                                                                   | simple text                                                                                              |
+| Command                                                                            | Description                                                                                                                       |
+|------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------|
+| vnei_export_csv [comma&#124;semicolon&#124;tab]                                    | table format, can be read by Excel or similar programs. The separator is optional and `comma` by default                          |
+| vnei_export_yaml [exclude_item1,exclude_item2,...] [exclude_mod1,exclude_mod2,...] | creates a CLLC ItemConfig.yml like file with the option to exclude certain items or mods                                          |
+| vnei_export_text                                                                   | simple text                                                                                                                       |
+| vnei_export_icons [mod1,mod2]                                                      | extracts all icons to the BepInEx root path as png files. Mod names are optional to limit the export, `Valheim` are vanilla icons |
 
 
 ## Development

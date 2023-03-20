@@ -1,5 +1,10 @@
 # Changelog
 
+0.10.0
+- Added a command to export all icons. See README.md for more information
+- Added the option to spawn item ingredients with Ctrl + RightClick
+- Fixed some modded items were not indexed (e.g. OdinFlight)
+
 0.9.1
 - Fixed a bug where item IDs were wrongly localized and cached, resulting in the wrong item ID being shown for certain items
 
