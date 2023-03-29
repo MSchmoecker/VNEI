@@ -1,5 +1,9 @@
 # Changelog
 
+0.10.1
+- Fixed spawned items were always at level 1 instead of the shown level
+- Fixed spawned items did not have full durability
+
 0.10.0
 - Added a command to export all icons. See README.md for more information
 - Added the option to spawn item ingredients with Ctrl + RightClick
