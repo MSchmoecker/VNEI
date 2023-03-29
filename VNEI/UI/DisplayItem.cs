@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using BepInEx.Bootstrap;
 using Jotunn.Managers;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -128,19 +126,23 @@ namespace VNEI.UI {
 
                 if (isControlKeyDown && recipe) {
                     foreach (Piece.Requirement resource in recipe.m_resources) {
-                        SpawnItem(resource.m_resItem, resource.GetAmount(1), isShiftKeyDown);
+                        SpawnItem(resource.m_resItem, resource.GetAmount(quality), 1, isShiftKeyDown);
+                    }
+
+                    if (quality > 1) {
+                        SpawnItem(itemDrop, 1, quality - 1, isShiftKeyDown);
                     }
                 } else {
-                    SpawnItem(item.prefab.GetComponent<ItemDrop>(), 1, isShiftKeyDown);
+                    SpawnItem(item.prefab.GetComponent<ItemDrop>(), 1, quality, isShiftKeyDown);
                 }
             } else if (item.prefab.TryGetComponent(out Piece piece)) {
                 foreach (Piece.Requirement resource in piece.m_resources) {
-                    SpawnItem(resource.m_resItem, resource.GetAmount(1), isShiftKeyDown);
+                    SpawnItem(resource.m_resItem, resource.GetAmount(1), 1, isShiftKeyDown);
                 }
             }
         }
 
-        private static void SpawnItem(ItemDrop item, int amount, bool fullStack) {
+        private static void SpawnItem(ItemDrop item, int amount, int level, bool fullStack) {
             if (!item) {
                 return;
             }
@@ -148,7 +150,12 @@ namespace VNEI.UI {
             int stackSize = fullStack ? item.m_itemData.m_shared.m_maxStackSize : amount;
 
             if (stackSize > 0) {
-                Player.m_localPlayer.PickupPrefab(item.gameObject, stackSize);
+                ItemDrop.ItemData spawned = Player.m_localPlayer.PickupPrefab(item.gameObject, stackSize);
+
+                if (spawned != null) {
+                    spawned.m_quality = level;
+                    spawned.m_durability = spawned.GetMaxDurability();
+                }
             }
         }
 
