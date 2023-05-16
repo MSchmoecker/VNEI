@@ -9,23 +9,20 @@ using Jotunn.Entities;
 
 namespace VNEI.Logic {
     public static class FileWriter {
-        private static readonly string FileOutputPath = BepInEx.Paths.BepInExRootPath;
         private const string FileName = "VNEI.indexed.items";
         private const string MissingType = "missing-type";
 
-        private static string BuildFullFilePath(string fileSuffix) {
-            return Path.Combine(ExportPaths.GetMainExportFolder(), $"{FileName}.{fileSuffix}");
-        }
-
         public static void PrintSimpleTextFile(List<Item> items) {
-            string file = BuildFullFilePath("txt");
+            string file = ExportPaths.GetExportLocation($"{FileName}.txt");
             Log.LogInfo($"Writing indexed items to file {file}");
+
             File.WriteAllLines(file, items.Select(item => item.PrintItem()).ToArray());
         }
 
         public static void PrintCSVFile(List<Item> items, string separator) {
-            string file = BuildFullFilePath("csv");
+            string file = ExportPaths.GetExportLocation($"{FileName}.csv");
             Log.LogInfo($"Writing indexed items to file {file}");
+
             string header = Item.PrintCSVHeader(separator);
             string[] lines = items.Select(x => x.PrintItemCSV(separator)).ToArray();
             File.WriteAllLines(file, new[] { header }.Concat(lines).ToArray());
@@ -36,7 +33,7 @@ namespace VNEI.Logic {
             List<string> itemNamesFilterExcluded,
             List<string> modNamesFilterExcluded
         ) {
-            string file = BuildFullFilePath("yml");
+            string file = ExportPaths.GetExportLocation($"{FileName}.yml");
             Log.LogInfo($"Writing indexed items to file {file}");
             Log.LogInfo($"Excluding items via match terms '{string.Join(",", itemNamesFilterExcluded)}' and mods with names matching '{string.Join(",", modNamesFilterExcluded)}'");
 

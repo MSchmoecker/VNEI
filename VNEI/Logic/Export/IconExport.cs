@@ -7,12 +7,12 @@ using UnityEngine;
 namespace VNEI.Logic {
     public class IconExport : ConsoleCommand {
         public override string Name => "vnei_export_icons";
-        public override string Help => "Writes icons";
+        public override string Help => "Exports icons";
 
         public override void Run(string[] args) {
             List<Item> items = Indexing.GetActiveItems().Select(tuple => tuple.Value).ToList();
 
-            Log.LogInfo($"Exporting icons into {Path.Combine(ExportPaths.GetMainExportFolder(), "icons")}");
+            Log.LogInfo($"Exporting icons into {ExportPaths.GetExportLocation("", "icons")}");
 
             foreach (IGrouping<string, Item> group in items.GroupBy(item => item.GetModName())) {
                 if (args.Length >= 1 && !args[0].Split(',').Contains(group.Key)) {
@@ -41,18 +41,7 @@ namespace VNEI.Logic {
 
             string fileName = Path.GetInvalidFileNameChars().Aggregate($"{item.internalName}.png", (current, c) => current.Replace(c, '_'));
             string modName = Path.GetInvalidPathChars().Aggregate(item.GetModName(), (current, c) => current.Replace(c, '_'));
-
-            string path = Path.Combine(ExportPaths.GetMainExportFolder(), "icons", modName, fileName);
-            string directory = Path.GetDirectoryName(path);
-
-            if (directory == null || string.IsNullOrEmpty(directory)) {
-                Log.LogWarning($"Invalid directory for {item.internalName}: {directory}");
-                return;
-            }
-
-            if (!Directory.Exists(directory)) {
-                Directory.CreateDirectory(directory);
-            }
+            string path = ExportPaths.GetExportLocation(fileName, "icons", modName);
 
             int width = icon.texture.width;
             int height = icon.texture.height;
