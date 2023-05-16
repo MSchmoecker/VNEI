@@ -1,5 +1,8 @@
 # Changelog
 
+0.10.2
+- Fixed some export commands failed if the export folder did not already exist
+
 0.10.1
 - Fixed spawned items were always at level 1 instead of the shown level
 - Fixed spawned items did not have full durability
