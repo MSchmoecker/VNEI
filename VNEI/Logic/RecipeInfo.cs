@@ -197,7 +197,7 @@ namespace VNEI.Logic {
             Stations.Add(new Part(crafter, new Amount(1), 1));
 
             if (piece.m_craftingStation) {
-                Stations.Add(new Part(Indexing.GetItem(piece.m_craftingStation.m_name), new Amount(1), 1));
+                AddStation(piece.m_craftingStation, 1);
             }
 
             foreach (Piece.Requirement requirement in piece.m_resources) {

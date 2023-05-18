@@ -117,9 +117,13 @@ namespace VNEI.Logic {
                     fallbackLocalizedName = hoverText.m_text;
                 }
 
-                // Treasure Chests are the only none-buildable prefabs that needs to be indexed
+                if (string.IsNullOrEmpty(fallbackLocalizedName) && prefab.TryGetComponent(out CraftingStation craftingStation)) {
+                    fallbackLocalizedName = craftingStation.m_name;
+                }
+
+                // Treasure Chests are the only none-buildable pieces that needs to be indexed
                 if (prefabName.StartsWith("TreasureChest")) {
-                    TryAddItem<Piece>(prefab, i => i.m_name, ItemType.Piece, i => i.m_description, i => i.m_icon);
+                    TryAddItem<Piece>(prefab, i => i.m_name, fallbackLocalizedName, ItemType.Piece, i => i.m_description, i => i.m_icon);
                 }
 
                 if (prefab.TryGetComponent(out ItemDrop itemDrop)) {
@@ -144,20 +148,20 @@ namespace VNEI.Logic {
                         pieceTables.Add(CleanupName(prefabName), itemData.m_shared.m_buildPieces);
 
                         foreach (GameObject buildPiece in itemData.m_shared.m_buildPieces.m_pieces) {
-                            TryAddItem<Piece>(buildPiece, i => i.m_name, ItemType.Piece, i => i.m_description, i => i.m_icon);
+                            TryAddItem<Piece>(buildPiece, i => i.m_name, fallbackLocalizedName, ItemType.Piece, i => i.m_description, i => i.m_icon);
                         }
                     }
                 }
 
-                TryAddItem<Character>(prefab, i => i.m_name, ItemType.Creature);
-                TryAddItem<MineRock>(prefab, i => i.m_name, ItemType.Undefined);
-                TryAddItem<MineRock5>(prefab, i => i.m_name, ItemType.Undefined);
-                TryAddItem<DropOnDestroyed>(prefab, i => fallbackLocalizedName, ItemType.Undefined);
-                TryAddItem<Pickable>(prefab, i => string.Empty, ItemType.Undefined);
-                TryAddItem<SpawnArea>(prefab, i => fallbackLocalizedName, ItemType.Creature);
-                TryAddItem<Destructible>(prefab, i => fallbackLocalizedName, ItemType.Undefined);
-                TryAddItem<TreeBase>(prefab, i => fallbackLocalizedName, ItemType.Undefined);
-                TryAddItem<Trader>(prefab, i => i.m_name, ItemType.Undefined);
+                TryAddItem<Character>(prefab, i => i.m_name, fallbackLocalizedName, ItemType.Creature);
+                TryAddItem<MineRock>(prefab, i => i.m_name, fallbackLocalizedName, ItemType.Undefined);
+                TryAddItem<MineRock5>(prefab, i => i.m_name, fallbackLocalizedName, ItemType.Undefined);
+                TryAddItem<DropOnDestroyed>(prefab, i => string.Empty, fallbackLocalizedName, ItemType.Undefined);
+                TryAddItem<Pickable>(prefab, i => string.Empty, fallbackLocalizedName, ItemType.Undefined);
+                TryAddItem<SpawnArea>(prefab, i => string.Empty, fallbackLocalizedName, ItemType.Creature);
+                TryAddItem<Destructible>(prefab, i => string.Empty, fallbackLocalizedName, ItemType.Undefined);
+                TryAddItem<TreeBase>(prefab, i => string.Empty, fallbackLocalizedName, ItemType.Undefined);
+                TryAddItem<Trader>(prefab, i => i.m_name, fallbackLocalizedName, ItemType.Undefined);
 
                 try {
                     OnIndexingItems?.Invoke(prefab);
@@ -345,7 +349,7 @@ namespace VNEI.Logic {
             }
         }
 
-        private static void TryAddItem<T>(GameObject target, Func<T, string> getName, ItemType itemType, Func<T, string> getDescription = null, Func<T, Sprite> getIcon = null) where T : Component {
+        private static void TryAddItem<T>(GameObject target, Func<T, string> getName, string fallbackLocalizedName, ItemType itemType, Func<T, string> getDescription = null, Func<T, Sprite> getIcon = null) where T : Component {
             if (!target.TryGetComponent(out T component)) {
                 return;
             }
@@ -353,7 +357,14 @@ namespace VNEI.Logic {
             try {
                 string description = getDescription?.Invoke(component) ?? string.Empty;
                 Sprite icon = getIcon?.Invoke(component);
-                Item item = new Item(target.name, getName(component), description, icon, itemType, target);
+
+                string localizedName = getName(component);
+
+                if (string.IsNullOrEmpty(localizedName)) {
+                    localizedName = fallbackLocalizedName;
+                }
+
+                Item item = new Item(target.name, localizedName, description, icon, itemType, target);
                 AddItem(item);
             } catch (Exception e) {
                 Log.LogError(target.name + Environment.NewLine + e + Environment.NewLine);
