@@ -1,5 +1,9 @@
 # Changelog
 
+0.10.3
+- Fixed crafting stations could not be found in certain cases, this fixes an incompatibility with PungusSouls
+- Fixed torches were not categorized as weapons and excluded the TorchMist dev testing item
+
 0.10.2
 - Fixed some export commands failed if the export folder did not already exist
 
