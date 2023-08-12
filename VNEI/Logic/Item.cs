@@ -100,7 +100,7 @@ namespace VNEI.Logic {
                     itemDrop.m_itemData.m_dropPrefab = prefab;
                 }
 
-                return ItemDrop.ItemData.GetTooltip(itemDrop.m_itemData, quality, true);
+                return ItemDrop.ItemData.GetTooltip(itemDrop.m_itemData, quality, true, Game.m_worldLevel);
             }
 
             return description.TrimEnd() + GetTooltipModName();
