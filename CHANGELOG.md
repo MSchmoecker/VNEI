@@ -1,5 +1,8 @@
 # Changelog
 
+0.10.4
+- Updated for Valheim 0.217.14 (Hildir's Request), not compatible with older versions. World modifier settings are not supported yet and will always display 1x resource drops
+
 0.10.3
 - Fixed crafting stations could not be found in certain cases, this fixes an incompatibility with PungusSouls
 - Fixed torches were not categorized as weapons and excluded the TorchMist dev testing item
