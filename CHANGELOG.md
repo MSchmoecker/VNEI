@@ -1,5 +1,9 @@
 # Changelog
 
+0.11.0
+- Added include_mods as an optional parameter to the yaml export command to filter for specific mods
+- Added config options to enable cheating and cheating of creatures. Both are disabled by default
+
 0.10.4
 - Updated for Valheim 0.217.14 (Hildir's Request), not compatible with older versions. World modifier settings are not supported yet and will always display 1x resource drops
 
