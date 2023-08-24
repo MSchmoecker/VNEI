@@ -31,18 +31,23 @@ namespace VNEI.Logic {
         public static void PrintCLLCItemConfigYaml(
             List<Item> items,
             List<string> itemNamesFilterExcluded,
-            List<string> modNamesFilterExcluded
+            List<string> modNamesFilterExcluded,
+            List<string> modNamesFilterInclude
         ) {
             string file = ExportPaths.GetExportLocation($"{FileName}.yml");
             Log.LogInfo($"Writing indexed items to file {file}");
             Log.LogInfo($"Excluding items via match terms '{string.Join(",", itemNamesFilterExcluded)}' and mods with names matching '{string.Join(",", modNamesFilterExcluded)}'");
+
+            if (modNamesFilterInclude.Count > 0) {
+                Log.LogInfo($"Including items from mods with names matching '{string.Join(",", modNamesFilterInclude)}'");
+            }
 
             ISerializer serializer = new SerializerBuilder()
                                      .WithNamingConvention(CamelCaseNamingConvention.Instance)
                                      .Build();
 
             List<(string itemType, string internalName, string modName)> validItems =
-                FilterInvalidItems(items, itemNamesFilterExcluded, modNamesFilterExcluded)
+                FilterInvalidItems(items, itemNamesFilterExcluded, modNamesFilterExcluded, modNamesFilterInclude)
                     .Select(item => (
                                 item.prefab.TryGetComponent(out ItemDrop itemDrop) ? itemDrop.m_itemData.m_shared.m_itemType.ToString() : item.itemType.ToString(),
                                 item.internalName,
@@ -59,11 +64,24 @@ namespace VNEI.Logic {
             File.WriteAllText(file, yamlContent);
         }
 
-        private static List<Item> FilterInvalidItems(List<Item> items, List<string> itemNamesFilterExcluded, List<string> modNamesFilterExcluded) {
+
+        private static List<Item> FilterInvalidItems(List<Item> items, List<string> itemNamesFilterExcluded, List<string> modNamesFilterExcluded, List<string> modNamesFilterInclude) {
             return items
                    .Where(item => item.prefab != null)
                    .Where(item => itemNamesFilterExcluded.All(filterExclude => !item.internalName.Contains(filterExclude)))
-                   .Where(item => modNamesFilterExcluded.All(filterExclude => !item.GetModName().Contains(filterExclude))).ToList();
+                   .FilterExcludeMod(modNamesFilterExcluded)
+                   .FilterIncludeMod(modNamesFilterInclude)
+                   .ToList();
+        }
+
+        private static IEnumerable<Item> FilterExcludeMod(this IEnumerable<Item> items, List<string> modNamesFilterExcluded) {
+            return items.Where(item => modNamesFilterExcluded.All(filterExclude => !item.GetModName().Contains(filterExclude))).ToList();
+        }
+
+        private static IEnumerable<Item> FilterIncludeMod(this IEnumerable<Item> items, List<string> modNamesFilterInclude) {
+            if (modNamesFilterInclude.Count == 0)
+                return items;
+            return items.Where(item => modNamesFilterInclude.Any(filterInclude => item.GetModName().Contains(filterInclude))).ToList();
         }
 
         private static string CleanModName(string modNameOriginal) {
@@ -121,10 +139,11 @@ namespace VNEI.Logic {
         public override string Name => "vnei_export_yaml";
 
         public override void Run(string[] args) {
-            Log.LogInfo($"args '{string.Join(" - ", args)}'");
+            Log.LogInfo($"args '{string.Join("' '", args)}'");
             List<string> itemNamesFilterExcluded = args.Length > 0 ? args[0].Split(',').ToList() : new List<string>();
             List<string> modNamesFilterExcluded = args.Length > 1 ? args[1].Split(',').ToList() : new List<string>();
-            FileWriter.PrintCLLCItemConfigYaml(GetItems(), itemNamesFilterExcluded, modNamesFilterExcluded);
+            List<string> modNamesFilterInclude = args.Length > 2 ? args[2].Split(',').ToList() : new List<string>();
+            FileWriter.PrintCLLCItemConfigYaml(GetItems(), itemNamesFilterExcluded, modNamesFilterExcluded, modNamesFilterInclude);
         }
     }
 
