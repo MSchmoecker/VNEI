@@ -106,7 +106,7 @@ namespace VNEI.UI {
                 return;
             }
 
-            if (IsPlayerCheating() && (int)Plugin.itemCheatHotkey.Value == (int)eventData.button) {
+            if (Plugin.cheating.Value && IsPlayerCheating() && (int)Plugin.itemCheatHotkey.Value == (int)eventData.button) {
                 if (item.prefab) {
                     CheatItem();
                 }
@@ -139,6 +139,9 @@ namespace VNEI.UI {
                 foreach (Piece.Requirement resource in piece.m_resources) {
                     SpawnItem(resource.m_resItem, resource.GetAmount(1), 1, isShiftKeyDown);
                 }
+            } else if (Plugin.cheatCreatures.Value && item.prefab.GetComponent<Character>()) {
+                Transform playerTransform = Player.m_localPlayer.transform;
+                Instantiate(item.prefab, playerTransform.position + playerTransform.forward * 2f, Quaternion.identity);
             }
         }
 

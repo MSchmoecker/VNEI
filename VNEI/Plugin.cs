@@ -50,6 +50,8 @@ namespace VNEI {
         public static ConfigEntry<bool> showRecentItems;
         public static ConfigEntry<string> tabName;
         public static ConfigEntry<bool> showModTooltip;
+        public static ConfigEntry<bool> cheating;
+        public static ConfigEntry<bool> cheatCreatures;
 
         public static bool isUiOpen = true;
         public static event Action OnOpenHotkey;
@@ -99,6 +101,10 @@ namespace VNEI {
 
             // Tooltips
             showModTooltip = Config.Bind("Tooltips", "Show Mod Name In Tooltip", true, new ConfigDescription(config["ShowModTooltip"]));
+
+            // Cheating
+            cheating = Config.Bind("Cheating", "Enable Cheating", false, new ConfigDescription(config["EnableCheating"]));
+            cheatCreatures = Config.Bind("Cheating", "Enable Spawning Creatures", false, new ConfigDescription(config["AllowCreatureSpawn"]));
 
             isUiOpen = !hideUIAtStartup.Value;
 
