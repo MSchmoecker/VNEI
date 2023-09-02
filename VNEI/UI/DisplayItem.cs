@@ -92,6 +92,10 @@ namespace VNEI.UI {
             return Player.m_localPlayer && SynchronizationManager.Instance.PlayerIsAdmin && Terminal.m_cheat;
         }
 
+        public static bool WorldAllowsCheating() {
+            return ZoneSystem.instance && (ZoneSystem.instance.GetGlobalKey(GlobalKeys.NoBuildCost) || ZoneSystem.instance.GetGlobalKey(GlobalKeys.NoCraftCost));
+        }
+
         public void OnPointerClick(PointerEventData eventData) {
             if (item == null) {
                 return;
@@ -106,7 +110,9 @@ namespace VNEI.UI {
                 return;
             }
 
-            if (Plugin.cheating.Value && IsPlayerCheating() && (int)Plugin.itemCheatHotkey.Value == (int)eventData.button) {
+            bool allowCheat = Plugin.cheating.Value && (IsPlayerCheating() || WorldAllowsCheating());
+
+            if (allowCheat && (int)Plugin.itemCheatHotkey.Value == (int)eventData.button) {
                 if (item.prefab) {
                     CheatItem();
                 }
