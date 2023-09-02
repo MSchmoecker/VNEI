@@ -1,5 +1,8 @@
 # Changelog
 
+0.12.0
+- Allow cheating if the world has the no build cost modifier set
+
 0.11.0
 - Added include_mods as an optional parameter to the yaml export command to filter for specific mods
 - Added config options to enable cheating and cheating of creatures. Both are disabled by default

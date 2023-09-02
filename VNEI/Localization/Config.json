@@ -10,13 +10,13 @@
   "ShowOnlyKnown": "Hide unknown items and recipes.",
   "OpenUIHotkey": "Hotkey to open and close the UI. Only active when 'Attach To Crafting' is false.",
   "ViewRecipeHotkey": "Hotkey to quickly view the recipe of an item while hovering over it. Works in the inventory, too.",
-  "ItemCheatMouseButton": "Mouse button to to cheat items. Only works if devcommands are enabled and when the user is in a local game or an admin at a server.",
+  "ItemCheatMouseButton": "Mouse button to to cheat items. Only works if devcommands or no the build cost world modifier are enabled. If the world modifier are not set, it's only possible at a local game or when the user is an admin at a server.",
   "RemoveRecentMouseButton": "Mouse button to remove an item from the recent viewed item list.",
   "ShowRecentItems": "Show the recent viewed items bar in the UI.",
   "TabName": "Visible name of the tab in the crafting menu.",
   "GoForwardHotkey": "Hotkey to go forward to the last viewed page in history.",
   "GoBackHotkey": "Hotkey to go back to the last viewed page in history.",
   "ShowModTooltip": "Show the mod name in the description tooltip of an item.",
-  "EnableCheating": "Enables to cheat items by right clicking them. Only works if devcommands are enabled and when the user is in a local game or an admin at a server.",
+  "EnableCheating": "Enables to cheat items by right clicking them. Only works if devcommands or no the build cost world modifier are enabled. If the world modifier are not set, it's only possible at a local game or when the user is an admin at a server.",
   "AllowCreatureSpawn": "Enables creature cheating, disabled by default to prevent accidents."
 }

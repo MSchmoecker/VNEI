@@ -52,8 +52,9 @@ Requires a restart to take effect.
 
 
 ### Cheating
-If devcommands and the config option are enabled, items can be right clicked to spawn them.
-This is only possible at a local game or when the user is an admin at a server.\
+If devcommands or the no build cost world modifier are enabled, items can be right clicked to spawn them.
+Requires the config option `Allow Cheating` to be enabled as well.
+If the world modifier are not set, it's only possible at a local game or when the user is an admin at a server.\
 Shift + RightClick spawns a whole stack.\
 Ctrl + RightClick spawns the item ingredients instead of the item itself.
 
