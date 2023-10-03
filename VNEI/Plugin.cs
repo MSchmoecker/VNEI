@@ -161,7 +161,9 @@ namespace VNEI {
             }
 
             foreach (string line in File.ReadAllLines(externalBlacklist)) {
-                if (string.IsNullOrEmpty(line) || ItemBlacklist.Contains(line)) {
+                string cleaned = line.Trim();
+
+                if (string.IsNullOrEmpty(cleaned) || ItemBlacklist.Contains(cleaned)) {
                     continue;
                 }
 
