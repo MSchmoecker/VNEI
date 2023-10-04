@@ -88,8 +88,8 @@ namespace VNEI.UI {
             favorite.gameObject.SetActive(item != null && item.isFavorite);
         }
 
-        public static bool IsPlayerCheating() {
-            return Player.m_localPlayer && SynchronizationManager.Instance.PlayerIsAdmin && (Terminal.m_cheat || Player.m_debugMode);
+        public static bool PlayerAllowsCheating() {
+            return Player.m_localPlayer && SynchronizationManager.Instance.PlayerIsAdmin;
         }
 
         public static bool WorldAllowsCheating() {
@@ -110,7 +110,7 @@ namespace VNEI.UI {
                 return;
             }
 
-            bool allowCheat = Plugin.cheating.Value && (IsPlayerCheating() || WorldAllowsCheating());
+            bool allowCheat = Plugin.cheating.Value && (PlayerAllowsCheating() || WorldAllowsCheating());
 
             if (allowCheat && (int)Plugin.itemCheatHotkey.Value == (int)eventData.button) {
                 if (item.prefab) {
