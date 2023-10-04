@@ -208,5 +208,12 @@ namespace VNEI.Logic {
             isKnown = false;
             onKnownChanged.Invoke();
         }
+
+        public IEnumerable<Item> GetStations() {
+            List<Item> stations = new List<Item>() { Plugin.Instance.allStations };
+            stations.AddRange(ingredient.SelectMany(r => r.GetStationItems()));
+            stations.AddRange(result.SelectMany(r => r.GetStationItems()));
+            return stations.Distinct().ToList();
+        }
     }
 }

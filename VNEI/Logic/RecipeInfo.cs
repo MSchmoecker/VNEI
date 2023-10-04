@@ -16,6 +16,14 @@ namespace VNEI.Logic {
         public bool IsSelfKnown { get; private set; }
         public float Width { get; private set; }
 
+        public IEnumerable<Item> GetStationItems() {
+            if (Stations.Count > 0) {
+                return Stations.Select(s => s.item ?? Plugin.Instance.noStation);
+            }
+
+            return new[] { Plugin.Instance.noStation };
+        }
+
         public void UpdateKnown() {
             IsSelfKnown = CalcSelfKnown();
         }
@@ -88,12 +96,14 @@ namespace VNEI.Logic {
             }
         }
 
-        public void AddStation(string name, int level) {
-            Item item = Indexing.GetItem(name);
-
+        public void AddStation(Item item, int level) {
             if (item != null) {
                 Stations.Add(new Part(item, new Amount(1), level));
             }
+        }
+
+        public void AddStation(string name, int level) {
+            AddStation(Indexing.GetItem(name), level);
         }
 
         public void AddStation<T>(T target, int level) where T : Object {
@@ -122,6 +132,8 @@ namespace VNEI.Logic {
         public RecipeInfo(Recipe recipe, int quality) : this() {
             if (recipe.GetRequiredStation(quality) != null) {
                 AddStation(recipe.GetRequiredStation(quality), recipe.GetRequiredStationLevel(quality));
+            } else {
+                AddStation(Plugin.Instance.handStation, 1);
             }
 
             AddResult(recipe.m_item, Amount.One, new Amount(recipe.m_amount), quality, recipe.name);

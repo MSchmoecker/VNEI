@@ -63,6 +63,7 @@ namespace VNEI.UI {
             ShowSearch(true);
 
             Styling.ApplyAllComponents(root);
+            Styling.ApplyAllComponents(Plugin.Instance.craftingStationTemplate.transform);
             GUIManager.Instance.ApplyWoodpanelStyle(dragHandler);
 
             recipeUi.OnSetItem += AddItemToLastViewedQueue;

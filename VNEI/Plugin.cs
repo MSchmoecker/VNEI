@@ -60,6 +60,10 @@ namespace VNEI {
         public Sprite noStarSprite;
         public GameObject vneiUI;
         public GameObject displayItemTemplate;
+        public GameObject craftingStationTemplate;
+        public Item allStations;
+        public Item handStation;
+        public Item noStation;
 
         private static readonly Regex RichTagRegex = new Regex(@"<[^>]*>");
         private Harmony harmony;
@@ -131,6 +135,10 @@ namespace VNEI {
             noStarSprite = AssetBundle.LoadAsset<Sprite>("NoStar.png");
             vneiUI = AssetBundle.LoadAsset<GameObject>("VNEI");
             displayItemTemplate = AssetBundle.LoadAsset<GameObject>("_Template");
+            craftingStationTemplate = AssetBundle.LoadAsset<GameObject>("CraftingStationTemplate");
+            allStations = new Item("VNEI_AllStations", "$VNEI_AllStations", "", null, ItemType.Undefined, null);
+            handStation = new Item("VNEI_HandStation", "$VNEI_HandStation", "", null, ItemType.Undefined, null);
+            noStation = new Item("VNEI_NoStation", "$VNEI_NoStation", "", null, ItemType.Undefined, null);
 
             GUIManager.OnCustomGUIAvailable += () => {
                 GetMainUI().CreateBaseUI();
@@ -226,6 +234,7 @@ namespace VNEI {
         private void ApplyMocks() {
             vneiUI.FixReferences(true);
             displayItemTemplate.FixReferences(true);
+            craftingStationTemplate.FixReferences(true);
 
             PrefabManager.OnPrefabsRegistered -= ApplyMocks;
         }

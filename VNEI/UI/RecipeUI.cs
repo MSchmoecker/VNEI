@@ -13,6 +13,8 @@ namespace VNEI.UI {
         public RecipeScroll usingScroll;
         public RecipeScroll bothScroll;
 
+        public CraftingStationList craftingStationList;
+
         public DisplayItem infoIcon;
         public Text infoName;
         public Text infoInternalName;
@@ -35,11 +37,14 @@ namespace VNEI.UI {
             usingScroll.Init(baseUI);
             bothScroll.Init(baseUI);
             infoIcon.Init(baseUI);
+            craftingStationList.OnChange += UpdateRecipeView;
         }
 
         public void SetItem(Item item) {
             currentItem = item;
             OnSetItem?.Invoke(currentItem);
+
+            craftingStationList.SetStations(currentItem.GetStations().OrderBy(StationOrder.ByType).ThenBy(StationOrder.ByName).ToList());
 
             UpdateRecipeView();
 
@@ -85,16 +90,16 @@ namespace VNEI.UI {
 
             switch (view) {
                 case RecipeView.Obtaining:
-                    bothScroll.SetRecipes(currentItem.result);
+                    bothScroll.SetRecipes(craftingStationList.FilterRecipes(currentItem.result).ToHashSet());
                     bothScroll.SetTitle("$vnei_obtaining");
                     break;
                 case RecipeView.Using:
-                    bothScroll.SetRecipes(currentItem.ingredient);
+                    bothScroll.SetRecipes(craftingStationList.FilterRecipes(currentItem.ingredient).ToHashSet());
                     bothScroll.SetTitle("$vnei_using");
                     break;
                 case RecipeView.ObtainingAndUsing:
-                    obtainingScroll.SetRecipes(currentItem.result);
-                    usingScroll.SetRecipes(currentItem.ingredient);
+                    obtainingScroll.SetRecipes(craftingStationList.FilterRecipes(currentItem.result).ToHashSet());
+                    usingScroll.SetRecipes(craftingStationList.FilterRecipes(currentItem.ingredient).ToHashSet());
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
