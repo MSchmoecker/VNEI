@@ -67,10 +67,10 @@ namespace VNEI.UI {
             }
 
             if (ActiveStation == Plugin.Instance.noStation) {
-                return recipes.Where(r => r.Stations.Count == 0 || r.Stations.Any(s => s.item == null));
+                return recipes.Where(r => r.Stations.Count == 0 || r.Stations.All(s => s.item == null));
             }
 
-            return recipes.Where(r => r.Stations.Any(s => ActiveStation == s.item));
+            return recipes.Where(r => r.Stations.Count >= 1 && r.Stations[0].item == ActiveStation);
         }
     }
 }

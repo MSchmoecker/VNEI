@@ -17,8 +17,8 @@ namespace VNEI.Logic {
         public float Width { get; private set; }
 
         public IEnumerable<Item> GetStationItems() {
-            if (Stations.Count > 0) {
-                return Stations.Select(s => s.item ?? Plugin.Instance.noStation);
+            if (Stations.Count >= 1) {
+                return new[] { Stations[0].item ?? Plugin.Instance.noStation };
             }
 
             return new[] { Plugin.Instance.noStation };
