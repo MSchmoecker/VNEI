@@ -14,7 +14,7 @@ namespace VNEI.UI {
         public event Action OnChange;
 
         public void SetStations(List<Item> stations) {
-            ActiveStation = Plugin.Instance.allStations;
+            ActiveStation = stations.Contains(ActiveStation) ? ActiveStation : stations.FirstOrDefault();
             ClearStations();
 
             float posX = 20f;
@@ -36,7 +36,7 @@ namespace VNEI.UI {
                     OnChange?.Invoke();
                 });
             }
-            
+
             UpdateButtons();
         }
 

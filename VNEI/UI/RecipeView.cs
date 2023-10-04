@@ -6,5 +6,6 @@ namespace VNEI.UI {
         Obtaining,
         Using,
         ObtainingAndUsing,
+        Combined,
     }
 }

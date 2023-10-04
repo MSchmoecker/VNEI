@@ -29,7 +29,7 @@ namespace VNEI.UI {
             recipes.Clear();
         }
 
-        public void SetRecipes(HashSet<RecipeInfo> newRecipes) {
+        public void SetRecipes(IEnumerable<RecipeInfo> newRecipes) {
             recipes = new HashSet<RecipeInfo>(newRecipes);
             float width = 0;
             float height = 0;

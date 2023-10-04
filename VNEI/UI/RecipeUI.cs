@@ -12,6 +12,7 @@ namespace VNEI.UI {
         public RecipeScroll obtainingScroll;
         public RecipeScroll usingScroll;
         public RecipeScroll bothScroll;
+        public RecipeScroll combinedScroll;
 
         public CraftingStationList craftingStationList;
 
@@ -30,12 +31,13 @@ namespace VNEI.UI {
         public event Action<Item> OnSetItem;
 
         private Item currentItem;
-        private RecipeView currentView = RecipeView.ObtainingAndUsing;
+        private RecipeView currentView = RecipeView.Combined;
 
         private void Awake() {
             obtainingScroll.Init(baseUI);
             usingScroll.Init(baseUI);
             bothScroll.Init(baseUI);
+            combinedScroll.Init(baseUI);
             infoIcon.Init(baseUI);
             craftingStationList.OnChange += UpdateRecipeView;
         }
@@ -70,6 +72,7 @@ namespace VNEI.UI {
             obtainingScroll.Clear();
             usingScroll.Clear();
             bothScroll.Clear();
+            combinedScroll.Clear();
 
             RecipeView view = currentView;
 
@@ -87,19 +90,23 @@ namespace VNEI.UI {
             bothScroll.SetActive(view == RecipeView.Obtaining || view == RecipeView.Using);
             obtainingScroll.SetActive(view == RecipeView.ObtainingAndUsing);
             usingScroll.SetActive(view == RecipeView.ObtainingAndUsing);
+            combinedScroll.SetActive(view == RecipeView.Combined);
 
             switch (view) {
                 case RecipeView.Obtaining:
-                    bothScroll.SetRecipes(craftingStationList.FilterRecipes(currentItem.result).ToHashSet());
+                    bothScroll.SetRecipes(craftingStationList.FilterRecipes(currentItem.result));
                     bothScroll.SetTitle("$vnei_obtaining");
                     break;
                 case RecipeView.Using:
-                    bothScroll.SetRecipes(craftingStationList.FilterRecipes(currentItem.ingredient).ToHashSet());
+                    bothScroll.SetRecipes(craftingStationList.FilterRecipes(currentItem.ingredient));
                     bothScroll.SetTitle("$vnei_using");
                     break;
                 case RecipeView.ObtainingAndUsing:
-                    obtainingScroll.SetRecipes(craftingStationList.FilterRecipes(currentItem.result).ToHashSet());
-                    usingScroll.SetRecipes(craftingStationList.FilterRecipes(currentItem.ingredient).ToHashSet());
+                    obtainingScroll.SetRecipes(craftingStationList.FilterRecipes(currentItem.result));
+                    usingScroll.SetRecipes(craftingStationList.FilterRecipes(currentItem.ingredient));
+                    break;
+                case RecipeView.Combined:
+                    combinedScroll.SetRecipes(craftingStationList.FilterRecipes(currentItem.result.Concat(currentItem.ingredient)));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

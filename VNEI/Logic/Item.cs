@@ -210,7 +210,7 @@ namespace VNEI.Logic {
         }
 
         public IEnumerable<Item> GetStations() {
-            List<Item> stations = new List<Item>() { Plugin.Instance.allStations };
+            List<Item> stations = new List<Item>();
             stations.AddRange(ingredient.SelectMany(r => r.GetStationItems()));
             stations.AddRange(result.SelectMany(r => r.GetStationItems()));
             return stations.Distinct().ToList();
