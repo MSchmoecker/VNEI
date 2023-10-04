@@ -351,5 +351,20 @@ namespace VNEI.Logic {
             groups.Clear();
             groups.Add(amount, parts);
         }
+
+        public bool IsUpgrade(out Item item) {
+            List<Part> upgradableIngredients = Ingredients.Values.SelectMany(i => i).Where(i => i.item.maxQuality > 1).ToList();
+            List<Part> upgradableResults = Results.Values.SelectMany(i => i).Where(i => i.item.maxQuality > 1).ToList();
+
+            if (!(upgradableIngredients.Count == 1 && upgradableResults.Count == 1)) {
+                item = null;
+                return false;
+            }
+
+            Part ingredient = upgradableIngredients[0];
+            Part result = upgradableResults[0];
+            item = ingredient.item;
+            return ingredient.item == result.item && ingredient.quality < result.quality;
+        }
     }
 }

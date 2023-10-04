@@ -29,8 +29,9 @@ namespace VNEI.UI {
             recipes.Clear();
         }
 
-        public void SetRecipes(IEnumerable<RecipeInfo> newRecipes) {
-            recipes = new HashSet<RecipeInfo>(newRecipes);
+        public void SetRecipes(Item targetItem, IEnumerable<RecipeInfo> newRecipes) {
+            recipes = new HashSet<RecipeInfo>(newRecipes.Where(r => !r.IsUpgrade(out Item tool) || tool == targetItem));
+
             float width = 0;
             float height = 0;
 

@@ -94,19 +94,19 @@ namespace VNEI.UI {
 
             switch (view) {
                 case RecipeView.Obtaining:
-                    bothScroll.SetRecipes(craftingStationList.FilterRecipes(currentItem.result));
+                    bothScroll.SetRecipes(currentItem, craftingStationList.FilterRecipes(currentItem.result));
                     bothScroll.SetTitle("$vnei_obtaining");
                     break;
                 case RecipeView.Using:
-                    bothScroll.SetRecipes(craftingStationList.FilterRecipes(currentItem.ingredient));
+                    bothScroll.SetRecipes(currentItem, craftingStationList.FilterRecipes(currentItem.ingredient));
                     bothScroll.SetTitle("$vnei_using");
                     break;
                 case RecipeView.ObtainingAndUsing:
-                    obtainingScroll.SetRecipes(craftingStationList.FilterRecipes(currentItem.result));
-                    usingScroll.SetRecipes(craftingStationList.FilterRecipes(currentItem.ingredient));
+                    obtainingScroll.SetRecipes(currentItem, craftingStationList.FilterRecipes(currentItem.result));
+                    usingScroll.SetRecipes(currentItem, craftingStationList.FilterRecipes(currentItem.ingredient));
                     break;
                 case RecipeView.Combined:
-                    combinedScroll.SetRecipes(craftingStationList.FilterRecipes(currentItem.result.Concat(currentItem.ingredient)));
+                    combinedScroll.SetRecipes(currentItem, craftingStationList.FilterRecipes(currentItem.result.Concat(currentItem.ingredient)));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
