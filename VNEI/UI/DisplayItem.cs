@@ -89,7 +89,7 @@ namespace VNEI.UI {
         }
 
         public static bool IsPlayerCheating() {
-            return Player.m_localPlayer && SynchronizationManager.Instance.PlayerIsAdmin && Terminal.m_cheat;
+            return Player.m_localPlayer && SynchronizationManager.Instance.PlayerIsAdmin && (Terminal.m_cheat || Player.m_debugMode);
         }
 
         public static bool WorldAllowsCheating() {
