@@ -70,7 +70,7 @@ namespace VNEI.UI {
                     image.color = Color.white;
                     image.sprite = item.GetIcon();
                     uiTooltip.Set(item.preLocalizeName, item.GetTooltip(quality));
-                    qualityText.text = item.maxQuality > 1 && quality >= 1 ? $"{quality}" : "";
+                    qualityText.text = item.maxQuality > 1 || quality > 1 ? $"{quality}" : "";
                 } else {
                     image.color = unknownColor;
                     image.sprite = Plugin.Instance.noIconSprite;
