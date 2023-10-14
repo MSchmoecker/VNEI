@@ -1,15 +1,13 @@
 using System;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace VNEI.UI {
     public class TabButton : MonoBehaviour {
-        private Button button;
-        private Text nameText;
+        private TextMeshProUGUI nameText;
 
         public void Awake() {
-            button = GetComponent<Button>();
-            nameText = transform.Find("Text").GetComponent<Text>();
+            nameText = transform.Find("Text").GetComponent<TextMeshProUGUI>();
 
             Plugin.tabName.SettingChanged += UpdateTabName;
             UpdateTabName(null, EventArgs.Empty);

@@ -1,5 +1,10 @@
 # Changelog
 
+0.12.1
+- Updated for Valheim 0.217.22, not compatible with older versions
+- Updated and compiled for BepInExPack 5.4.2200
+- Fixed item names in the blacklist will be stripped of leading and trailing whitespace to prevent them from not being recognized
+
 0.12.0
 - Allow cheating if the world has the no build cost modifier set
 
