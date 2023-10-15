@@ -7,7 +7,7 @@ using VNEI.Logic;
 
 namespace VNEI.UI {
     public class CraftingStationList : MonoBehaviour {
-        private List<CraftingStationElement> stationelements = new List<CraftingStationElement>();
+        public List<CraftingStationElement> stationElements = new List<CraftingStationElement>();
 
         public Item ActiveStation { get; private set; }
 
@@ -21,7 +21,7 @@ namespace VNEI.UI {
 
             foreach (Item station in stations) {
                 CraftingStationElement stationElement = Instantiate(Plugin.Instance.craftingStationTemplate, transform).GetComponent<CraftingStationElement>();
-                stationelements.Add(stationElement);
+                stationElements.Add(stationElement);
                 stationElement.station = station;
                 stationElement.icon.sprite = station.GetIcon();
                 stationElement.tooltip.Set(station.preLocalizeName, "");
@@ -41,7 +41,7 @@ namespace VNEI.UI {
         }
 
         private void UpdateButtons() {
-            foreach (CraftingStationElement stationElement in stationelements) {
+            foreach (CraftingStationElement stationElement in stationElements) {
                 ColorBlock colors = stationElement.button.colors;
                 colors.normalColor = ActiveStation == stationElement.station ? Color.white : Color.gray;
                 colors.highlightedColor = Color.white;
@@ -54,11 +54,11 @@ namespace VNEI.UI {
         }
 
         private void ClearStations() {
-            foreach (CraftingStationElement stationElement in stationelements) {
+            foreach (CraftingStationElement stationElement in stationElements) {
                 Destroy(stationElement.gameObject);
             }
 
-            stationelements.Clear();
+            stationElements.Clear();
         }
 
         public IEnumerable<RecipeInfo> FilterRecipes(IEnumerable<RecipeInfo> recipes) {
