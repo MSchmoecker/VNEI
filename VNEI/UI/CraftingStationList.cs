@@ -7,28 +7,43 @@ using VNEI.Logic;
 
 namespace VNEI.UI {
     public class CraftingStationList : MonoBehaviour {
+        public Button prevPageButton;
+        public Button nextPageButton;
         public List<CraftingStationElement> stationElements = new List<CraftingStationElement>();
+        private int currentPage;
+
+        private float elementXSpace = 5f;
 
         public Item ActiveStation { get; private set; }
 
         public event Action OnChange;
 
+        // private void Awake() {
+        //     Plugin.GetMainUI().GetBaseUI().RebuildedSize
+        // }
+
         public void SetStations(List<Item> stations) {
             ActiveStation = stations.Contains(ActiveStation) ? ActiveStation : stations.FirstOrDefault();
             ClearStations();
 
-            float posX = 20f;
+            float elementSizeX = ((RectTransform)Plugin.Instance.craftingStationTemplate.transform).sizeDelta.x + elementXSpace;
+            float width = ((RectTransform)transform).rect.width;
+            int stationsPerPage = Mathf.FloorToInt(width / elementSizeX);
+            float centerOffset = (width - elementSizeX * stationsPerPage + elementSizeX) / 2f;
 
-            foreach (Item station in stations) {
+            for (int i = 0; i < stations.Count; i++) {
+                Item station = stations[i];
                 CraftingStationElement stationElement = Instantiate(Plugin.Instance.craftingStationTemplate, transform).GetComponent<CraftingStationElement>();
                 stationElements.Add(stationElement);
+                stationElement.name = station.internalName;
                 stationElement.station = station;
                 stationElement.icon.sprite = station.GetIcon();
                 stationElement.tooltip.Set(station.preLocalizeName, "");
+                stationElement.gameObject.SetActive(i >= currentPage * stationsPerPage && i < (currentPage + 1) * stationsPerPage);
 
                 RectTransform rectTransform = (RectTransform)stationElement.transform;
+                float posX = centerOffset + elementSizeX * (i % stationsPerPage);
                 rectTransform.anchoredPosition = new Vector2(posX, rectTransform.anchoredPosition.y);
-                posX += rectTransform.sizeDelta.x + 5;
 
                 stationElement.button.onClick.AddListener(() => {
                     ActiveStation = station;
@@ -41,7 +56,13 @@ namespace VNEI.UI {
         }
 
         private void UpdateButtons() {
-            foreach (CraftingStationElement stationElement in stationElements) {
+            float elementSizeX = ((RectTransform)Plugin.Instance.craftingStationTemplate.transform).sizeDelta.x + elementXSpace;
+            float width = ((RectTransform)transform).rect.width;
+            int stationsPerPage = Mathf.FloorToInt(width / elementSizeX);
+
+            for (int i = 0; i < stationElements.Count; i++) {
+                CraftingStationElement stationElement = stationElements[i];
+
                 ColorBlock colors = stationElement.button.colors;
                 colors.normalColor = ActiveStation == stationElement.station ? Color.white : Color.gray;
                 colors.highlightedColor = Color.white;
@@ -50,7 +71,11 @@ namespace VNEI.UI {
                 stationElement.button.colors = colors;
 
                 stationElement.icon.color = ActiveStation == stationElement.station ? Color.white : Color.gray;
+                stationElement.gameObject.SetActive(i >= currentPage * stationsPerPage && i < (currentPage + 1) * stationsPerPage);
             }
+
+            prevPageButton.interactable = currentPage > 0;
+            nextPageButton.interactable = currentPage < GetPageCount() - 1;
         }
 
         private void ClearStations() {
@@ -59,6 +84,7 @@ namespace VNEI.UI {
             }
 
             stationElements.Clear();
+            currentPage = 0;
         }
 
         public IEnumerable<RecipeInfo> FilterRecipes(IEnumerable<RecipeInfo> recipes) {
@@ -71,6 +97,22 @@ namespace VNEI.UI {
             }
 
             return recipes.Where(r => r.Stations.Count >= 1 && r.Stations[0].item == ActiveStation);
+        }
+
+        private int GetPageCount() {
+            float elementSizeX = ((RectTransform)Plugin.Instance.craftingStationTemplate.transform).sizeDelta.x + elementXSpace;
+            float width = ((RectTransform)transform).rect.width;
+            return Mathf.CeilToInt(elementSizeX * stationElements.Count / width);
+        }
+
+        public void PrevPage() {
+            currentPage = Mathf.Max(currentPage - 1, 0);
+            UpdateButtons();
+        }
+
+        public void NextPage() {
+            currentPage = Mathf.Min(currentPage + 1, GetPageCount());
+            UpdateButtons();
         }
     }
 }
