@@ -118,15 +118,10 @@ namespace VNEI {
             // load embedded asset bundle
             AssetBundle = AssetUtils.LoadAssetBundleFromResources("VNEI_AssetBundle");
 
-            CustomLocalization localization = new CustomLocalization();
-
-            // load embedded localisation
-            string englishJson = AssetUtils.LoadTextFromResources("Localization.English.json", Assembly.GetExecutingAssembly());
-            string germanJson = AssetUtils.LoadTextFromResources("Localization.German.json", Assembly.GetExecutingAssembly());
-            localization.AddJsonFile("English", englishJson);
-            localization.AddJsonFile("German", germanJson);
-
-            LocalizationManager.Instance.AddLocalization(localization);
+            // load embedded localization
+            CustomLocalization localization = LocalizationManager.Instance.GetLocalization();
+            localization.AddJsonFile("English", AssetUtils.LoadTextFromResources("Localization.English.json"));
+            localization.AddJsonFile("German", AssetUtils.LoadTextFromResources("Localization.German.json"));
 
             LoadBlacklist();
 
