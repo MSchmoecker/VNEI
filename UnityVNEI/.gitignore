@@ -63,3 +63,7 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 Assets/Plugins/Editor.meta
+
+# BepInEx generated files
+com.jotunn.jotunn.cfg
+com.maxsch.valheim.vnei.cfg

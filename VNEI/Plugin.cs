@@ -186,8 +186,7 @@ namespace VNEI {
 
         private void Update() {
             if (openHotkey.Value.IsKeyDown()) {
-                isUiOpen = !isUiOpen;
-                OnOpenHotkey?.Invoke();
+                OpenUI();
             }
 
             if (!Indexing.HasIndexed() && Player.m_localPlayer) {
@@ -225,6 +224,11 @@ namespace VNEI {
                     baseUI.ShowRecipe(item, true);
                 }
             }
+        }
+
+        public static void OpenUI() {
+            isUiOpen = !isUiOpen;
+            OnOpenHotkey?.Invoke();
         }
 
         public static bool AttachToCrafting() {

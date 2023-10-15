@@ -41,8 +41,7 @@ cp "$BEPINEX_INSTALL/core/0Harmony.dll" "$ModNameUnity/Assets/Assemblies"
 cp "$BEPINEX_INSTALL/core/Mono.Cecil.dll" "$ModNameUnity/Assets/Assemblies"
 cp "$BEPINEX_INSTALL/core/MonoMod.Utils.dll" "$ModNameUnity/Assets/Assemblies"
 cp "$BEPINEX_INSTALL/core/MonoMod.RuntimeDetour.dll" "$ModNameUnity/Assets/Assemblies"
-[ -f "$PluginFolder/ValheimModding-Jotunn/Jotunn.dll" ] && cp "$PluginFolder/ValheimModding-Jotunn/Jotunn.dll" "$ModNameUnity/Assets/Assemblies"
-[ -f "$PluginFolder/Jotunn/Jotunn.dll" ] && cp "$PluginFolder/Jotunn/Jotunn.dll" "$ModNameUnity/Assets/Assemblies"
+cp "$ModName/bin/Debug/Jotunn.dll" "$ModNameUnity/Assets/Assemblies"
 cp "$VALHEIM_INSTALL/valheim_Data/Managed/assembly_valheim.dll" "$ModNameUnity/Assets/Assemblies"
 cp "$VALHEIM_INSTALL/valheim_Data/Managed/assembly_utils.dll" "$ModNameUnity/Assets/Assemblies"
 cp "$VALHEIM_INSTALL/valheim_Data/Managed/assembly_postprocessing.dll" "$ModNameUnity/Assets/Assemblies"
@@ -54,6 +53,8 @@ cp "$VALHEIM_INSTALL/valheim_Data/Managed/PlayFab.dll" "$ModNameUnity/Assets/Ass
 cp "$VALHEIM_INSTALL/valheim_Data/Managed/PlayFabParty.dll" "$ModNameUnity/Assets/Assemblies"
 cp "$VALHEIM_INSTALL/valheim_Data/Managed/Fishlabs.Core.dll" "$ModNameUnity/Assets/Assemblies"
 cp "$VALHEIM_INSTALL/valheim_Data/Managed/Fishlabs.Common.dll" "$ModNameUnity/Assets/Assemblies"
+cp "$VALHEIM_INSTALL/valheim_Data/Managed/ConnectedStorage.dll" "$ModNameUnity/Assets/Assemblies"
+cp "$VALHEIM_INSTALL/valheim_Data/Managed/ui_lib.dll" "$ModNameUnity/Assets/Assemblies"
 
 echo "$ModDir"
 
