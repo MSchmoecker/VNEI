@@ -114,7 +114,7 @@ namespace VNEI.Logic {
             string color = "orange";
 
             if (Chainloader.PluginInfos.ContainsKey("randyknapp.mods.epicloot")) {
-                color = "lightblue";
+                color = "#ADD8E6FF";
             }
 
             return $"\n\n<color={color}>{GetModName()}</color>";
