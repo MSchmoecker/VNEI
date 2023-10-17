@@ -108,6 +108,9 @@ namespace VNEI.Logic {
         private static void IndexItems(List<GameObject> prefabs, Dictionary<string, PieceTable> pieceTables) {
             AddItem(new Item("vnei_any_item", "$vnei_any_item", string.Empty, null, ItemType.Undefined, null));
             AddItem(new Item("vnei_unknown_item", "$vnei_unknown_item", string.Empty, null, ItemType.Undefined, null));
+            Plugin.Instance.allStations = new Item("vnei_all_stations", "$vnei_all_stations", "", null, ItemType.Undefined, null);
+            Plugin.Instance.handStation = new Item("vnei_hand_station", "$vnei_hand_station", "", null, ItemType.Undefined, null);
+            Plugin.Instance.noStation = new Item("vnei_no_station", "$vnei_no_station", "", null, ItemType.Undefined, null);
 
             foreach (GameObject prefab in prefabs) {
                 string prefabName = prefab.name;

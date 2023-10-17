@@ -3,15 +3,15 @@ using VNEI.Logic;
 namespace VNEI.UI {
     public static class StationOrder {
         public static int ByType(Item item) {
-            if (item.internalName == "VNEI_AllStations") {
+            if (item == Plugin.Instance.allStations) {
                 return 10;
             }
 
-            if (item.internalName == "VNEI_NoStation") {
+            if (item == Plugin.Instance.noStation) {
                 return 15;
             }
 
-            if (item.internalName == "VNEI_HandStation") {
+            if (item == Plugin.Instance.handStation) {
                 return 20;
             }
             

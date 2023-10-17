@@ -131,9 +131,6 @@ namespace VNEI {
             vneiUI = AssetBundle.LoadAsset<GameObject>("VNEI");
             displayItemTemplate = AssetBundle.LoadAsset<GameObject>("_Template");
             craftingStationTemplate = AssetBundle.LoadAsset<GameObject>("CraftingStationTemplate");
-            allStations = new Item("VNEI_AllStations", "$VNEI_AllStations", "", null, ItemType.Undefined, null);
-            handStation = new Item("VNEI_HandStation", "$VNEI_HandStation", "", null, ItemType.Undefined, null);
-            noStation = new Item("VNEI_NoStation", "$VNEI_NoStation", "", null, ItemType.Undefined, null);
 
             GUIManager.OnCustomGUIAvailable += () => {
                 GetMainUI().CreateBaseUI();
