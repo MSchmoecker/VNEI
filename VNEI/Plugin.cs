@@ -58,6 +58,7 @@ namespace VNEI {
         public Sprite noIconSprite;
         public Sprite starSprite;
         public Sprite noStarSprite;
+        public Sprite inventoryIcon;
         public GameObject vneiUI;
         public GameObject displayItemTemplate;
         public GameObject craftingStationTemplate;
@@ -128,6 +129,7 @@ namespace VNEI {
             noIconSprite = AssetBundle.LoadAsset<Sprite>("NoSprite.png");
             starSprite = AssetBundle.LoadAsset<Sprite>("Star.png");
             noStarSprite = AssetBundle.LoadAsset<Sprite>("NoStar.png");
+            inventoryIcon = AssetBundle.LoadAsset<Sprite>("Hand.png");
             vneiUI = AssetBundle.LoadAsset<GameObject>("VNEI");
             displayItemTemplate = AssetBundle.LoadAsset<GameObject>("_Template");
             craftingStationTemplate = AssetBundle.LoadAsset<GameObject>("CraftingStationTemplate");

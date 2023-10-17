@@ -16,6 +16,8 @@
   "vnei_any_item": "Beliebiger Gegenstände",
   "vnei_unknown_item": "Unbekannter Gegenstand",
   "vnei_items_in_category": "$1 Gegenstände in diesem Filter",
+  "vnei_hand_station": "Inventar",
+  "vnei_no_station": "Keine Station",
   "copy_display_name": "Anzeigenamen kopieren",
   "copy_internal_name": "ItemID kopieren",
   "copy_mod_name": "Modnamen kopieren"

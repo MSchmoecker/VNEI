@@ -87,3 +87,7 @@ See more [here](https://github.com/MSchmoecker/VNEI/blob/master/API.md).
 
 ## Changelog
 See [here](https://github.com/MSchmoecker/VNEI/blob/master/CHANGELOG.md).
+
+## Credits
+
+- <a href="https://www.flaticon.com/free-icons/hello" title="hello icons">Hello icons created by Vitaly Gorbachev - Flaticon</a>
