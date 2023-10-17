@@ -116,6 +116,12 @@ namespace VNEI.Logic {
             Plugin.Instance.handStation = GetItem("vnei_hand_station");
             Plugin.Instance.noStation = GetItem("vnei_no_station");
 
+            DisableItem("vnei_any_item", "is not an item");
+            DisableItem("vnei_unknown_item", "is not an item");
+            DisableItem("vnei_all_stations", "is not an item");
+            DisableItem("vnei_hand_station", "is not an item");
+            DisableItem("vnei_no_station", "is not an item");
+
             foreach (GameObject prefab in prefabs) {
                 string prefabName = prefab.name;
                 string fallbackLocalizedName = string.Empty;
