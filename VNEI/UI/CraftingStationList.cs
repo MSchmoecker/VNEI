@@ -40,9 +40,8 @@ namespace VNEI.UI {
                 CraftingStationElement stationElement = Instantiate(Plugin.Instance.craftingStationTemplate, transform).GetComponent<CraftingStationElement>();
                 stationElements.Add(stationElement);
                 stationElement.name = station.internalName;
-                stationElement.station = station;
-                stationElement.icon.sprite = station.GetIcon();
-                stationElement.tooltip.Set(station.preLocalizeName, "");
+                stationElement.Station = station;
+                stationElement.UpdateIconAndTooltip();
                 stationElement.gameObject.SetActive(i >= currentPage * stationsPerPage && i < (currentPage + 1) * stationsPerPage);
 
                 RectTransform rectTransform = (RectTransform)stationElement.transform;
@@ -62,13 +61,13 @@ namespace VNEI.UI {
                 CraftingStationElement stationElement = stationElements[i];
 
                 ColorBlock colors = stationElement.button.colors;
-                colors.normalColor = ActiveStation == stationElement.station ? Color.white : Color.gray;
+                colors.normalColor = ActiveStation == stationElement.Station ? Color.white : Color.gray;
                 colors.highlightedColor = Color.white;
                 colors.pressedColor = Color.white;
                 colors.selectedColor = Color.white;
                 stationElement.button.colors = colors;
 
-                stationElement.icon.color = ActiveStation == stationElement.station ? Color.white : Color.gray;
+                stationElement.icon.color = ActiveStation == stationElement.Station ? Color.white : Color.gray;
                 stationElement.gameObject.SetActive(i >= currentPage * stationsPerPage && i < (currentPage + 1) * stationsPerPage);
             }
         }
@@ -121,14 +120,14 @@ namespace VNEI.UI {
                 return;
             }
 
-            int index = stationElements.FindIndex(s => s.station == ActiveStation) - 1;
+            int index = stationElements.FindIndex(s => s.Station == ActiveStation) - 1;
 
             if (index < 0) {
                 index = stationElements.Count - 1;
             }
 
             currentPage = Mathf.FloorToInt((float)index / GetStationsPerPage());
-            ActiveStation = stationElements[index].station;
+            ActiveStation = stationElements[index].Station;
         }
 
         public void NextElement() {
@@ -136,14 +135,14 @@ namespace VNEI.UI {
                 return;
             }
 
-            int index = stationElements.FindIndex(s => s.station == ActiveStation) + 1;
+            int index = stationElements.FindIndex(s => s.Station == ActiveStation) + 1;
 
             if (index >= stationElements.Count) {
                 index = 0;
             }
 
             currentPage = Mathf.FloorToInt((float)index / GetStationsPerPage());
-            ActiveStation = stationElements[index].station;
+            ActiveStation = stationElements[index].Station;
         }
     }
 }
