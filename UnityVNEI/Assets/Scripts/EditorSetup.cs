@@ -4,6 +4,7 @@ using System.IO;
 using HarmonyLib;
 using Jotunn;
 using UnityEngine;
+using UnityEngine.UI;
 using VNEI.Logic;
 using VNEI.UI;
 using Paths = BepInEx.Paths;
@@ -28,21 +29,22 @@ namespace VNEI {
             Plugin.attachToCrafting.Value = false;
             Plugin.OpenUI();
 
-            baseUI.SetSize(false, 7, 5);
+            baseUI.SetSize(false, 8, 10);
             baseUI.SetVisibility(true);
+            baseUI.dragHandler.GetComponent<Image>().color = new Color(0.3882f, 0.2274f, 0.1372f);
             baseUI.ShowRecipe(new Item("Test", "Test", "Test", null, ItemType.Item, null), true);
 
             baseUI.recipeUi.craftingStationList.SetStations(new List<Item>() {
                 new Item("Test1", "Test1", "Test1", Plugin.Instance.noIconSprite, ItemType.Item, null),
                 new Item("Test2", "Test2", "Test2", Plugin.Instance.noIconSprite, ItemType.Item, null),
                 new Item("Test3", "Test3", "Test3", Plugin.Instance.noIconSprite, ItemType.Item, null),
-                // new Item("Test4", "Test4", "Test4", Plugin.Instance.noIconSprite, ItemType.Item, null),
-                // new Item("Test5", "Test5", "Test5", Plugin.Instance.noIconSprite, ItemType.Item, null),
-                // new Item("Test6", "Test6", "Test6", Plugin.Instance.noIconSprite, ItemType.Item, null),
-                // new Item("Test7", "Test7", "Test7", Plugin.Instance.noIconSprite, ItemType.Item, null),
-                // new Item("Test8", "Test8", "Test8", Plugin.Instance.noIconSprite, ItemType.Item, null),
-                // new Item("Test9", "Test9", "Test9", Plugin.Instance.noIconSprite, ItemType.Item, null),
-                // new Item("Test10", "Test10", "Test10", Plugin.Instance.noIconSprite, ItemType.Item, null),
+                new Item("Test4", "Test4", "Test4", Plugin.Instance.noIconSprite, ItemType.Item, null),
+                new Item("Test5", "Test5", "Test5", Plugin.Instance.noIconSprite, ItemType.Item, null),
+                new Item("Test6", "Test6", "Test6", Plugin.Instance.noIconSprite, ItemType.Item, null),
+                new Item("Test7", "Test7", "Test7", Plugin.Instance.noIconSprite, ItemType.Item, null),
+                new Item("Test8", "Test8", "Test8", Plugin.Instance.noIconSprite, ItemType.Item, null),
+                new Item("Test9", "Test9", "Test9", Plugin.Instance.noIconSprite, ItemType.Item, null),
+                new Item("Test10", "Test10", "Test10", Plugin.Instance.noIconSprite, ItemType.Item, null),
             });
         }
 

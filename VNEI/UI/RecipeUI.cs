@@ -39,7 +39,7 @@ namespace VNEI.UI {
             bothScroll.Init(baseUI);
             combinedScroll.Init(baseUI);
             infoIcon.Init(baseUI);
-            craftingStationList.OnChange += UpdateRecipeView;
+            craftingStationList.OnStationChange += UpdateRecipeView;
         }
 
         public void SetItem(Item item) {

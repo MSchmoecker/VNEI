@@ -7,20 +7,24 @@ using VNEI.Logic;
 
 namespace VNEI.UI {
     public class CraftingStationList : MonoBehaviour {
-        public Button prevPageButton;
-        public Button nextPageButton;
         public List<CraftingStationElement> stationElements = new List<CraftingStationElement>();
         private int currentPage;
 
         private float elementXSpace = 5f;
 
-        public Item ActiveStation { get; private set; }
+        [SerializeField]
+        private Item activeStation;
 
-        public event Action OnChange;
+        public Item ActiveStation {
+            get => activeStation;
+            private set {
+                activeStation = value;
+                UpdateButtons();
+                OnStationChange?.Invoke();
+            }
+        }
 
-        // private void Awake() {
-        //     Plugin.GetMainUI().GetBaseUI().RebuildedSize
-        // }
+        public event Action OnStationChange;
 
         public void SetStations(List<Item> stations) {
             ActiveStation = stations.Contains(ActiveStation) ? ActiveStation : stations.FirstOrDefault();
@@ -28,7 +32,7 @@ namespace VNEI.UI {
 
             float elementSizeX = ((RectTransform)Plugin.Instance.craftingStationTemplate.transform).sizeDelta.x + elementXSpace;
             float width = ((RectTransform)transform).rect.width;
-            int stationsPerPage = Mathf.FloorToInt(width / elementSizeX);
+            int stationsPerPage = GetStationsPerPage();
             float centerOffset = (width - elementSizeX * stationsPerPage + elementSizeX) / 2f;
 
             for (int i = 0; i < stations.Count; i++) {
@@ -45,20 +49,14 @@ namespace VNEI.UI {
                 float posX = centerOffset + elementSizeX * (i % stationsPerPage);
                 rectTransform.anchoredPosition = new Vector2(posX, rectTransform.anchoredPosition.y);
 
-                stationElement.button.onClick.AddListener(() => {
-                    ActiveStation = station;
-                    UpdateButtons();
-                    OnChange?.Invoke();
-                });
+                stationElement.button.onClick.AddListener(() => { ActiveStation = station; });
             }
 
             UpdateButtons();
         }
 
         private void UpdateButtons() {
-            float elementSizeX = ((RectTransform)Plugin.Instance.craftingStationTemplate.transform).sizeDelta.x + elementXSpace;
-            float width = ((RectTransform)transform).rect.width;
-            int stationsPerPage = Mathf.FloorToInt(width / elementSizeX);
+            int stationsPerPage = GetStationsPerPage();
 
             for (int i = 0; i < stationElements.Count; i++) {
                 CraftingStationElement stationElement = stationElements[i];
@@ -73,9 +71,6 @@ namespace VNEI.UI {
                 stationElement.icon.color = ActiveStation == stationElement.station ? Color.white : Color.gray;
                 stationElement.gameObject.SetActive(i >= currentPage * stationsPerPage && i < (currentPage + 1) * stationsPerPage);
             }
-
-            prevPageButton.interactable = currentPage > 0;
-            nextPageButton.interactable = currentPage < GetPageCount() - 1;
         }
 
         private void ClearStations() {
@@ -105,6 +100,12 @@ namespace VNEI.UI {
             return Mathf.CeilToInt(elementSizeX * stationElements.Count / width);
         }
 
+        private int GetStationsPerPage() {
+            float elementSizeX = ((RectTransform)Plugin.Instance.craftingStationTemplate.transform).sizeDelta.x + elementXSpace;
+            float width = ((RectTransform)transform).rect.width;
+            return Mathf.FloorToInt(width / elementSizeX);
+        }
+
         public void PrevPage() {
             currentPage = Mathf.Max(currentPage - 1, 0);
             UpdateButtons();
@@ -113,6 +114,36 @@ namespace VNEI.UI {
         public void NextPage() {
             currentPage = Mathf.Min(currentPage + 1, GetPageCount());
             UpdateButtons();
+        }
+
+        public void PrevElement() {
+            if (stationElements.Count == 0) {
+                return;
+            }
+
+            int index = stationElements.FindIndex(s => s.station == ActiveStation) - 1;
+
+            if (index < 0) {
+                index = stationElements.Count - 1;
+            }
+
+            currentPage = Mathf.FloorToInt((float)index / GetStationsPerPage());
+            ActiveStation = stationElements[index].station;
+        }
+
+        public void NextElement() {
+            if (stationElements.Count == 0) {
+                return;
+            }
+
+            int index = stationElements.FindIndex(s => s.station == ActiveStation) + 1;
+
+            if (index >= stationElements.Count) {
+                index = 0;
+            }
+
+            currentPage = Mathf.FloorToInt((float)index / GetStationsPerPage());
+            ActiveStation = stationElements[index].station;
         }
     }
 }

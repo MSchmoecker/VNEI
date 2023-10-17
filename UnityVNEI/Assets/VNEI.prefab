@@ -1467,7 +1467,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 3586009275093626238}
         m_TargetAssemblyTypeName: VNEI.UI.CraftingStationList, VNEI
-        m_MethodName: NextPage
+        m_MethodName: NextElement
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4848,8 +4848,6 @@ MonoBehaviour:
   m_Script: {fileID: 1225476983, guid: c09b8d6d0746d374d9f0b1a7470d1e74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prevPageButton: {fileID: 1483250517144335560}
-  nextPageButton: {fileID: 4949479589193500308}
   stationElements:
   - {fileID: 6515062543164664642}
 --- !u!1 &3506784322549656065
@@ -9372,7 +9370,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 3586009275093626238}
         m_TargetAssemblyTypeName: VNEI.UI.CraftingStationList, VNEI
-        m_MethodName: PrevPage
+        m_MethodName: PrevElement
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
