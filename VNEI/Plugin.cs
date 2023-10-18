@@ -22,7 +22,6 @@ using VNEI.UI;
 namespace VNEI {
     [BepInPlugin(ModGuid, ModName, ModVersion)]
     [BepInDependency(Jotunn.Main.ModGuid)]
-    [BepInProcess("valheim.exe")]
     public class Plugin : BaseUnityPlugin {
         public const string ModName = "VNEI";
         public const string ModGuid = "com.maxsch.valheim.vnei";
