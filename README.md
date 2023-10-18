@@ -5,7 +5,7 @@ VNEI shows all items and recipes from the vanilla game and other mods inside an 
 
 ![screenshot](https://raw.githubusercontent.com/MSchmoecker/VNEI/master/Docs/WholeScreenshot.png)
 
-![crafting](https://raw.githubusercontent.com/MSchmoecker/VNEI/master/Docs/MeatCrafting.png)
+![crafting](https://raw.githubusercontent.com/MSchmoecker/VNEI/master/Docs/Crafting.png)
 
 
 ## Manual Installation
@@ -82,7 +82,7 @@ See more [here](https://github.com/MSchmoecker/VNEI/blob/master/API.md).
 - Thunderstore: https://valheim.thunderstore.io/package/MSchmoecker/VNEI/
 - Nexus: https://www.nexusmods.com/valheim/mods/1457
 - Github: https://github.com/MSchmoecker/VNEI
-- Discord: Margmas#9562. Feel free to DM or ping me, for example in the [Jötunn discord](https://discord.gg/DdUt6g7gyA)
+- Discord: Margmas. Feel free to DM or ping me, for example in the [Jötunn discord](https://discord.gg/DdUt6g7gyA)
 
 
 ## Changelog

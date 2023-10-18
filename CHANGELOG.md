@@ -1,5 +1,14 @@
 # Changelog
 
+0.13.0
+- Added recipe grouping by crafting station
+- Removed individual upgrade recipes from being displayed, unless the specific item is selected
+- Removed split between obtaining and using recipes
+- Removed fake items from the search
+- Removed all cheat checks for simplicity, playing on a local world or being an admin on a server is now sufficient
+- Removed valheim.exe process filter
+- Fixed tooltip color when EpicLoot is installed
+
 0.12.1
 - Updated for Valheim 0.217.22, not compatible with older versions
 - Updated and compiled for BepInExPack 5.4.2200
