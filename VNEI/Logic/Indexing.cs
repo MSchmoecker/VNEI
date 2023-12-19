@@ -328,7 +328,7 @@ namespace VNEI.Logic {
                 if (prefab.TryGetComponent(out Destructible destructible)) {
                     if (destructible.m_spawnWhenDestroyed && GetItem(destructible.m_spawnWhenDestroyed.name) != null) {
                         AddRecipeToItems(new RecipeInfo(destructible));
-                    } else if (!prefab.GetComponent<DropOnDestroyed>() && !prefab.GetComponent<Plant>()) {
+                    } else if (destructible.enabled && !prefab.GetComponent<DropOnDestroyed>() && !prefab.GetComponent<Plant>()) {
                         DisableItem(prefab.name, $"destructible.m_spawnWhenDestroyed is null or not indexed");
                     }
                 }
