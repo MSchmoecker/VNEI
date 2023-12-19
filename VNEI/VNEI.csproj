@@ -161,6 +161,7 @@
         <Compile Include="UI\CraftingStationList.cs" />
         <Compile Include="UI\History\HistoryElement.cs" />
         <Compile Include="UI\History\HistorySnapshot.cs" />
+        <Compile Include="UI\SearchKey.cs" />
         <Compile Include="UI\StationOrder.cs" />
         <Compile Include="UI\VneiHandler.cs" />
         <Compile Include="UI\MainVneiHandler.cs" />

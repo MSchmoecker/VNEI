@@ -175,7 +175,7 @@ namespace VNEI.UI {
 
         private void RecalculateActive() {
             bool useBlacklist = Plugin.useBlacklist.Value;
-            string[] searchKeys = searchField.text.Split();
+            SearchKey[] searchKeys = searchField.text.Split().Select(i => new SearchKey(i)).ToArray();
 
             Parallel.ForEach(listItems, i => { i.isActive = CalculateActive(i.item, useBlacklist, searchKeys); });
         }
@@ -198,7 +198,7 @@ namespace VNEI.UI {
             UpdateSearch(false);
         }
 
-        private bool CalculateActive(Item item, bool useBlacklist, string[] searchKeys) {
+        private bool CalculateActive(Item item, bool useBlacklist, SearchKey[] searchKeys) {
             bool onBlackList = useBlacklist && item.isOnBlacklist;
 
             if (onBlackList) {
@@ -209,20 +209,18 @@ namespace VNEI.UI {
                 return false;
             }
 
-            foreach (string searchKey in searchKeys) {
+            foreach (SearchKey search in searchKeys) {
                 bool isSearched;
 
-                if (searchKey.StartsWith("@")) {
-                    if (item.mod == null) {
-                        return false;
-                    }
-
-                    isSearched = item.mod.Name.IndexOf(searchKey.Substring(1), StringComparison.OrdinalIgnoreCase) >= 0 ||
-                                 item.mod.GUID.IndexOf(searchKey.Substring(1), StringComparison.OrdinalIgnoreCase) >= 0;
+                if (search.isMod) {
+                    isSearched = item.GetModName().IndexOf(search.key, StringComparison.OrdinalIgnoreCase) >= 0;
                 } else {
-                    isSearched = item.localizedName.IndexOf(searchKey, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                                 item.internalName.IndexOf(searchKey, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                                 Localization.instance.Localize(item.description).IndexOf(searchKey, StringComparison.OrdinalIgnoreCase) >= 0;
+                    isSearched = item.GetPrimaryName().IndexOf(search.key, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                 Localization.instance.Localize(item.description).IndexOf(search.key, StringComparison.OrdinalIgnoreCase) >= 0;
+                }
+
+                if (search.isNegative) {
+                    isSearched = !isSearched;
                 }
 
                 if (!isSearched) {
