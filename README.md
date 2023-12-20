@@ -36,8 +36,17 @@ Press `LeftArrow`/`RightArrow` to navigate through the history of last viewed it
 The search bar can be used to filter items by name.
 It is case insensitive and searches through the localized name, the internal ID and description of the item.
 The search is separated by spaces and each word must be contained somewhere in the item to be displayed.
-With `@ModName` the search can be limited to a specific mod.
 
+Modifier:
+- `@ModName` filters by mod name. `@Valheim` shows vanilla items or mods that contain `Valheim` in their name
+- `-search` excludes a specific key
+
+Examples:
+- `wood`: shows all items where the name or description contains `wood`
+- `@Mod @Name`: shows all items where the mod name contains both `Mod` and `Name`
+- `@Mod -@Name`: shows all items where the mod name contains `Mod` but not `Name`
+- `@Mod wood`: shows all items where the mod name contains `Mod` and the item name or description contains `wood`
+- `wood -iron` shows all items that contain `wood` but not `iron`
 
 ### UI Changes
 The mod name of every item is added to the tooltip.

@@ -1,5 +1,9 @@
 # Changelog
 
+0.14.0
+- Added search exclusion with `-` prefix
+- Fixed fishes were not shown in the search
+
 0.13.0
 - Added recipe grouping by crafting station
 - Removed individual upgrade recipes from being displayed, unless the specific item is selected
