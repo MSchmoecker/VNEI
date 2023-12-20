@@ -216,6 +216,7 @@ namespace VNEI.UI {
                     isSearched = item.GetModName().IndexOf(search.key, StringComparison.OrdinalIgnoreCase) >= 0;
                 } else {
                     isSearched = item.GetPrimaryName().IndexOf(search.key, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                 item.internalName.IndexOf(search.key, StringComparison.OrdinalIgnoreCase) >= 0 ||
                                  Localization.instance.Localize(item.description).IndexOf(search.key, StringComparison.OrdinalIgnoreCase) >= 0;
                 }
 
