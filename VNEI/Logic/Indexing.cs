@@ -518,14 +518,13 @@ namespace VNEI.Logic {
             return null;
         }
 
-        public static void UpdateKnown(Player player) {
-            if (!player) {
-                Log.LogWarning("Cannot update known recipes, player is null");
+        public static void UpdateKnown() {
+            if (!Player.m_localPlayer) {
                 return;
             }
 
             foreach (Item item in Items.Values) {
-                item.UpdateSelfKnown(player);
+                item.UpdateSelfKnown();
             }
 
             foreach (RecipeInfo recipe in RecipeInfo.Recipes) {

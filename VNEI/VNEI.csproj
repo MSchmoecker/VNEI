@@ -152,7 +152,7 @@
         <Compile Include="Logic\RecipeInfo.cs" />
         <Compile Include="Patches\InventoryGuiPatch.cs" />
         <Compile Include="Patches\ModCompat.cs" />
-        <Compile Include="Patches\KnownRecipesPatchs.cs" />
+        <Compile Include="Patches\KnownRecipesPatches.cs" />
         <Compile Include="Patches\TooltipPatches.cs" />
         <Compile Include="Plugin.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />

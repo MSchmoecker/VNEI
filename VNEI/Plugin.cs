@@ -184,9 +184,9 @@ namespace VNEI {
 
             if (!Indexing.HasIndexed() && Player.m_localPlayer) {
                 Indexing.IndexAll();
-                Indexing.UpdateKnown(Player.m_localPlayer);
-                showOnlyKnown.SettingChanged += (sender, args) => Indexing.UpdateKnown(Player.m_localPlayer);
-                KnownRecipesPatchs.OnUpdateKnownRecipes += Indexing.UpdateKnown;
+                Indexing.UpdateKnown();
+                showOnlyKnown.SettingChanged += (sender, args) => Indexing.UpdateKnown();
+                KnownRecipesPatches.OnUpdateKnownRecipes += Indexing.UpdateKnown;
             }
 
             if (viewRecipeHotkey.Value.IsKeyDown() && UITooltip.m_current) {
