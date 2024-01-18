@@ -1,5 +1,9 @@
 # Changelog
 
+0.14.1
+- Fixed an error if UpdateKnownRecipes was called unexpectedly early, fixing a conflict with CraftingConditions
+- Improved performance of updating known recipes when nothing changes, this may make a difference for heavily modded games
+
 0.14.0
 - Added search exclusion with `-` prefix
 - Fixed fishes were not shown in the search
