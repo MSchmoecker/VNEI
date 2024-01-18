@@ -518,10 +518,24 @@ namespace VNEI.Logic {
             return null;
         }
 
+        private static int currentKnownCount;
+
         public static void UpdateKnown() {
             if (!Player.m_localPlayer) {
                 return;
             }
+
+            int knownCount = Player.m_localPlayer.m_knownMaterial.Count +
+                             Player.m_localPlayer.m_knownRecipes.Count +
+                             Player.m_localPlayer.m_knownStations.Count +
+                             Player.m_localPlayer.m_knownTexts.Count +
+                             Player.m_localPlayer.m_knownBiome.Count;
+
+            if (currentKnownCount == knownCount) {
+                return;
+            }
+
+            currentKnownCount = knownCount;
 
             foreach (Item item in Items.Values) {
                 item.UpdateSelfKnown();
