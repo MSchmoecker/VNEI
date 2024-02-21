@@ -57,6 +57,9 @@ namespace VNEI.Logic {
         private static Dictionary<string, Item> ItemsByPreLocalizedName { get; } = new Dictionary<string, Item>();
         private static Dictionary<string, Item> ItemsByLocalizedName { get; } = new Dictionary<string, Item>();
 
+        private static int currentKnownCount;
+        private static bool currentShowOnlyKnown;
+
         public static void IndexAll() {
             if (HasIndexed()) {
                 return;
@@ -518,8 +521,6 @@ namespace VNEI.Logic {
             return null;
         }
 
-        private static int currentKnownCount;
-
         public static void UpdateKnown() {
             if (!Player.m_localPlayer) {
                 return;
@@ -531,11 +532,12 @@ namespace VNEI.Logic {
                              Player.m_localPlayer.m_knownTexts.Count +
                              Player.m_localPlayer.m_knownBiome.Count;
 
-            if (currentKnownCount == knownCount) {
+            if (currentKnownCount == knownCount && currentShowOnlyKnown == Plugin.ShowOnlyKnown) {
                 return;
             }
 
             currentKnownCount = knownCount;
+            currentShowOnlyKnown = Plugin.ShowOnlyKnown;
 
             foreach (Item item in Items.Values) {
                 item.UpdateSelfKnown();
