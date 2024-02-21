@@ -37,7 +37,7 @@ namespace VNEI.Logic {
         }
 
         private bool CalcSelfKnown() {
-            if (!Plugin.showOnlyKnown.Value) {
+            if (!Plugin.ShowOnlyKnown) {
                 return true;
             }
 

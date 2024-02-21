@@ -21,7 +21,7 @@ namespace VNEI.Logic {
         public bool isFavorite;
 
         private bool isKnown;
-        public bool IsKnown => isKnown || !Plugin.showOnlyKnown.Value;
+        public bool IsKnown => isKnown || !Plugin.ShowOnlyKnown;
         public bool IsSelfKnown { get; private set; }
         private readonly Dictionary<int, string> tooltipsCache = new Dictionary<int, string>();
 
@@ -184,7 +184,7 @@ namespace VNEI.Logic {
         public void UpdateSelfKnown() {
             isKnown = false;
 
-            if (!Plugin.showOnlyKnown.Value) {
+            if (!Plugin.ShowOnlyKnown) {
                 IsSelfKnown = true;
                 return;
             }

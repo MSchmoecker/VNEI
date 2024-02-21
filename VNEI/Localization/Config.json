@@ -8,6 +8,7 @@
   "AttachToCrafting": "Bind the UI to the crafting tab instead of floating free. Can be toggled while ingame.",
   "HideGUIAtStart": "Hide the GUI at startup and use the Hotkey to open it. Only active when 'Attach To Crafting' is false.",
   "ShowOnlyKnown": "Hide unknown items and recipes.",
+  "ForceShowOnlyKnown": "Forces to hide unknown items and recipes, overwriting ShowOnlyKnown if enabled. Synced with the Server",
   "OpenUIHotkey": "Hotkey to open and close the UI. Only active when 'Attach To Crafting' is false.",
   "ViewRecipeHotkey": "Hotkey to quickly view the recipe of an item while hovering over it. Works in the inventory, too.",
   "ItemCheatMouseButton": "Mouse button to to cheat items. Requires EnableCheating to be active. Only works in a local game, if the user is an admin on a server or if no the no build cost world modifier is enabled.",

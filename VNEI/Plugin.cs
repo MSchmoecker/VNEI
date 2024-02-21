@@ -45,13 +45,15 @@ namespace VNEI {
         public static ConfigEntry<InputButtonWrapper> removeRecentHotkey;
         public static ConfigEntry<KeyboardShortcut> goForwardHotkey;
         public static ConfigEntry<KeyboardShortcut> goBackHotkey;
-        public static ConfigEntry<bool> showOnlyKnown;
+        private static ConfigEntry<bool> showOnlyKnown;
+        private static ConfigEntry<bool> forceShowOnlyKnown;
         public static ConfigEntry<bool> showRecentItems;
         public static ConfigEntry<string> tabName;
         public static ConfigEntry<bool> showModTooltip;
         public static ConfigEntry<bool> cheating;
         public static ConfigEntry<bool> cheatCreatures;
 
+        public static bool ShowOnlyKnown => showOnlyKnown.Value || forceShowOnlyKnown.Value;
         public static bool isUiOpen = true;
         public static event Action OnOpenHotkey;
         public Sprite noIconSprite;
@@ -81,6 +83,7 @@ namespace VNEI {
             // General
             useBlacklist = Config.Bind("General", "Use Item Blacklist", true, new ConfigDescription(config["UseItemBlacklist"]));
             showOnlyKnown = Config.Bind("General", "Show Only Known", false, new ConfigDescription(config["ShowOnlyKnown"]));
+            forceShowOnlyKnown = Config.Bind("General", "Force Show Only Known", false, new ConfigDescription(config["ForceShowOnlyKnown"], null, new ConfigurationManagerAttributes() { IsAdminOnly = true }));
             showRecentItems = Config.Bind("General", "Show Recent Items", true, new ConfigDescription(config["ShowRecentItems"]));
 
             // Hotkeys
@@ -186,6 +189,7 @@ namespace VNEI {
                 Indexing.IndexAll();
                 Indexing.UpdateKnown();
                 showOnlyKnown.SettingChanged += (sender, args) => Indexing.UpdateKnown();
+                forceShowOnlyKnown.SettingChanged += (sender, args) => Indexing.UpdateKnown();
                 KnownRecipesPatches.OnUpdateKnownRecipes += Indexing.UpdateKnown;
             }
 
