@@ -1,5 +1,10 @@
 # Changelog
 
+0.15.0
+- Added ForceShowOnlyKnown config option to enforce hiding unknown items and recipes server side
+- Added mod version check if the mod is installed on both server and client
+- Fixed toggling ShowOnlyKnown at runtime did not update the UI immediately
+
 0.14.1
 - Fixed an error if UpdateKnownRecipes was called unexpectedly early, fixing a conflict with CraftingConditions
 - Improved performance of updating known recipes when nothing changes, this may make a difference for heavily modded games
