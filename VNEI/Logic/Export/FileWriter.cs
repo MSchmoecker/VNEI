@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -24,8 +25,16 @@ namespace VNEI.Logic {
             Log.LogInfo($"Writing indexed items to file {file}");
 
             string header = Item.PrintCSVHeader(separator);
-            string[] lines = items.Select(x => x.PrintItemCSV(separator)).ToArray();
+            // Encapsulate each field in double quotes and handle internal commas
+            string[] lines = items.Select(item => EncapsulateFields(item.PrintItemCSV(separator), separator)).ToArray();
             File.WriteAllLines(file, new[] { header }.Concat(lines).ToArray());
+        }
+        
+        private static string EncapsulateFields(string csvLine, string separator) {
+            // Split the line based on the separator, encapsulate each field in quotes, and then rejoin with the separator
+            var fields = csvLine.Split(new[] { separator }, StringSplitOptions.None);
+            var quotedFields = fields.Select(field => $"\"{field.Replace("\"", "\"\"")}\""); // Also escape existing double quotes within the field
+            return string.Join(separator, quotedFields);
         }
 
         public static void PrintCLLCItemConfigYaml(
