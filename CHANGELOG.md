@@ -1,5 +1,8 @@
 # Changelog
 
+0.15.1
+- Fixed CSV export to correctly handle fields containing commas by quoting them (thx Azumatt)
+
 0.15.0
 - Added ForceShowOnlyKnown config option to enforce hiding unknown items and recipes server side
 - Added mod version check if the mod is installed on both server and client
