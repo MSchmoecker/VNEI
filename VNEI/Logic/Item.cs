@@ -12,6 +12,7 @@ namespace VNEI.Logic {
         public readonly string preLocalizeName;
         public string localizedName;
         public readonly string description;
+        public string localizedDescription;
         public readonly GameObject prefab;
         public readonly bool isOnBlacklist;
         public readonly ItemType itemType;
@@ -88,6 +89,7 @@ namespace VNEI.Logic {
 
         private void UpdateLocalizedName() {
             localizedName = Localization.instance.Localize(preLocalizeName);
+            localizedDescription = Localization.instance.Localize(description);
         }
 
         private void ClearTooltipCache(object sender, EventArgs e) {

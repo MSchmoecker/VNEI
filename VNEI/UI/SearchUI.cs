@@ -217,7 +217,7 @@ namespace VNEI.UI {
                 } else {
                     isSearched = item.GetPrimaryName().IndexOf(search.key, StringComparison.OrdinalIgnoreCase) >= 0 ||
                                  item.internalName.IndexOf(search.key, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                                 Localization.instance.Localize(item.description).IndexOf(search.key, StringComparison.OrdinalIgnoreCase) >= 0;
+                                 item.localizedDescription.IndexOf(search.key, StringComparison.OrdinalIgnoreCase) >= 0;
                 }
 
                 if (search.isNegative) {
