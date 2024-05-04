@@ -1,5 +1,8 @@
 # Changelog
 
+0.15.2
+- Fixed errors while searching when running Valheim 0.218.9 (Ashlands) or above. Compatible with the stable Valheim release
+
 0.15.1
 - Fixed CSV export to correctly handle fields containing commas by quoting them (thx Azumatt)
 
