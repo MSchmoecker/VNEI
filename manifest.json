@@ -5,6 +5,6 @@
 	"website_url": "https://github.com/MSchmoecker/VNEI",
 	"dependencies": [
 		"denikson-BepInExPack_Valheim-5.4.2202",
-		"ValheimModding-Jotunn-2.19.3"
+		"ValheimModding-Jotunn-2.20.2"
 	]
 }
