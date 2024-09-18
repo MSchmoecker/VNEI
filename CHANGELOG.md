@@ -1,5 +1,8 @@
 # Changelog
 
+0.15.3
+- Fixed an issue where the search would break if a prefab throws an error during tooltip generation
+
 0.15.2
 - Fixed errors while searching when running Valheim 0.218.9 (Ashlands) or above. Compatible with the stable Valheim release
 
