@@ -102,7 +102,12 @@ namespace VNEI.Logic {
                     itemDrop.m_itemData.m_dropPrefab = prefab;
                 }
 
-                return ItemDrop.ItemData.GetTooltip(itemDrop.m_itemData, quality, true, Game.m_worldLevel);
+                try {
+                    return ItemDrop.ItemData.GetTooltip(itemDrop.m_itemData, quality, true, Game.m_worldLevel);
+                } catch (Exception e) {
+                    Log.LogWarning($"Failed to generate tooltip for '{internalName}': {e}");
+                    return string.Empty;
+                }
             }
 
             return description.TrimEnd() + GetTooltipModName();
