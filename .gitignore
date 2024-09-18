@@ -9,5 +9,6 @@ obj/
 packages/
 
 Environment.props
+DoPrebuild.props
 
 UnityVNEI/AssetBundles/StandaloneWindows/
