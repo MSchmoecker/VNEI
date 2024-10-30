@@ -1,5 +1,8 @@
 # Changelog
 
+0.15.4
+- Fixed for Valheim 0.219.14 (Bog Witch), older Valheim versions are not compatible
+
 0.15.3
 - Fixed an issue where the search would break if a prefab throws an error during tooltip generation
 
