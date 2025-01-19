@@ -162,10 +162,6 @@ namespace VNEI.Logic {
                     // add pieces here as it is guaranteed they are buildable
                     if ((bool)itemData.m_shared.m_buildPieces) {
                         pieceTables.Add(CleanupName(prefabName), itemData.m_shared.m_buildPieces);
-
-                        foreach (GameObject buildPiece in itemData.m_shared.m_buildPieces.m_pieces) {
-                            TryAddItem<Piece>(buildPiece, i => i.m_name, fallbackLocalizedName, ItemType.Piece, i => i.m_description, i => i.m_icon);
-                        }
                     }
                 }
 
@@ -183,6 +179,18 @@ namespace VNEI.Logic {
                     OnIndexingItems?.Invoke(prefab);
                 } catch (Exception e) {
                     Log.LogError(e);
+                }
+            }
+
+            foreach (PieceTable pieceTable in pieceTables.Values) {
+                foreach (GameObject piece in pieceTable.m_pieces) {
+                    TryAddItem<Piece>(piece, i => i.m_name, piece.name, ItemType.Piece, i => i.m_description, i => i.m_icon);
+
+                    try {
+                        OnIndexingItems?.Invoke(piece);
+                    } catch (Exception e) {
+                        Log.LogError(e);
+                    }
                 }
             }
         }
