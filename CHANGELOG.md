@@ -1,5 +1,8 @@
 # Changelog
 
+0.15.5
+- Fixed food items where categorized as pieces because Valheim allows food items to be placed as pieces since the Bog Witch update
+
 0.15.4
 - Fixed for Valheim 0.219.14 (Bog Witch), older Valheim versions are not compatible
 
