@@ -1,5 +1,8 @@
 # Changelog
 
+0.15.6
+- Fixed icon export duo to different sprite packing in Valheim
+
 0.15.5
 - Fixed food items where categorized as pieces because Valheim allows food items to be placed as pieces since the Bog Witch update
 
