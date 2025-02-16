@@ -55,7 +55,7 @@ namespace VNEI.Logic {
             int iconHeight = (int)icon.rect.height;
 
             int iconPosX = (int)(icon.textureRect.x - icon.textureRectOffset.x);
-            int iconPosY = (int)(height - (icon.textureRect.y - icon.textureRectOffset.y + iconHeight));
+            int iconPosY = (int)(icon.textureRect.y - icon.textureRectOffset.y);
 
             Texture2D readableTexture = new Texture2D(iconWidth, iconHeight);
             readableTexture.ReadPixels(new Rect(iconPosX, iconPosY, iconWidth, iconHeight), 0, 0);
