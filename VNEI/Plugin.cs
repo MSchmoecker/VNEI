@@ -50,7 +50,6 @@ namespace VNEI {
         private static ConfigEntry<bool> forceShowOnlyKnown;
         public static ConfigEntry<bool> showRecentItems;
         public static ConfigEntry<string> tabName;
-        public static ConfigEntry<bool> showModTooltip;
         public static ConfigEntry<bool> cheating;
         public static ConfigEntry<bool> cheatCreatures;
 
@@ -106,9 +105,6 @@ namespace VNEI {
             // Visual
             transparency = Config.Bind("Visual", "Background Transparency", 0, new ConfigDescription(config["Transparency"], percentRange));
             tabName = Config.Bind("Visual", "Tab Name", "VNEI", new ConfigDescription(config["TabName"]));
-
-            // Tooltips
-            showModTooltip = Config.Bind("Tooltips", "Show Mod Name In Tooltip", true, new ConfigDescription(config["ShowModTooltip"]));
 
             // Cheating
             cheating = Config.Bind("Cheating", "Enable Cheating", false, new ConfigDescription(config["EnableCheating"]));

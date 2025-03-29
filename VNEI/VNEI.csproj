@@ -63,6 +63,7 @@
         <Compile Include="Logic\Amount.cs" />
         <Compile Include="Logic\BepInExExtensions.cs" />
         <Compile Include="Logic\Compatibility\PlanBuild.cs" />
+        <Compile Include="Logic\Compatibility\WhichModAddedThis.cs" />
         <Compile Include="Logic\ComponentEvent.cs" />
         <Compile Include="Logic\Export\ExportPaths.cs" />
         <Compile Include="Logic\Export\FileWriter.cs" />
@@ -78,7 +79,6 @@
         <Compile Include="Patches\InventoryGuiPatch.cs" />
         <Compile Include="Patches\ModCompat.cs" />
         <Compile Include="Patches\KnownRecipesPatches.cs" />
-        <Compile Include="Patches\TooltipPatches.cs" />
         <Compile Include="Plugin.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Include="UI\BaseUI.cs" />

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using BepInEx;
-using BepInEx.Bootstrap;
 using Jotunn.Managers;
 using UnityEngine;
+using VNEI.Logic.Compatibility;
 
 namespace VNEI.Logic {
     public class Item {
@@ -43,7 +43,6 @@ namespace VNEI.Logic {
             this.maxQuality = maxQuality;
 
             isOnBlacklist = Plugin.IsItemBlacklisted(this);
-            Plugin.showModTooltip.SettingChanged += ClearTooltipCache;
             Localization.OnLanguageChange += UpdateLocalizedName;
             UpdateLocalizedName();
 
@@ -65,7 +64,6 @@ namespace VNEI.Logic {
         }
 
         ~Item() {
-            Plugin.showModTooltip.SettingChanged -= ClearTooltipCache;
             Localization.OnLanguageChange -= UpdateLocalizedName;
         }
 
@@ -110,21 +108,11 @@ namespace VNEI.Logic {
                 }
             }
 
-            return description.TrimEnd() + GetTooltipModName();
-        }
-
-        public string GetTooltipModName() {
-            if (!Plugin.showModTooltip.Value) {
-                return string.Empty;
+            if (WhichModAddedThis.IsLoaded) {
+                return description.TrimEnd() + WhichModAddedThis.GetTooltipModName(GetModName());
             }
-
-            string color = "orange";
-
-            if (Chainloader.PluginInfos.ContainsKey("randyknapp.mods.epicloot")) {
-                color = "#ADD8E6FF";
-            }
-
-            return $"\n\n<color={color}>{GetModName()}</color>";
+            
+            return description;
         }
 
         public void SetIcon(Sprite sprite) {

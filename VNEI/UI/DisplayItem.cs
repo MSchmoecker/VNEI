@@ -28,14 +28,6 @@ namespace VNEI.UI {
             favorite.color = GUIManager.Instance.ValheimOrange;
         }
 
-        private void OnEnable() {
-            Plugin.showModTooltip.SettingChanged += UpdateIconAndTooltip;
-        }
-
-        private void OnDestroy() {
-            Plugin.showModTooltip.SettingChanged -= UpdateIconAndTooltip;
-        }
-
         public void Update() {
             uiTooltip.m_showTimer = 1;
         }
