@@ -214,6 +214,8 @@ namespace VNEI.UI {
 
                 if (search.isMod) {
                     isSearched = item.GetModName().IndexOf(search.key, StringComparison.OrdinalIgnoreCase) >= 0;
+                } else if (search.isItemDropType) {
+                    isSearched = item.itemDropType.ToString().IndexOf(search.key, StringComparison.OrdinalIgnoreCase) >= 0;
                 } else {
                     isSearched = item.GetPrimaryName().IndexOf(search.key, StringComparison.OrdinalIgnoreCase) >= 0 ||
                                  item.internalName.IndexOf(search.key, StringComparison.OrdinalIgnoreCase) >= 0 ||

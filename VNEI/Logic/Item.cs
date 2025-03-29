@@ -16,6 +16,7 @@ namespace VNEI.Logic {
         public readonly GameObject prefab;
         public readonly bool isOnBlacklist;
         public readonly ItemType itemType;
+        public ItemDrop.ItemData.ItemType itemDropType;
         public readonly BepInPlugin mod;
         public bool isActive = true;
         public int maxQuality;

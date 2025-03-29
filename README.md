@@ -39,6 +39,7 @@ The search is separated by spaces and each word must be contained somewhere in t
 
 Modifier:
 - `@ModName` filters by mod name. `@Valheim` shows vanilla items or mods that contain `Valheim` in their name
+- `#itemtype` filters by item type. Substrings may be used. Available: `None`, `Material`, `Consumable`, `OneHandedWeapon`, `Bow`, `Shield`, `Helmet`, `Chest`, `Ammo`, `Customization`, `Legs`, `Hands`, `Trophy`, `TwoHandedWeapon`, `Torch`, `Misc`, `Shoulder`, `Utility`, `Tool`, `Attach_Atgeir`, `Fish`, `TwoHandedWeaponLeft`, `AmmoNonEquipable`
 - `-search` excludes a specific key
 
 Examples:
@@ -47,6 +48,7 @@ Examples:
 - `@Mod -@Name`: shows all items where the mod name contains `Mod` but not `Name`
 - `@Mod wood`: shows all items where the mod name contains `Mod` and the item name or description contains `wood`
 - `wood -iron` shows all items that contain `wood` but not `iron`
+- `#weapon`: shows all items that are weapons
 
 ### UI Changes
 The mod name of every item is added to the tooltip.

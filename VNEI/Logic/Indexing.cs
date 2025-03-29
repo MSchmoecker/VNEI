@@ -157,7 +157,9 @@ namespace VNEI.Logic {
                     ItemType type = ItemTypeHelper.GetItemType(itemData);
 
                     ItemDrop.ItemData.SharedData shared = itemData.m_shared;
-                    AddItem(new Item(prefab.name, shared.m_name, shared.m_description, icon, type, prefab, shared.m_maxQuality));
+                    Item item = new Item(prefabName, shared.m_name, shared.m_description, icon, type, prefab, shared.m_maxQuality);
+                    item.itemDropType = itemData.m_shared.m_itemType;
+                    AddItem(item);
 
                     // add pieces here as it is guaranteed they are buildable
                     if ((bool)itemData.m_shared.m_buildPieces) {

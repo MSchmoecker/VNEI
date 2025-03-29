@@ -3,6 +3,7 @@ namespace VNEI.UI {
         public string key;
         public bool isNegative;
         public bool isMod;
+        public bool isItemDropType;
 
         public SearchKey(string searchKey) {
             key = searchKey;
@@ -13,8 +14,9 @@ namespace VNEI.UI {
             }
 
             isMod = key.StartsWith("@");
+            isItemDropType = key.StartsWith("#");
 
-            if (isMod) {
+            if (isMod || isItemDropType) {
                 key = key.Substring(1);
             }
         }
