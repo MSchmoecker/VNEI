@@ -1,5 +1,9 @@
 # Changelog
 
+0.16.0
+- Added search filtering by item type, see the Readme for more information
+- Removed mod name addition from the tooltip and moved it to [WhichModAddedThis](https://thunderstore.io/c/valheim/p/MSchmoecker/WhichModAddedThis/)
+
 0.15.6
 - Fixed icon export duo to different sprite packing in Valheim
 
