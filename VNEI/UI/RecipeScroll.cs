@@ -10,7 +10,7 @@ namespace VNEI.UI {
     public class RecipeScroll : MonoBehaviour {
         [SerializeField] private ScrollRect scrollRect;
         [SerializeField] private Text title;
-        private HashSet<RecipeInfo> recipes = new HashSet<RecipeInfo>();
+        private List<RecipeInfo> recipes = new List<RecipeInfo>();
         [NonSerialized] private readonly Dictionary<RecipeInfo, RectTransform> rows = new Dictionary<RecipeInfo, RectTransform>();
         private const float RowHeight = 70f;
         private BaseUI baseUI;
@@ -30,7 +30,11 @@ namespace VNEI.UI {
         }
 
         public void SetRecipes(Item targetItem, IEnumerable<RecipeInfo> newRecipes) {
-            recipes = new HashSet<RecipeInfo>(newRecipes.Where(r => !r.IsUpgrade(out Item tool) || tool == targetItem));
+            recipes = newRecipes
+                      .Where(r => !r.IsUpgrade(out Item tool) || tool == targetItem)
+                      .OrderBy(r => r.Stations.Sum(s => s.quality))
+                      .Distinct()
+                      .ToList();
 
             float width = 0;
             float height = 0;
@@ -149,9 +153,9 @@ namespace VNEI.UI {
             title.text = Localization.instance.Localize(titleText);
         }
 
-        private HashSet<RecipeInfo> GetActiveRecipes() {
+        private List<RecipeInfo> GetActiveRecipes() {
             if (Plugin.useBlacklist.Value) {
-                return recipes.Where(recipe => !recipe.IsOnBlacklist).ToHashSet();
+                return recipes.Where(recipe => !recipe.IsOnBlacklist).ToList();
             }
 
             return recipes;
