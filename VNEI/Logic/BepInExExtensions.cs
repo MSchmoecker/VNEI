@@ -14,7 +14,7 @@ namespace VNEI.Logic {
         public static bool IsKeyDown(this KeyboardShortcut shortcut) {
             BaseUI baseUI = Plugin.GetMainUI().GetBaseUI();
 
-            if (baseUI && baseUI.BlockInput) {
+            if (TextInput.IsVisible() || baseUI && baseUI.BlockInput) {
                 return false;
             }
 
