@@ -13,6 +13,10 @@ namespace VNEI.Logic {
 
         public static void IndexModNames() {
             foreach (IModPrefab modPrefab in ModQuery.GetPrefabs()) {
+                if (modPrefab == null || !modPrefab.Prefab) {
+                    continue;
+                }
+
                 SetModOfPrefab(modPrefab.Prefab.name, modPrefab.SourceMod);
             }
         }
