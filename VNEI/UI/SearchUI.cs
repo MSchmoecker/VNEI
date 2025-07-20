@@ -198,6 +198,12 @@ namespace VNEI.UI {
             UpdateSearch(false);
         }
 
+        private static bool IsItemSearched(Item item, SearchKey search) {
+            return item.GetPrimaryName().IndexOf(search.key, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                   item.internalName.IndexOf(search.key, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                   item.localizedDescription.IndexOf(search.key, StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
         private bool CalculateActive(Item item, bool useBlacklist, SearchKey[] searchKeys) {
             bool onBlackList = useBlacklist && item.isOnBlacklist;
 
@@ -216,10 +222,10 @@ namespace VNEI.UI {
                     isSearched = item.GetModName().IndexOf(search.key, StringComparison.OrdinalIgnoreCase) >= 0;
                 } else if (search.isItemDropType) {
                     isSearched = item.itemDropType.ToString().IndexOf(search.key, StringComparison.OrdinalIgnoreCase) >= 0;
+                } else if (search.isIngredient) {
+                    isSearched = item.result.Any(r => r.Ingredients.Values.Any(i => i.Any(v => IsItemSearched(v.item, search))));
                 } else {
-                    isSearched = item.GetPrimaryName().IndexOf(search.key, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                                 item.internalName.IndexOf(search.key, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                                 item.localizedDescription.IndexOf(search.key, StringComparison.OrdinalIgnoreCase) >= 0;
+                    isSearched = IsItemSearched(item, search);
                 }
 
                 if (search.isNegative) {
