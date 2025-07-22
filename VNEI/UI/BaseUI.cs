@@ -100,10 +100,16 @@ namespace VNEI.UI {
         }
 
         private void Update() {
-            if (searchUi.searchField.isFocused && !BlockInput) {
+            bool searchFocused = searchUi.searchField.isFocused;
+            bool searchActive = searchUi.searchField.gameObject.activeInHierarchy;
+            bool hudVisible = Hud.instance && Hud.instance.IsVisible();
+
+            if (!BlockInput && searchFocused && searchActive && hudVisible) {
                 GUIManager.BlockInput(true);
                 BlockInput = true;
-            } else if (!searchUi.searchField.isFocused && BlockInput) {
+            }
+
+            if (BlockInput && (!searchFocused || !searchActive || !hudVisible)) {
                 GUIManager.BlockInput(false);
                 BlockInput = false;
             }
