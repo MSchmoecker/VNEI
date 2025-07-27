@@ -10,7 +10,7 @@
         <AppDesignerFolder>Properties</AppDesignerFolder>
         <RootNamespace>VNEI</RootNamespace>
         <AssemblyName>VNEI</AssemblyName>
-        <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+        <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
         <FileAlignment>512</FileAlignment>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -58,10 +58,18 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
+        <Reference Include="EpicLoot">
+            <HintPath Condition="Exists('$(VALHEIM_INSTALL)\BepInEx\plugins\EpicLoot\EpicLoot.dll')">$(VALHEIM_INSTALL)\BepInEx\plugins\EpicLoot\EpicLoot.dll</HintPath>
+            <HintPath Condition="Exists('$(VALHEIM_INSTALL)\BepInEx\plugins\RandyKnapp-EpicLoot\EpicLoot.dll')">$(VALHEIM_INSTALL)\BepInEx\plugins\RandyKnapp-EpicLoot\EpicLoot.dll</HintPath>
+            <HintPath Condition="Exists('$(R2MODMAN_INSTALL)\BepInEx\plugins\RandyKnapp-EpicLoot\EpicLoot.dll')">$(R2MODMAN_INSTALL)\BepInEx\plugins\RandyKnapp-EpicLoot\EpicLoot.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+    <ItemGroup>
         <Compile Include="APIExample\SelectUITest.cs" />
         <Compile Include="Log.cs" />
         <Compile Include="Logic\Amount.cs" />
         <Compile Include="Logic\BepInExExtensions.cs" />
+        <Compile Include="Logic\Compatibility\EpicLootCompat.cs" />
         <Compile Include="Logic\Compatibility\PlanBuild.cs" />
         <Compile Include="Logic\Compatibility\WhichModAddedThis.cs" />
         <Compile Include="Logic\ComponentEvent.cs" />

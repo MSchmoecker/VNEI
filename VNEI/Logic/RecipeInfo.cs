@@ -297,6 +297,16 @@ namespace VNEI.Logic {
             AddResult(growup.m_grownPrefab, Amount.One, Amount.One, 1, "growup result");
         }
 
+        public RecipeInfo(Amount ingredientAmount, IEnumerable<(string, int)> ingredients, Amount resultAmount, IEnumerable<(string, int)> results, string station, int ingredientQuality = 1, int resultQuality = 1, int stationLevel = 1) : this() {
+            foreach ((string, int) ingredient in ingredients) {
+                AddIngredient(ingredient.Item1, ingredientAmount, new Amount(ingredient.Item2), ingredientQuality);
+            }
+            foreach ((string, int) result in results) {
+                AddResult(result.Item1, resultAmount, new Amount(result.Item2), resultQuality);
+            }
+            AddStation(station, stationLevel);
+        }
+
         private void AddDropTable(GameObject from, DropTable dropTable, int groupMultiplier = 1) {
             Amount tableCount = new Amount(dropTable.m_dropMin * groupMultiplier, dropTable.m_dropMax * groupMultiplier, dropTable.m_dropChance);
 
@@ -365,6 +375,14 @@ namespace VNEI.Logic {
             Part result = upgradableResults[0];
             item = ingredient.item;
             return ingredient.item == result.item && ingredient.quality < result.quality;
+        }
+
+        public override string ToString() {
+            return string.Join(", ", Ingredients.SelectMany(parts => parts.Value.Select(part => parts.Key + " " + part.item.GetPrimaryName()))) +
+                   " -> " +
+                   string.Join(", ", Results.SelectMany(parts => parts.Value.Select(part => parts.Key + " " + part.item.GetPrimaryName()))) +
+                   " @ " +
+                   string.Join(", ", Stations.Select(s => s.item.GetPrimaryName()));
         }
     }
 }

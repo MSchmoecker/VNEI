@@ -49,6 +49,10 @@ namespace VNEI.Logic {
         /// </summary>
         public static event Action<GameObject> OnIndexingItemRecipes;
 
+        public static event Action AfterIndexingItems;
+
+        public static event Action AfterIndexingRecipes;
+
         public static event Action IndexFinished;
 
         public static event Action AfterUpdateKnownItems;
@@ -194,6 +198,12 @@ namespace VNEI.Logic {
                         Log.LogError(e);
                     }
                 }
+            }
+
+            try {
+                AfterIndexingItems?.Invoke();
+            } catch (Exception e) {
+                Log.LogError(e);
             }
         }
 
@@ -372,6 +382,12 @@ namespace VNEI.Logic {
                         AddRecipeToItems(new RecipeInfo(prefab, piece, GetItem(pair.Key)));
                     }
                 }
+            }
+
+            try {
+                AfterIndexingRecipes?.Invoke();
+            } catch (Exception e) {
+                Log.LogError(e);
             }
         }
 

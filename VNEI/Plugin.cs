@@ -175,6 +175,7 @@ namespace VNEI {
         private void Start() {
             ModCompat.Init(harmony);
             PlanBuild.Init();
+            EpicLootCompat.Init();
         }
 
         private void Update() {
