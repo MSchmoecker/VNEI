@@ -4,7 +4,6 @@
     <Target Name="ILRepacker" AfterTargets="Build">
         <ItemGroup>
             <InputAssemblies Include="$(TargetPath)" />
-            <InputAssemblies Include="$(OutputPath)\YamlDotNet.dll" />
             <InputAssemblies Include="$(OutputPath)\AugaAPI.dll" />
         </ItemGroup>
         <ILRepack Parallel="true" DebugInfo="true" Internalize="true" InputAssemblies="@(InputAssemblies)"
