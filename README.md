@@ -9,7 +9,7 @@ VNEI shows all items and recipes from the vanilla game and other mods inside an 
 
 
 ## Manual Installation
-This mod requires BepInEx and Jötunn.\
+This mod requires [BepInEx](https://thunderstore.io/c/valheim/p/denikson/BepInExPack_Valheim/), [Jötunn](https://thunderstore.io/c/valheim/p/ValheimModding/Jotunn/) and [YamlDotNet](https://thunderstore.io/c/valheim/p/ValheimModding/YamlDotNet/).\
 Extract the content of `VNEI/plugins` into the `BepInEx/plugins` folder
 
 This is a client side mod and not everyone has to use it if you are playing in multiplayer.
@@ -45,16 +45,12 @@ Modifier:
 
 Examples:
 - `wood`: shows all items where the name or description contains `wood`
-- `@Mod @Name`: shows all items where the mod name contains both `Mod` and `Name`
+- `@Epic @Loot`: shows all items that are added from Epic Loot or adjacent mods
 - `@Mod -@Name`: shows all items where the mod name contains `Mod` but not `Name`
 - `@Mod wood`: shows all items where the mod name contains `Mod` and the item name or description contains `wood`
 - `wood -iron` shows all items that contain `wood` but not `iron`
 - `#weapon`: shows all items that are weapons
 - `^carrot`: shows all items that can be crafted with carrot (or any ingredient that contains `carrot` in its name/description)
-
-### UI Changes
-The mod name of every item is added to the tooltip.
-Can be disabled in the config file.
 
 
 ### Item Blacklist

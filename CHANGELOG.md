@@ -1,5 +1,14 @@
 # Changelog
 
+0.17.0
+- Added basic EpicLoot support for upgrade material rarity, convert shards, salvage junk and sacrifice specific items (excluding armor/weapons/tools). More support may be added in the future
+- Added ordering of recipes by crafting station quality in the recipe view
+- Added search filtering by item ingredients, prefixed with `^`, see the Readme for more information
+- Changed to external YamlDotNet dependency, requiring https://thunderstore.io/c/valheim/p/ValheimModding/YamlDotNet/
+- Fixed errors du to invalid prefabs at indexing
+- Fixed triggering R recipe lookup when in any TextInput
+- Fixed softlock when sleeping while using the search in multiplayer
+
 0.16.0
 - Added search filtering by item type, see the Readme for more information
 - Removed mod name addition from the tooltip and moved it to [WhichModAddedThis](https://thunderstore.io/c/valheim/p/MSchmoecker/WhichModAddedThis/)

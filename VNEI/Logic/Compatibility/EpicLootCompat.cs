@@ -32,7 +32,7 @@ namespace VNEI.Logic.Compatibility {
                 new RecipeInfo(
                     ingredientAmount: Amount.One,
                     ingredients: conversion.Resources.Select(r => (r.Item, r.Amount)),
-                    resultAmount: new Amount(conversion.Amount),
+                    resultAmount: Amount.One,
                     results: new[] { (conversion.Product, conversion.Amount) },
                     station: "piece_enchantingtable"
                 )
