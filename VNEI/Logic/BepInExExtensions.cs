@@ -14,11 +14,22 @@ namespace VNEI.Logic {
         public static bool IsKeyDown(this KeyboardShortcut shortcut) {
             BaseUI baseUI = Plugin.GetMainUI().GetBaseUI();
 
-            if (TextInput.IsVisible() || baseUI && baseUI.BlockInput) {
+            if (!baseUI || baseUI.BlockInput) {
                 return false;
             }
 
-            return shortcut.MainKey != KeyCode.None && Input.GetKeyDown(shortcut.MainKey) && shortcut.Modifiers.All(Input.GetKey);
+            bool isDown = shortcut.MainKey != KeyCode.None && Input.GetKeyDown(shortcut.MainKey) && shortcut.Modifiers.All(Input.GetKey);
+
+            if (!isDown) {
+                return false;
+            }
+
+            // other mods patch IsVisible, so we don't want to invoke it unless we actually pressed the key
+            if (TextInput.IsVisible()) {
+                return false;
+            }
+
+            return true;
         }
     }
 }
