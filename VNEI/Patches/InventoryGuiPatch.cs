@@ -30,6 +30,19 @@ namespace VNEI.Patches {
         public static void UpdateCraftingPanelPatch() {
             if (!Plugin.IsAugaLoaded()) {
                 MainVneiHandler.Instance.UpdateTabPosition();
+
+                if (MainVneiHandler.Instance.VneiTabActive) {
+                    MainVneiHandler.Instance.SetTabActive();
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(InventoryGui), nameof(InventoryGui.OnTabCraftPressed))]
+        [HarmonyPatch(typeof(InventoryGui), nameof(InventoryGui.OnTabUpgradePressed))]
+        [HarmonyPrefix]
+        public static void OnTabCraftPressedPatch() {
+            if (!Plugin.IsAugaLoaded()) {
+                MainVneiHandler.Instance.SetTabInactive();
             }
         }
 
