@@ -1,5 +1,8 @@
 # Changelog
 
+0.17.2
+- Fixed the VNEI tab not closing and vanilla tabs being wrongly active when the inventory is updated while having the VNEI tab open
+
 0.17.1
 - Fixed a conflict with mods that patch TextInput.IsVisible
 
