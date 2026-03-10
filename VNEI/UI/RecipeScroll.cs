@@ -147,6 +147,7 @@ namespace VNEI.UI {
 
         public void SetActive(bool active) {
             gameObject.SetActive(active);
+            scrollRect.scrollSensitivity = 2500;
         }
 
         public void SetTitle(string titleText) {
