@@ -1,5 +1,8 @@
 # Changelog
 
+0.17.3
+- Fixed very slow scroll sensitivity in recipe view
+
 0.17.2
 - Fixed the VNEI tab not closing and vanilla tabs being wrongly active when the inventory is updated while having the VNEI tab open
 
