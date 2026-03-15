@@ -21,6 +21,7 @@ using VNEI.UI;
 
 namespace VNEI {
     [BepInPlugin(ModGuid, ModName, ModVersion)]
+    [BepInDependency("WackyMole.WackysDatabase", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency(Jotunn.Main.ModGuid)]
     [NetworkCompatibility(CompatibilityLevel.VersionCheckOnly, VersionStrictness.Minor)]
     public class Plugin : BaseUnityPlugin {
@@ -176,6 +177,7 @@ namespace VNEI {
             ModCompat.Init(harmony);
             PlanBuild.Init();
             EpicLootCompat.Init();
+            WackysDatabaseCompat.Init();
         }
 
         private void Update() {

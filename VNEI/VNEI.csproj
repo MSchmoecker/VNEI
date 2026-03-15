@@ -71,6 +71,7 @@
         <Compile Include="Logic\BepInExExtensions.cs" />
         <Compile Include="Logic\Compatibility\EpicLootCompat.cs" />
         <Compile Include="Logic\Compatibility\PlanBuild.cs" />
+        <Compile Include="Logic\Compatibility\WackysDatabaseCompat.cs" />
         <Compile Include="Logic\Compatibility\WhichModAddedThis.cs" />
         <Compile Include="Logic\ComponentEvent.cs" />
         <Compile Include="Logic\Export\ExportPaths.cs" />

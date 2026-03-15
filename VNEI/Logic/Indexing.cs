@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BepInEx;
 using UnityEngine;
+using VNEI.Logic.Compatibility;
 
 namespace VNEI.Logic {
     public static class Indexing {
@@ -289,17 +290,25 @@ namespace VNEI.Logic {
             }
 
             foreach (Recipe recipe in ObjectDB.instance.m_recipes) {
-                if (!recipe.m_enabled) {
-                    Log.LogDebug($"skipping {recipe.name}: not enabled");
+                bool hasEnableOverride = WackysDatabaseCompat.HasRecipeEnableOverride(recipe);
+
+                if (!(recipe.m_enabled || hasEnableOverride)) {
                     continue;
                 }
 
                 if (!(bool)recipe.m_item) {
-                    Log.LogDebug($"skipping {recipe.name}: item is null");
                     continue;
                 }
 
                 for (int quality = 1; quality <= recipe.m_item.m_itemData.m_shared.m_maxQuality; quality++) {
+                    if (hasEnableOverride && quality == 1 && WackysDatabaseCompat.CanBeUpgraded(recipe)) {
+                        continue;
+                    }
+
+                    if (hasEnableOverride && quality > 1 && WackysDatabaseCompat.CanBeCrafted(recipe)) {
+                        continue;
+                    }
+
                     AddRecipeToItems(new RecipeInfo(recipe, quality));
                 }
 
