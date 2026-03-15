@@ -1,5 +1,8 @@
 # Changelog
 
+0.17.4
+- Added support for WackysDatabase's custom upgrade requirements per level system
+
 0.17.3
 - Fixed very slow scroll sensitivity in recipe view
 
