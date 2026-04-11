@@ -308,13 +308,17 @@ namespace VNEI.Logic {
         }
 
         private void AddDropTable(GameObject from, DropTable dropTable, int groupMultiplier = 1) {
+            if (dropTable == null) {
+                return;
+            }
+
             Amount tableCount = new Amount(dropTable.m_dropMin * groupMultiplier, dropTable.m_dropMax * groupMultiplier, dropTable.m_dropChance);
 
             float totalWeight = dropTable.m_drops.Sum(i => i.m_weight);
 
             foreach (DropTable.DropData drop in dropTable.m_drops) {
                 float chance = totalWeight == 0 ? 1 : drop.m_weight / totalWeight;
-                AddResult(drop.m_item, tableCount, new Amount(drop.m_stackMin, drop.m_stackMax, chance), 1, from.name);
+                AddResult(drop.m_item, tableCount, new Amount(drop.m_stackMin, drop.m_stackMax, chance), 1, from ? from.name : "unknown");
             }
         }
 
