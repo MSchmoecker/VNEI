@@ -1,5 +1,8 @@
 # Changelog
 
+0.17.5
+- Fixed a conflict with MarsarahTweaks where the DropTable of prefabs could be null, causing errors during indexing
+
 0.17.4
 - Added support for WackysDatabase's custom upgrade requirements per level system
 
@@ -17,7 +20,7 @@
 - Added ordering of recipes by crafting station quality in the recipe view
 - Added search filtering by item ingredients, prefixed with `^`, see the Readme for more information
 - Changed to external YamlDotNet dependency, requiring https://thunderstore.io/c/valheim/p/ValheimModding/YamlDotNet/
-- Fixed errors duo to invalid prefabs at indexing
+- Fixed errors due to invalid prefabs at indexing
 - Fixed triggering R recipe lookup when in any TextInput
 - Fixed softlock when sleeping while using the search in multiplayer
 
@@ -26,10 +29,10 @@
 - Removed mod name addition from the tooltip and moved it to [WhichModAddedThis](https://thunderstore.io/c/valheim/p/MSchmoecker/WhichModAddedThis/)
 
 0.15.6
-- Fixed icon export duo to different sprite packing in Valheim
+- Fixed icon export due to different sprite packing in Valheim
 
 0.15.5
-- Fixed food items where categorized as pieces because Valheim allows food items to be placed as pieces since the Bog Witch update
+- Fixed food items were categorized as pieces because Valheim allows food items to be placed as pieces since the Bog Witch update
 
 0.15.4
 - Fixed for Valheim 0.219.14 (Bog Witch), older Valheim versions are not compatible
