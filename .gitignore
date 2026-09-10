@@ -6,7 +6,6 @@ riderModule.iml
 
 bin/
 obj/
-packages/
 
 Environment.props
 DoPrebuild.props

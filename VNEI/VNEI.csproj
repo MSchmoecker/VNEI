@@ -1,162 +1,83 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <Import Project="..\packages\JotunnLib.2.28.0\build\JotunnLib.props" Condition="Exists('..\packages\JotunnLib.2.28.0\build\JotunnLib.props')" />
-    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
     <PropertyGroup>
-        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-        <ProjectGuid>{43367351-2A51-4BC5-9028-1303450B71AB}</ProjectGuid>
-        <OutputType>Library</OutputType>
-        <AppDesignerFolder>Properties</AppDesignerFolder>
+        <TargetFramework>net481</TargetFramework>
+        <LangVersion>latest</LangVersion>
         <RootNamespace>VNEI</RootNamespace>
         <AssemblyName>VNEI</AssemblyName>
-        <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-        <FileAlignment>512</FileAlignment>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <WarningLevel>4</WarningLevel>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <NoWarn>$(NoWarn);1591</NoWarn>
+        <!-- keep bin\Debug\VNEI.dll (no net48 subfolder) for deploy.sh and the Unity project -->
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <Deterministic>true</Deterministic>
     </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-        <PlatformTarget>AnyCPU</PlatformTarget>
-        <DebugSymbols>true</DebugSymbols>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
         <DebugType>full</DebugType>
         <Optimize>false</Optimize>
-        <OutputPath>bin\Debug\</OutputPath>
-        <DefineConstants>DEBUG;TRACE</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <DocumentationFile>bin\Debug\VNEI.xml</DocumentationFile>
-        <NoWarn>1591</NoWarn>
     </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-        <PlatformTarget>AnyCPU</PlatformTarget>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
         <DebugType>pdbonly</DebugType>
         <Optimize>true</Optimize>
-        <OutputPath>bin\Release\</OutputPath>
-        <DefineConstants>TRACE</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <DocumentationFile>bin\Release\VNEI.xml</DocumentationFile>
-        <NoWarn>1591</NoWarn>
     </PropertyGroup>
+
     <ItemGroup>
-        <Reference Include="Jotunn, Version=2.28.0.0, Culture=neutral, processorArchitecture=MSIL">
-          <HintPath>..\packages\JotunnLib.2.28.0\lib\net462\Jotunn.dll</HintPath>
-        </Reference>
+        <PackageReference Include="JotunnLib" Version="2.28.0" />
+        <PackageReference Include="YamlDotNet" Version="16.3.0" />
+        <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.43" PrivateAssets="all" />
+    </ItemGroup>
+
+    <ItemGroup>
         <Reference Include="Microsoft.CSharp" />
-        <Reference Include="System.Data.DataSetExtensions" />
-        <Reference Include="System.Xml.Linq" />
-        <Reference Include="AugaAPI, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-            <HintPath>Libs/AugaAPI.dll</HintPath>
-            <SpecificVersion>False</SpecificVersion>
-        </Reference>
         <Reference Include="System" />
         <Reference Include="System.Core" />
         <Reference Include="System.Data" />
+        <Reference Include="System.Data.DataSetExtensions" />
         <Reference Include="System.Xml" />
-        <Reference Include="YamlDotNet, Version=16.0.0.0, Culture=neutral, PublicKeyToken=ec19458f3c15af5e, processorArchitecture=MSIL">
-          <HintPath>..\packages\YamlDotNet.16.3.0\lib\net47\YamlDotNet.dll</HintPath>
+        <Reference Include="System.Xml.Linq" />
+        <!--
+        <Reference Include="AugaAPI">
+            <HintPath>Libs/AugaAPI.dll</HintPath>
+            <SpecificVersion>False</SpecificVersion>
         </Reference>
+        -->
     </ItemGroup>
+
     <ItemGroup>
         <Reference Include="EpicLoot">
             <HintPath Condition="Exists('$(VALHEIM_INSTALL)\BepInEx\plugins\EpicLoot\EpicLoot.dll')">$(VALHEIM_INSTALL)\BepInEx\plugins\EpicLoot\EpicLoot.dll</HintPath>
             <HintPath Condition="Exists('$(VALHEIM_INSTALL)\BepInEx\plugins\RandyKnapp-EpicLoot\EpicLoot.dll')">$(VALHEIM_INSTALL)\BepInEx\plugins\RandyKnapp-EpicLoot\EpicLoot.dll</HintPath>
             <HintPath Condition="Exists('$(R2MODMAN_INSTALL)\BepInEx\plugins\RandyKnapp-EpicLoot\EpicLoot.dll')">$(R2MODMAN_INSTALL)\BepInEx\plugins\RandyKnapp-EpicLoot\EpicLoot.dll</HintPath>
+            <HintPath Condition="Exists('$(R2MODMAN_INSTALL)\BepInEx\plugins\RandyKnapp-EpicLoot\EpicLoot.dll.old')">$(R2MODMAN_INSTALL)\BepInEx\plugins\RandyKnapp-EpicLoot\EpicLoot.dll.old</HintPath>
         </Reference>
     </ItemGroup>
+
     <ItemGroup>
-        <Compile Include="APIExample\SelectUITest.cs" />
-        <Compile Include="Log.cs" />
-        <Compile Include="Logic\Amount.cs" />
-        <Compile Include="Logic\BepInExExtensions.cs" />
-        <Compile Include="Logic\Compatibility\EpicLootCompat.cs" />
-        <Compile Include="Logic\Compatibility\PlanBuild.cs" />
-        <Compile Include="Logic\Compatibility\WackysDatabaseCompat.cs" />
-        <Compile Include="Logic\Compatibility\WhichModAddedThis.cs" />
-        <Compile Include="Logic\ComponentEvent.cs" />
-        <Compile Include="Logic\Export\ExportPaths.cs" />
-        <Compile Include="Logic\Export\FileWriter.cs" />
-        <Compile Include="Logic\Export\IconExport.cs" />
-        <Compile Include="Logic\FavouritesSave.cs" />
-        <Compile Include="Logic\Indexing.cs" />
-        <Compile Include="Logic\Item.cs" />
-        <Compile Include="Logic\ItemType.cs" />
-        <Compile Include="Logic\ItemTypeHelper.cs" />
-        <Compile Include="Logic\ModNames.cs" />
-        <Compile Include="Logic\Part.cs" />
-        <Compile Include="Logic\RecipeInfo.cs" />
-        <Compile Include="Patches\InventoryGuiPatch.cs" />
-        <Compile Include="Patches\ModCompat.cs" />
-        <Compile Include="Patches\KnownRecipesPatches.cs" />
-        <Compile Include="Plugin.cs" />
-        <Compile Include="Properties\AssemblyInfo.cs" />
-        <Compile Include="UI\BaseUI.cs" />
-        <Compile Include="UI\CraftingStationElement.cs" />
-        <Compile Include="UI\CraftingStationList.cs" />
-        <Compile Include="UI\History\HistoryElement.cs" />
-        <Compile Include="UI\History\HistorySnapshot.cs" />
-        <Compile Include="UI\SearchKey.cs" />
-        <Compile Include="UI\StationOrder.cs" />
-        <Compile Include="UI\VneiHandler.cs" />
-        <Compile Include="UI\MainVneiHandler.cs" />
-        <Compile Include="UI\DisplayItem.cs" />
-        <Compile Include="UI\MainVneiHandlerAuga.cs" />
-        <Compile Include="UI\RecipeScroll.cs" />
-        <Compile Include="UI\RecipeUI.cs" />
-        <Compile Include="UI\RecipeView.cs" />
-        <Compile Include="UI\ScrollHandler.cs" />
-        <Compile Include="UI\SearchUI.cs" />
-        <Compile Include="UI\SelectUI.cs" />
-        <Compile Include="UI\Styling.cs" />
-        <Compile Include="UI\TabButton.cs" />
-        <Compile Include="UI\TypeToggle\FavoriteTypeToggle.cs" />
-        <Compile Include="UI\TypeToggle\ItemTypeToggle.cs" />
-        <Compile Include="UI\TypeToggle\TypeToggle.cs" />
+        <None Remove="Localization/English.json" />
+        <None Remove="Localization/German.json" />
+        <None Remove="Localization/Config.json" />
+        <None Remove="ItemBlacklist.json" />
+        <None Remove="VNEI_AssetBundle" />
+        <EmbeddedResource Include="Localization/English.json" />
+        <EmbeddedResource Include="Localization/German.json" />
+        <EmbeddedResource Include="Localization/Config.json" />
+        <EmbeddedResource Include="ItemBlacklist.json" />
+        <EmbeddedResource Include="VNEI_AssetBundle" />
     </ItemGroup>
+
     <ItemGroup>
-        <None Include="App.config" />
-        <None Include="ILRepack.targets" />
-        <None Include="packages.config" />
+        <Content Include="..\CHANGELOG.md" Link="CHANGELOG.md" />
+        <Content Include="..\README.md" Link="README.md" />
+        <Content Include="..\API.md" Link="API.md" />
+        <Content Include="..\CONTRIBUTING.md" Link="CONTRIBUTING.md" />
+        <Content Include="..\manifest.json" Link="manifest.json" />
     </ItemGroup>
-    <ItemGroup>
-      <EmbeddedResource Include="Localization\German.json" />
-      <EmbeddedResource Include="VNEI_AssetBundle" />
-    </ItemGroup>
-    <ItemGroup>
-      <EmbeddedResource Include="Localization\English.json" />
-    </ItemGroup>
-    <ItemGroup>
-      <EmbeddedResource Include="ItemBlacklist.json" />
-    </ItemGroup>
-    <ItemGroup>
-      <Content Include="..\CHANGELOG.md">
-        <Link>CHANGELOG.md</Link>
-      </Content>
-      <Content Include="..\README.md">
-        <Link>README.md</Link>
-      </Content>
-      <Content Include="..\API.md">
-        <Link>API.md</Link>
-      </Content>
-      <Content Include="..\CONTRIBUTING.md">
-        <Link>CONTRIBUTING.md</Link>
-      </Content>
-      <Content Include="..\manifest.json">
-        <Link>manifest.json</Link>
-      </Content>
-      <EmbeddedResource Include="Localization\Config.json" />
-    </ItemGroup>
-    <ItemGroup>
-      <Folder Include="Libs" />
-    </ItemGroup>
-    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-    <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-        <PropertyGroup>
-            <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-        </PropertyGroup>
-        <Error Condition="!Exists('..\packages\ILRepack.Lib.MSBuild.Task.2.0.43\build\ILRepack.Lib.MSBuild.Task.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\ILRepack.Lib.MSBuild.Task.2.0.43\build\ILRepack.Lib.MSBuild.Task.targets'))" />
-        <Error Condition="!Exists('..\packages\JotunnLib.2.28.0\build\JotunnLib.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\JotunnLib.2.28.0\build\JotunnLib.props'))" />
-    </Target>
+
+    <!-- must always exist locally, see CONTRIBUTING.md -->
     <Import Project="../Environment.props" />
-    <Import Project="..\packages\ILRepack.Lib.MSBuild.Task.2.0.43\build\ILRepack.Lib.MSBuild.Task.targets" Condition="Exists('..\packages\ILRepack.Lib.MSBuild.Task.2.0.43\build\ILRepack.Lib.MSBuild.Task.targets')" />
+
 </Project>
