@@ -253,11 +253,14 @@ namespace VNEI {
 
         public static VneiHandler GetMainUI() {
             if (IsAugaLoaded()) {
-                return MainVneiHandlerAuga.Instance;
+                return AugaHandler;
             }
 
             return MainVneiHandler.Instance;
         }
+
+        // do the dance to avoid loading any Auga types prematurely
+        public static VneiHandler AugaHandler => MainVneiHandlerAuga.Instance;
 
         public static bool IsAugaLoaded() {
             return Chainloader.PluginInfos.ContainsKey("randyknapp.mods.auga");
