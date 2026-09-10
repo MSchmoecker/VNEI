@@ -1,5 +1,8 @@
 # Changelog
 
+0.17.6
+- Updated for Valheim 1.0
+
 0.17.5
 - Fixed a conflict with MarsarahTweaks where the DropTable of prefabs could be null, causing errors during indexing
 
