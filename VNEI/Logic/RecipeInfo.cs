@@ -130,8 +130,9 @@ namespace VNEI.Logic {
         }
 
         public RecipeInfo(Recipe recipe, int quality) : this() {
-            if (recipe.GetRequiredStation(quality) != null) {
-                AddStation(recipe.GetRequiredStation(quality), recipe.GetRequiredStationLevel(quality));
+            CraftingStation station = recipe.GetRequiredStation(quality);
+            if (station != null) {
+                AddStation(station, recipe.GetRequiredStationLevel(quality));
             } else {
                 AddStation(Plugin.Instance.handStation, 1);
             }
@@ -143,6 +144,10 @@ namespace VNEI.Logic {
             }
 
             foreach (Piece.Requirement resource in recipe.m_resources) {
+                if (resource.m_upgraderResource != (station != null && station.m_upgrader)) {
+                    continue;
+                }
+
                 Amount amount = new Amount(resource.GetAmount(quality));
                 if (Amount.IsSameMinMax(amount, Amount.Zero)) {
                     continue;
