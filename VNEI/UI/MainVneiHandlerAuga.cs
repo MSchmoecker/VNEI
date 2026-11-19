@@ -8,7 +8,7 @@ namespace VNEI.UI {
         private BaseUI baseUI;
 
         private static MainVneiHandlerAuga instance;
-        private static PlayerPanelTabData panelData;
+        private static object panelData;
 
         public static MainVneiHandlerAuga Instance => instance ?? (instance = new MainVneiHandlerAuga());
 
@@ -25,8 +25,10 @@ namespace VNEI.UI {
         }
 
         public void SetTabActive() {
-            if (!API.PlayerPanel_IsTabActive(panelData.TabButtonGO)) {
-                API.PlayerPanel_GetTabButton(panelData.Index).onClick.Invoke();
+            PlayerPanelTabData data = (PlayerPanelTabData)panelData;
+
+            if (!API.PlayerPanel_IsTabActive(data.TabButtonGO)) {
+                API.PlayerPanel_GetTabButton(data.Index).onClick.Invoke();
             }
         }
 
@@ -48,12 +50,12 @@ namespace VNEI.UI {
                 panelData = API.PlayerPanel_AddTab("VNEI tab", null, Plugin.tabName.Value, i => { });
 
                 Plugin.tabName.SettingChanged += (sender, e) => {
-                    panelData.TabTitle.text = Plugin.tabName.Value;
+                    ((PlayerPanelTabData)panelData).TabTitle.text = Plugin.tabName.Value;
                 };
             }
 
             if (Plugin.AttachToCrafting()) {
-                RectTransform craftingPanel = (RectTransform)panelData.ContentGO.transform;
+                RectTransform craftingPanel = (RectTransform)((PlayerPanelTabData)panelData).ContentGO.transform;
                 RectTransform baseUIRect = (RectTransform)baseUI.transform;
                 Vector2 craftingPanelSize = craftingPanel.sizeDelta;
 
